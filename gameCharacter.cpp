@@ -5,3 +5,8 @@ GameCharacter::GameCharacter(std::string characterSpritePath)
 {
 
 }
+
+void GameCharacter::Draw(GLint renderModeLoc) const
+{
+
+}

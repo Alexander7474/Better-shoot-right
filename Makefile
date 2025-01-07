@@ -1,8 +1,8 @@
 CC = g++
 CFLAGS = -std=c++11 -Wall -I/usr/include/freetype2
-LIBS = -lglfw3 -lGLEW -lGL -lfreetype -lLDtkLoader
+LIBS = -L./Bbop-Library -lbbop -lglfw3 -lGLEW -lGL -lfreetype -lLDtkLoader 
 
-SRCS = main.cpp character.cpp
+SRCS = main.cpp gameCharacter.cpp
 OBJS = $(SRCS:.cpp=.o)
 
 GREEN = \033[0;32m
@@ -13,6 +13,7 @@ NC = \033[0m
 all: final
 
 final: $(OBJS)
+	@(cd Bbop-Library && make && make lib)
 	@echo -e "$(PURPLE)Linking compiled files $(NC)"
 	@$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
 	@echo -e "$(GREEN)Linking done ! $(NC)"
@@ -24,3 +25,4 @@ final: $(OBJS)
 clean:
 	@echo -e "$(PURPLE)Deleting all objects files and final$(NC)"
 	@rm -f final $(OBJS)
+	@(cd Bbop-Library && make clean)

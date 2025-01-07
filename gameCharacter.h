@@ -1,12 +1,7 @@
 #pragma once 
 
 #include <string>
-#include <BBOP/Graphics.h>
-#include <BBOP/Graphics/bbopGlobal.h>
-#include <BBOP/Graphics/fontsClass.h>
-#include <BBOP/Graphics/geometricClass.h>
-#include <BBOP/Graphics/lightClass.h>
-#include <BBOP/Graphics/spriteClass.h>
+#include "Bbop-Library/include/BBOP/Graphics.h"
 
 class GameCharacter : public BbopDrawable, public Geometric
 {
