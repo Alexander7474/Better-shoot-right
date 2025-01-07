@@ -13,7 +13,7 @@ NC = \033[0m
 all: final
 
 final: $(OBJS)
-	@(cd Bbop-Library && make && make lib)
+	@(cd Bbop-Library && make -j && make lib)
 	@echo -e "$(PURPLE)Linking compiled files $(NC)"
 	@$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
 	@echo -e "$(GREEN)Linking done ! $(NC)"
