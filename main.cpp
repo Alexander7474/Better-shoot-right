@@ -15,6 +15,12 @@ int main()
 
   Game game;
 
+  glfwSwapInterval(1);
+ 
+  #ifdef DEBUG
+  LOGS.push_back("VERSION DE DEBUG");
+  #endif
+
   //main while loop
   while (!glfwWindowShouldClose(gameWindow))
   {
@@ -22,7 +28,11 @@ int main()
 
     #ifdef DEBUG 
     system("clear");
+    for(string &s: LOGS){
+      cout << s << endl;
+    }
     cout << "DELTA_TIME: " << DELTA_TIME << endl;
+    cout << "----------------------------------------------------------------" << endl;
     #endif
 
     // clear de la fenêtre en noire

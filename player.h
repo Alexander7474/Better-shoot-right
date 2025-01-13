@@ -14,7 +14,11 @@ public:
   /**
   * @brief Met a jour le player 
   */
-  void update(Camera *playerCam);
+  void update(Camera *playerCam, Map* map);
 
   virtual void Draw(GLint renderModeLoc) const override;
+
+  //GETTER 
+  
+  GameCharacter& getCharacter();
 };

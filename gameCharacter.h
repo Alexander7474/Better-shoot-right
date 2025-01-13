@@ -6,6 +6,8 @@
 #include "Bbop-Library/include/BBOP/Graphics.h"
 #include "Bbop-Library/include/BBOP/Graphics/bbopMathClass.h"
 #include "Bbop-Library/include/BBOP/Graphics/textureClass.h"
+#include "member.h"
+
 
 enum GameCharacterState
 {
@@ -13,35 +15,23 @@ enum GameCharacterState
   run
 };
 
+extern std::string gameCharacterStateString[2];
+
 enum GameCharacterDirection
 {
   rightDir,
   leftDir
 };
 
-//structure de stockage d'un animation
-struct GameCharacterAnim 
-{
-  std::vector<Texture> textures; //<! ensemble de texture qui forma l'animation 
-  double time; // temps de l'animation
-};
-
 class GameCharacter : public BbopDrawable, public Geometric
 {
 private:
   // attribute for the body of the character 
-  Sprite legs;
-  Sprite rightArm;
-  Sprite leftArm;
-  Sprite body;
-  Sprite head;
-
-  //Tableau de texture de chaque élément du character, chaque vector correspond à l'anim d'un état
-  GameCharacterAnim legsTexture[15];
-  GameCharacterAnim rightArmTexture[15];
-  GameCharacterAnim leftArmTexture[15];
-  GameCharacterAnim bodyTexture[15];
-  GameCharacterAnim headTexture[15];
+  Member legs;
+  Member rightArm;
+  Member leftArm;
+  Member body;
+  Member head;
 
   //gestion du regard et de l'orientation du character
   Vector2f lookingPoint; //<! Ou le character regarde
@@ -52,11 +42,23 @@ private:
   float jumpForce;
   float weight;
   Vector2f position;
+  Vector2f inertie;
+  float forceInertie;
+  double startFall;
+  bool canJump;
+  double startJump;
+  double jumpTime;
+  bool isJumping;
+
+  //gestion de l'etat et des animations
+  int animCnt;
+  GameCharacterState state;
 
   /**
    *  @brief Détermine la rotaion d'un membre en fonction du lookingPoint
    */ 
   void setMemberRotation(Sprite &member);
+  void setMemberRotation(Sprite &member, float m);
 
 public:
   GameCharacter();
@@ -69,7 +71,7 @@ public:
   /**
    * @brief Met jour le character
    */
-  void update();
+  void update(Map* map);
 
   /**
   * @brief Draw the character
@@ -81,6 +83,7 @@ public:
   * @details Donc toutes les position des sprites constituant le character avec le centre du torse comment référence/origine
   */
   void setPos(Vector2f pos);
+  void setPos(float x, float y);
 
   /**
   * @brief renvoie l'endroite ou regarde le character
@@ -102,4 +105,12 @@ public:
   * @brief retourne le character sur l'axe y
   */
   void flipY();
+
+  //GETTER 
+  //
+  Member& getLeftArm();
+  Member& getRightArm();
+  Member& getBody();
+  Member& getHead();
+  Member& getLegs();
 };

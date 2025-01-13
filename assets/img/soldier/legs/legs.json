@@ -1,0 +1,13 @@
+{
+  "idle": {
+    "sprite_sheet": "idle.png",
+    "columns": 1,
+    "rows": 1
+  },
+ 
+  "run": {
+    "sprite_sheet": "run.png",
+    "columns": 8,
+    "rows": 1
+  }
+}
