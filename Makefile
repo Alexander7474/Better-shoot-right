@@ -1,8 +1,8 @@
 CC = g++
-CFLAGS = -std=c++11 -Wall -I/usr/include/freetype2 -DDEBUG
+CFLAGS = -std=c++11 -Wall -I/usr/include/freetype2
 LIBS = -L./Bbop-Library -lbbop -lglfw3 -lGLEW -lGL -lfreetype -lLDtkLoader 
 
-SRCS = main.cpp gameCharacter.cpp player.cpp game.cpp member.cpp
+SRCS = main.cpp src/engine/gameCharacter.cpp src/game/player.cpp src/game/game.cpp src/engine/member.cpp
 OBJS = $(SRCS:.cpp=.o)
 
 GREEN = \033[0;32m
