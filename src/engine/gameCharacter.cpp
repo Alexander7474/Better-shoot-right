@@ -34,13 +34,11 @@ GameCharacter::GameCharacter()
   //--------------------------------------------------------------
 
   leftArm.setSize(32,32);
-  leftArm.setOrigin(8,8); // origine au niveau de l'épaule 
   //leftArm.getCollisionBox().setOffsetX(3.f,3.f);
   //leftArm.getCollisionBox().setOffsetY(6.f,10.f);
   leftArm.name = "left arm";
 
   rightArm.setSize(32,32);
-  rightArm.setOrigin(8,8); // origine au niveau de l'épaule 
   //rightArm.getCollisionBox().setOffsetX(3.f,3.f);
   //rightArm.getCollisionBox().setOffsetY(4.f,15.f);
   rightArm.name = "right arm";
@@ -56,6 +54,8 @@ GameCharacter::GameCharacter()
   legs.setSize(64,32);
   legs.setOrigin(32,0); // origine sur les hanche
    legs.name = "legs";
+
+  gun.setSize(64,32);
 
   //--------------------------------------------------------------
 
@@ -122,6 +122,10 @@ void GameCharacter::update(Map* map)
   head.update();
   body.update();
   legs.update();
+
+  gun.setPosition(rightArm.getPosition());
+  gun.setRotation(rightArm.getRotation());
+  gun.setOrigin(rightArm.getOrigin());
  
   #ifdef DEBUG 
   cout << "Character inertie: " << inertie.x << "|" << inertie.y << endl;
@@ -150,15 +154,15 @@ void GameCharacter::setPos(Vector2f pos)
 
   if(characterDirection == rightDir){
     
-    leftArm.setOrigin(8,8); // origine au niveau de l'épaule 
-    rightArm.setOrigin(8,8); 
+    leftArm.setOrigin(8,16); // origine au niveau de l'épaule 
+    rightArm.setOrigin(8,16); 
   
     rightArm.setAttachPoint(pos.x-5, pos.y-2);
     leftArm.setAttachPoint(pos.x-2, pos.y-2);
   }else{
 
-    leftArm.setOrigin(24,8); // origine au niveau de l'épaule 
-    rightArm.setOrigin(24,8);
+    leftArm.setOrigin(24,16); // origine au niveau de l'épaule 
+    rightArm.setOrigin(24,16);
   
     rightArm.setAttachPoint(pos.x+5, pos.y-2);
     leftArm.setAttachPoint(pos.x+2, pos.y-2);
@@ -180,6 +184,7 @@ void GameCharacter::Draw(GLint renderModeLoc) const
   legs.Draw(renderModeLoc);
   body.Draw(renderModeLoc);
   head.Draw(renderModeLoc);
+  gun.Draw(renderModeLoc);
   rightArm.Draw(renderModeLoc);
 }
 
@@ -259,6 +264,8 @@ void GameCharacter::flipY()
   body.flipVertically();
   head.flipVertically();
   legs.flipVertically();
+
+  gun.flipVertically();
 
   if(characterDirection == rightDir){
     

@@ -7,6 +7,7 @@
 #include "../../Bbop-Library/include/BBOP/Graphics/bbopMathClass.h"
 #include "../../Bbop-Library/include/BBOP/Graphics/textureClass.h"
 #include "member.h"
+#include "gun.h"
 
 extern std::string gameCharacterStateString[2];
 
@@ -25,6 +26,9 @@ private:
   Member leftArm;
   Member body;
   Member head;
+
+  //objet du character 
+  Gun gun;
 
   //gestion du regard et de l'orientation du character
   Vector2f lookingPoint; //<! Ou le character regarde
