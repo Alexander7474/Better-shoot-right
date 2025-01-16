@@ -11,11 +11,17 @@
 
 extern std::string gameCharacterStateString[2];
 
-enum GameCharacterDirection
+//éviter le redéfinition 
+#ifndef DIRECTION 
+#define DIRECTION
+
+enum Direction
 {
   rightDir,
   leftDir
 };
+
+#endif
 
 class GameCharacter : public BbopDrawable, public Geometric
 {
@@ -32,7 +38,7 @@ private:
 
   //gestion du regard et de l'orientation du character
   Vector2f lookingPoint; //<! Ou le character regarde
-  GameCharacterDirection characterDirection; //<! Direction du regard
+  Direction characterDirection; //<! Direction du regard
   
   //gestion de la physique
   float speed;

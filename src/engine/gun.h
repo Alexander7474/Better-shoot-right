@@ -15,6 +15,16 @@ enum GunState
   reload_state
 };
 
+#ifndef DIRECTION 
+#define DIRECTION
+
+enum Direction
+{
+  rightDir,
+  leftDir
+};
+
+#endif
 
 class Gun : public Sprite
 {
@@ -24,6 +34,7 @@ private:
   MemberAnim animations[15];
 
   Vector2f attachPoint;
+  Direction gunDirection;
 
   //ressource
   irrklang::ISoundSource* gunShotSound; // bruit de tir du gun 
@@ -37,7 +48,11 @@ private:
   double lastShotTime; // moment du dernier tire
   double rearmTime; // temps pour réarmer l'arme
   std::vector<Bullet> bulletVector; // stock le balle de l'arme en cours "d'utilisation"
-
+  float bulletSpeed; //vitesse des balles
+  Vector2f gunMouth; // sortie des balles 
+  //
+  friend class GameCharacter;
+  
 public:
   Gun();
   ~Gun();
@@ -61,4 +76,8 @@ public:
   * @brief charge une arme depuis un fichier json
   */
   void loadJsonFile(std::string path);
+
+  //GETTER 
+  //
+  const std::vector<Bullet>& getBullets() const;
 };

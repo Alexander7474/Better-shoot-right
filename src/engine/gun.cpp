@@ -1,8 +1,11 @@
 #include "gun.h"
 #include "../game/game.h"
+#include "bullet.h"
 #include <GLFW/glfw3.h>
+#include <cmath>
 #include <string>
 #include <nlohmann/json.hpp>
+#include <vector>
 
 using namespace std;
 using json = nlohmann::json;
@@ -18,6 +21,9 @@ Gun::Gun()
   ammo = 20;
   lastShotTime = glfwGetTime()-rearmTime;
   damage = 0.5f;
+  gunMouth = Vector2f(20.f,5.f);
+  bulletSpeed = 1.f;
+  gunDirection = rightDir;
 
   //texture par  default des balles 
   bulletTexture = new Texture("assets/guns/bullets/default.png");
@@ -73,6 +79,8 @@ void Gun::loadJsonFile(string path)
     damage = jsonData.at("damage");
     magazineSize = jsonData.at("magazine_size");
     ammo = magazineSize;
+    rearmTime = jsonData.at("ream_time");
+    bulletSpeed = jsonData.at("bullet_speed");
 
     string sound = jsonData.at("shot_sound");
     gunShotSound = soundEngine->addSoundSourceFromFile(sound.c_str());
@@ -81,7 +89,10 @@ void Gun::loadJsonFile(string path)
     delete bulletTexture;
     bulletTexture = new Texture(bullet.c_str());
 
-    rearmTime = jsonData.at("ream_time");
+    float x = jsonData.at("mouse_x");
+    float y = jsonData.at("mouse_y");
+    gunMouth.x = x;
+    gunMouth.y = y;
 
     //chargement de animation de l'arme
     for(int i = 0; i <= reload_state; i++){
@@ -114,7 +125,7 @@ void Gun::loadJsonFile(string path)
     setTexture(animations[idle].textures[0]);
   } catch (const json::exception &e){
     #ifdef DEBUG 
-    LOGS.push_back("Erreur getting JSON state animation for " + name);
+    LOGS.push_back("Erreur getting JSON info for " + name);
     #endif 
     return;
   }
@@ -127,6 +138,10 @@ void Gun::update()
     if(glfwGetTime() - lastShotTime >= rearmTime && ammo > 0){
       isArmed = true;
     }
+  }
+
+  for(Bullet &b : bulletVector){
+    b.update();
   }
 }
 
@@ -148,10 +163,34 @@ void Gun::shoot()
     lastShotTime = glfwGetTime();
     ammo--;
     isArmed = false;
+
+    //creation de la balle 
+    Vector2f inertie;
+    if(gunDirection == rightDir)
+      inertie = Vector2f(cos(getRotation()) * bulletSpeed,sin(getRotation()) * bulletSpeed);
+    else
+      inertie = Vector2f(cos(getRotation()) * -bulletSpeed,sin(getRotation()) * -bulletSpeed);
+
+    Bullet b(bulletTexture, inertie);
+
+    //calcule position de sortie de la balle 
+    Vector2f mouth(getPosition().x + gunMouth.x, getPosition().y + gunMouth.y);
+    float rotation = getRotation();
+    float outX = getPosition().x + (mouth.x - getPosition().x) * cos(rotation) - (mouth.y - getPosition().y) * sin(rotation);
+    float outY = getPosition().y + (mouth.x - getPosition().x) * sin(rotation) + (mouth.y - getPosition().y) * cos(rotation);
+    b.setPosition(outX, outY);
+    b.setRotation(getRotation());
+
+    bulletVector.push_back(b);
   }
 }
 
 void Gun::reload()
 {
   ammo = magazineSize;
+}
+
+const vector<Bullet>& Gun::getBullets() const
+{
+  return bulletVector;
 }

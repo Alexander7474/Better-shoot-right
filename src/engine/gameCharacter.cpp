@@ -2,6 +2,7 @@
 #include "../../Bbop-Library/include/BBOP/Graphics/bbopMathClass.h"
 #include "../../Bbop-Library/include/BBOP/Graphics/collisionBoxClass.h"
 #include "../game/game.h"
+#include "gun.h"
 #include "member.h"
 
 #include <GLFW/glfw3.h>
@@ -158,6 +159,7 @@ void GameCharacter::setPos(Vector2f pos)
   
     rightArm.setAttachPoint(pos.x-5, pos.y-2);
     leftArm.setAttachPoint(pos.x-2, pos.y-2);
+
   }else{
 
     leftArm.setOrigin(24,16); // origine au niveau de l'épaule 
@@ -189,6 +191,10 @@ void GameCharacter::Draw(GLint renderModeLoc) const
   head.Draw(renderModeLoc);
   gun.Draw(renderModeLoc);
   rightArm.Draw(renderModeLoc);
+
+  for(Bullet b : gun.getBullets()){
+    b.Draw(renderModeLoc);
+  }
 }
 
 void GameCharacter::lookAt(Vector2f lp)
@@ -279,10 +285,14 @@ void GameCharacter::flipY()
   
     rightArm.setAttachPoint(body.getPosition().x-5, rightArm.getPosition().y);
     leftArm.setAttachPoint(body.getPosition().x-2, leftArm.getPosition().y);
+
+    gun.gunDirection = rightDir;
   }else{
 
     leftArm.setOrigin(24,8); // origine au niveau de l'épaule 
     rightArm.setOrigin(24,8);
+
+    gun.gunDirection = leftDir;
   
     rightArm.setAttachPoint(body.getPosition().x+5, rightArm.getPosition().y);
     leftArm.setAttachPoint(body.getPosition().x+2, leftArm.getPosition().y);

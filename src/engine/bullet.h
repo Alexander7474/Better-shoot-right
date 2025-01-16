@@ -16,7 +16,7 @@ private:
   friend class Gun;
 
 public:
-  Bullet(Texture *texture);
+  Bullet(Texture *texture, Vector2f _inertie);
 
   void update();
 };
