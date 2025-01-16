@@ -45,6 +45,9 @@ void Player::update(Camera *playerCam, Map* map)
   if(glfwGetKey(gameWindow, GLFW_KEY_SPACE) == GLFW_PRESS){
     character.jump();
   }
+  if(glfwGetKey(gameWindow, GLFW_KEY_R) == GLFW_PRESS){
+    character.getGun().shoot();
+  }
   character.update(map);
 }
 

@@ -1,8 +1,8 @@
 CC = g++
-CFLAGS = -std=c++11 -Wall -I/usr/include/freetype2
-LIBS = -L./Bbop-Library -lbbop -lglfw3 -lGLEW -lGL -lfreetype -lLDtkLoader 
+CFLAGS = -std=c++11 -Wall -I/usr/include/freetype2 -g -DDEBUG
+LIBS = -L./Bbop-Library -lbbop -lglfw3 -lGLEW -lGL -lfreetype -lLDtkLoader -lIrrKlang
 
-SRCS = main.cpp src/engine/gameCharacter.cpp src/game/player.cpp src/game/game.cpp src/engine/member.cpp src/engine/gun.cpp
+SRCS = main.cpp src/engine/gameCharacter.cpp src/game/player.cpp src/game/game.cpp src/engine/member.cpp src/engine/gun.cpp src/engine/bullet.cpp
 OBJS = $(SRCS:.cpp=.o)
 
 GREEN = \033[0;32m
@@ -10,9 +10,9 @@ CYAN = \033[0;36m
 PURPLE = \033[0;35m
 NC = \033[0m
 
-all: final
+all: final.exe
 
-final: $(OBJS)
+final.exe: $(OBJS)
 	@(cd Bbop-Library && make -j && make lib)
 	@echo -e "$(PURPLE)Linking compiled files $(NC)"
 	@$(CC) $(CFLAGS) -o $@ $^ $(LIBS)

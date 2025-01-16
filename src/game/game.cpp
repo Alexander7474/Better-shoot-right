@@ -1,9 +1,12 @@
 #include "game.h"
 #include "../../Bbop-Library/include/BBOP/Graphics/bbopFunc.h"
+#include <irrKlang/ik_ISoundEngine.h>
 
 using namespace std;
 
 GLFWwindow* gameWindow = nullptr;
+irrklang::ISoundEngine *soundEngine = nullptr;
+
 float DELTA_TIME = 0.f;
 float GRAVITY = 9.81f;
 

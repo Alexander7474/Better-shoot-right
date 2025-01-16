@@ -1,0 +1,9 @@
+{
+  "name" : "scar",
+  "bullet_type" : "_5x56mm",
+  "damage" : 5.3,
+  "magazine_size" : 90,
+  "shot_sound" : "assets/audio/short-drill-gunshot-fx.wav",
+  "ream_time" : 0.1,
+  "bullet_texture" : "assets/guns/bullets/default.png"
+}

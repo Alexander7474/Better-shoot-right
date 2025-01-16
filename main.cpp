@@ -1,6 +1,8 @@
 #include <iostream>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <irrKlang/ik_ESoundOutputDrivers.h>
+#include <irrKlang/irrKlang.h>
 
 #include "src/game/game.h"
 
@@ -11,6 +13,8 @@ int main()
   //initialisation de la lib
   bbopInit(640,360,"window name",gameWindow);
   cout << "Version prototype" << endl;
+
+  soundEngine = irrklang::createIrrKlangDevice(irrklang::ESOD_ALSA);
 
   Game game;
 

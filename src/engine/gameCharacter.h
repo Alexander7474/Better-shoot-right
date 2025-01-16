@@ -106,4 +106,5 @@ public:
   Member& getBody();
   Member& getHead();
   Member& getLegs();
+  Gun& getGun();
 };

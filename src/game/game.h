@@ -4,10 +4,13 @@
 #include "player.h"
 
 #include <GLFW/glfw3.h>
+#include <irrKlang/ik_ISoundEngine.h>
 #include <vector>
+#include <irrKlang/irrKlang.h>
 
 // pointeur vers la fentre de jeu utilisable de partout
 extern GLFWwindow * gameWindow;
+extern irrklang::ISoundEngine *soundEngine;
 
 // Variable global du moteur de jeu
 extern float DELTA_TIME;

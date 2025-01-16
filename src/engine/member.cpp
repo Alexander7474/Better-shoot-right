@@ -138,14 +138,6 @@ void Member::createTextureCache(std::string path)
         #ifdef DEBUG 
         LOGS.push_back("Erreur loading " + to_string(i) + " for " + name + ", loading default.png");
         #endif
-
-        string stateSheetPath = path + "default.png";
-        
-        animations[i].textures.clear();
-        animations[i].textures = bbopLoadSpriteSheet(stateSheetPath.c_str(), 1, 1);
-        animations[i].duration = 0.0;
-        animations[i].nFrame = 1;
-        animations[i].frameTime = 0.0;
       }
 
     }

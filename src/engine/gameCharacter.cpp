@@ -60,7 +60,7 @@ GameCharacter::GameCharacter()
   //--------------------------------------------------------------
 
   setPos(Vector2f(300.f,0.f));
-  createTextureCache("assets/img/soldier/");
+  createTextureCache("assets/personnages/soldier/");
 }
 
 void GameCharacter::createTextureCache(string path)
@@ -123,10 +123,8 @@ void GameCharacter::update(Map* map)
   body.update();
   legs.update();
 
-  gun.setPosition(rightArm.getPosition());
-  gun.setRotation(rightArm.getRotation());
-  gun.setOrigin(rightArm.getOrigin());
- 
+  gun.update();
+
   #ifdef DEBUG 
   cout << "Character inertie: " << inertie.x << "|" << inertie.y << endl;
   #endif
@@ -156,6 +154,7 @@ void GameCharacter::setPos(Vector2f pos)
     
     leftArm.setOrigin(8,16); // origine au niveau de l'épaule 
     rightArm.setOrigin(8,16); 
+    gun.setOrigin(8,16);
   
     rightArm.setAttachPoint(pos.x-5, pos.y-2);
     leftArm.setAttachPoint(pos.x-2, pos.y-2);
@@ -163,10 +162,14 @@ void GameCharacter::setPos(Vector2f pos)
 
     leftArm.setOrigin(24,16); // origine au niveau de l'épaule 
     rightArm.setOrigin(24,16);
+    gun.setOrigin(56,16);
   
     rightArm.setAttachPoint(pos.x+5, pos.y-2);
     leftArm.setAttachPoint(pos.x+2, pos.y-2);
+
   }
+  
+  gun.setAttachPoint(rightArm.attachPoint);
 
   head.setAttachPoint(pos.x, pos.y-9);
 
@@ -219,6 +222,8 @@ void GameCharacter::lookAt(Vector2f lp)
   setMemberRotation(leftArm);
   setMemberRotation(rightArm);
   setMemberRotation(head);
+
+  gun.setRotation(rightArm.getRotation());
 }
 
 void GameCharacter::setMemberRotation(Sprite &member)
@@ -298,7 +303,10 @@ void GameCharacter::goLeft()
   if(legs.state != run){
     legs.state = run;
     legs.animations[run].lastFrameStartTime = glfwGetTime();
-    legs.isReverse = true;
+    if(characterDirection == rightDir)
+      legs.isReverse = true;
+    else
+      legs.isReverse = false;
   }
 }
 
@@ -308,7 +316,10 @@ void GameCharacter::goRight()
   if(legs.state != run){
     legs.animations[run].lastFrameStartTime = glfwGetTime();
     legs.state = run;
-    legs.isReverse = false;
+    if(characterDirection == rightDir)
+      legs.isReverse = false;
+    else
+      legs.isReverse = true;
   }
 }
 
@@ -328,3 +339,4 @@ Member& GameCharacter::getRightArm() { return rightArm; }
 Member& GameCharacter::getBody() { return body; }
 Member& GameCharacter::getHead() { return head; }
 Member& GameCharacter::getLegs() { return legs; }
+Gun& GameCharacter::getGun() { return gun; }
