@@ -15,6 +15,7 @@ extern irrklang::ISoundEngine *soundEngine;
 // Variable global du moteur de jeu
 extern float DELTA_TIME;
 extern float GRAVITY;
+extern float FPS;
 
 class Game 
 {

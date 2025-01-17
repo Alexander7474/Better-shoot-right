@@ -95,12 +95,12 @@ void GameCharacter::update(Map* map)
     isJumping = false;
 
   if(isJumping){
-    inertie.y = -jumpForce * DELTA_TIME;
+    inertie.y = -jumpForce;
     startFall = glfwGetTime();
   } 
 
   // application de l'inertie final calculé
-  setPos(position.x + inertie.x, position.y + inertie.y);
+  setPos(position.x + inertie.x, position.y + inertie.y * DELTA_TIME);
 
   //check des collisions au sol
   bool groundCollide = false;

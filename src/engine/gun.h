@@ -26,15 +26,28 @@ enum Direction
 
 #endif
 
+//structure de stockage d'un animation, respecte la structure des fichier json
+struct GunAnim 
+{
+  std::vector<Texture> textures; //<! ensemble de texture qui forma l'animation 
+  double duration; // temps de l'animation
+  int nFrame; // nombre de frame 
+  double startTime; // depart de l'anim
+  double lastFrameStartTime; // depart de la dernière frame 
+  double frameTime;
+};
+
 class Gun : public Sprite
 {
 private:
   std::string name;
 
-  MemberAnim animations[15];
+  GunAnim animations[15];
+  GunState state;
 
   Vector2f attachPoint;
   Direction gunDirection;
+  int animCnt;
 
   //ressource
   irrklang::ISoundSource* gunShotSound; // bruit de tir du gun 

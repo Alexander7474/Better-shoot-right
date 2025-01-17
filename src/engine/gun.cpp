@@ -28,6 +28,8 @@ Gun::Gun()
   //texture par  default des balles 
   bulletTexture = new Texture("assets/guns/bullets/default.png");
 
+  state = gun_idle_state;
+
   loadJsonFile("assets/guns/scar/");
 }
 
@@ -89,8 +91,8 @@ void Gun::loadJsonFile(string path)
     delete bulletTexture;
     bulletTexture = new Texture(bullet.c_str());
 
-    float x = jsonData.at("mouse_x");
-    float y = jsonData.at("mouse_y");
+    float x = jsonData.at("mouth_x");
+    float y = jsonData.at("mouth_y");
     gunMouth.x = x;
     gunMouth.y = y;
 
@@ -134,6 +136,21 @@ void Gun::loadJsonFile(string path)
 
 void Gun::update()
 {
+   //play animation 
+  //
+  if(glfwGetTime() - animations[state].lastFrameStartTime >= animations[state].frameTime){
+    animCnt++;
+    animations[state].lastFrameStartTime = glfwGetTime();
+  }
+
+  //débordement anim sens normal
+  if(animCnt >= animations[state].nFrame){
+    animCnt = 0;
+    state = gun_idle_state;
+  }
+
+  setTexture(animations[state].textures[animCnt]);
+
   if(!isArmed){
     if(glfwGetTime() - lastShotTime >= rearmTime && ammo > 0){
       isArmed = true;
@@ -163,23 +180,28 @@ void Gun::shoot()
     lastShotTime = glfwGetTime();
     ammo--;
     isArmed = false;
+    state = shoot_state;
 
     //creation de la balle 
-    Vector2f inertie;
-    if(gunDirection == rightDir)
-      inertie = Vector2f(cos(getRotation()) * bulletSpeed,sin(getRotation()) * bulletSpeed);
-    else
+    Vector2f mouth(getPosition().x + gunMouth.x, getPosition().y + gunMouth.y); // position bouche du canon
+    float rotation = getRotation(); //rotation de l'arme 
+    Vector2f inertie(cos(getRotation()) * bulletSpeed,sin(getRotation()) * bulletSpeed); //vecteur d'inertie en fonction de la rotaion du canon
+    
+    if(gunDirection == leftDir){
       inertie = Vector2f(cos(getRotation()) * -bulletSpeed,sin(getRotation()) * -bulletSpeed);
-
-    Bullet b(bulletTexture, inertie);
+      mouth = Vector2f(getPosition().x - gunMouth.x, mouth.y);
+    }
 
     //calcule position de sortie de la balle 
-    Vector2f mouth(getPosition().x + gunMouth.x, getPosition().y + gunMouth.y);
-    float rotation = getRotation();
     float outX = getPosition().x + (mouth.x - getPosition().x) * cos(rotation) - (mouth.y - getPosition().y) * sin(rotation);
     float outY = getPosition().y + (mouth.x - getPosition().x) * sin(rotation) + (mouth.y - getPosition().y) * cos(rotation);
+    
+    Bullet b(bulletTexture, inertie);
     b.setPosition(outX, outY);
     b.setRotation(getRotation());
+
+    if(gunDirection == leftDir)
+      b.flipVertically();
 
     bulletVector.push_back(b);
   }

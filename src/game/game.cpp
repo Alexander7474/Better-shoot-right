@@ -8,7 +8,8 @@ GLFWwindow* gameWindow = nullptr;
 irrklang::ISoundEngine *soundEngine = nullptr;
 
 float DELTA_TIME = 0.f;
-float GRAVITY = 9.81f;
+float FPS = 0.f; 
+float GRAVITY = 981.f;
 
 Game::Game()
 {

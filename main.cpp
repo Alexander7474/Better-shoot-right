@@ -35,6 +35,7 @@ int main()
       cout << s << endl;
     }
     cout << "DELTA_TIME: " << DELTA_TIME << endl;
+    cout << "FPS: " << FPS << endl;
     cout << "----------------------------------------------------------------" << endl;
     #endif
 
@@ -53,6 +54,7 @@ int main()
     glfwPollEvents();
 
     DELTA_TIME = glfwGetTime() - timeSave;
+    FPS = 1/DELTA_TIME;
   }
   // destruction de la fen^tre et fin de glfw
   glfwDestroyWindow(gameWindow);
