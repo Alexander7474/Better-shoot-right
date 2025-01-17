@@ -44,7 +44,6 @@ private:
   float speed;
   float jumpForce;
   float weight;
-  Vector2f position;
   Vector2f inertie;
   float forceInertie;
   double startFall;

@@ -21,7 +21,6 @@ GameCharacter::GameCharacter()
   : speed(250.f),
     jumpForce(200.f),
     weight(1.f),
-    position(0.f,0.f),
     inertie(0.f, 0.f),
     forceInertie(2.f),
     startFall(glfwGetTime()),
@@ -100,7 +99,7 @@ void GameCharacter::update(Map* map)
   } 
 
   // application de l'inertie final calculé
-  setPos(position.x + inertie.x, position.y + inertie.y * DELTA_TIME);
+  setPos(getPosition().x + inertie.x, getPosition().y + inertie.y * DELTA_TIME);
 
   //check des collisions au sol
   bool groundCollide = false;
@@ -108,7 +107,7 @@ void GameCharacter::update(Map* map)
     if(legs.getCollisionBox().check(box) && box.getTop() < legs.getCollisionBox().getBottom()){
       inertie.y = 0.f;
       startFall = glfwGetTime();
-      setPos(position.x, box.getTop()-40.f);
+      setPos(getPosition().x, box.getTop()-40.f);
       canJump = true;
       groundCollide = true;
     }
@@ -137,7 +136,7 @@ void GameCharacter::update(Map* map)
 
   #ifdef DEBUG 
   cout << "Character after slow inertie: " << inertie.x << "|" << inertie.y << endl;
-  cout << "Character pos: " << position.x << "|" << position.y << endl;
+  cout << "Character pos: " << getPosition().x << "|" << getPosition().y << endl;
   cout << "Character fall start: " << startFall << endl;
   cout << "Character Jump start: " << startJump << endl;
   cout << "Character Jump time start: " << glfwGetTime() - startJump << endl;
@@ -147,7 +146,7 @@ void GameCharacter::update(Map* map)
 
 void GameCharacter::setPos(Vector2f pos)
 {
-  position = pos;
+  setPosition(pos);
 
   body.setAttachPoint(pos);
 

@@ -19,6 +19,7 @@ Game::Game()
 void Game::update()
 {
 
+  mainPlayerCam.setPosition(mainPlayer.getCharacter().getPosition());
   mainPlayer.update(&mainPlayerCam, &map);
 
 }

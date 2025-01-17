@@ -27,6 +27,7 @@ void Player::update(Camera *playerCam, Map* map)
   glfwGetCursorPos(gameWindow, &mouseX, &mouseY);
 
   Vector2f mousePos = playerCam->screenPosToCamPos(Vector2f(static_cast<float>(mouseX),static_cast<float>(mouseY)));
+  mousePos = playerCam->camPosToWorldPos(mousePos);
   character.lookAt(mousePos);
 
   #ifdef DEBUG
