@@ -2,6 +2,8 @@
 Prototype 
 
 TODO
+- Vérifier les destructeur de map et sprite
+- Finir le live map viewer
 - Cliquer pour tirer
 - paralaxe fonds
 - faire le rechargement

@@ -24,5 +24,12 @@ final.exe: $(OBJS)
 
 clean:
 	@echo -e "$(PURPLE)Deleting all objects files and final$(NC)"
-	@rm -f final $(OBJS)
+	@rm -f final.exe $(OBJS)
 	@(cd Bbop-Library && make clean)
+
+map:
+	@make
+	@$(CC) $(CFLAGS) -c liveMap.cpp
+	@$(CC) $(CFLAGS) liveMap.o $(LIBS) -o map.exe
+	@rm liveMap.o
+

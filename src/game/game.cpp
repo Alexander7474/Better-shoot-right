@@ -13,11 +13,13 @@ float GRAVITY = 981.f;
 
 Game::Game()
 {
+  mainPlayer.getCharacter().setPosition(map.getSpawnPoints()[0]);
   
 }
 
 void Game::update()
 {
+  map.update();
 
   mainPlayerCam.setPosition(mainPlayer.getCharacter().getPosition());
   mainPlayer.update(&mainPlayerCam, &map);
@@ -28,7 +30,6 @@ void Game::Draw()
 {
 
   map.Draw(scene, mainPlayerCam);
-  scene.useCamera(&mainPlayerCam);
   scene.Draw(mainPlayer);
 
   
