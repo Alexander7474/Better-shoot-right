@@ -5,8 +5,18 @@
 #include <irrKlang/irrKlang.h>
 
 #include "Bbop-Library/include/BBOP/Graphics.h"
+#include "Bbop-Library/include/BBOP/Graphics/cameraClass.h"
 
 using namespace std;
+
+Camera *camera;
+
+
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+{
+  cerr << xoffset << "|" << yoffset << endl;
+  camera->setScale(camera->getScale() + (-yoffset)*0.1);
+} 
 
 int main()
 {
@@ -18,18 +28,50 @@ int main()
   glfwSwapInterval(1);
 
   Scene scene;
-  Camera camera;
   Map map;
+  camera = new Camera;
+
+  Vector2f lastMousePos(0.f,0.f);
+  Vector2f lastCamPos = camera->getPosition();
+
+  glfwSetScrollCallback(gameWindow, scroll_callback);
 
   //main while loop
   while (!glfwWindowShouldClose(gameWindow))
   {
     // clear de la fenêtre en noire
     bbopCleanWindow(gameWindow,Vector3i(0,0,0),1.0f);
-    
+
+    // Mettre a jour la camera 
+    if(glfwGetMouseButton(gameWindow, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS){
+      double xpos, ypos;
+      glfwGetCursorPos(gameWindow, &xpos, &ypos);
+      Vector2f mousePos(static_cast<float>(xpos), static_cast<float>(ypos));
+      mousePos = camera->screenPosToCamPos(mousePos);
+      mousePos = camera->camPosToWorldPos(mousePos);
+
+      Vector2f diffMouse(mousePos.x - lastMousePos.x, mousePos.y - lastMousePos.y);
+
+      Vector2f diffCam(camera->getPosition().x - lastCamPos.x, camera->getPosition().y - lastCamPos.y);
+
+      if(diffCam.x != diffMouse.x || diffCam.y != diffMouse.y){
+        camera->setPosition(Vector2f(lastCamPos.x + diffMouse.x, lastCamPos.y + diffMouse.y));
+      }
+
+    }else{
+      double xpos, ypos;
+      glfwGetCursorPos(gameWindow, &xpos, &ypos);
+      Vector2f mousePos(static_cast<float>(xpos), static_cast<float>(ypos));
+      mousePos = camera->screenPosToCamPos(mousePos);
+      mousePos = camera->camPosToWorldPos(mousePos);
+
+      lastMousePos = mousePos;
+      lastCamPos = camera->getPosition();
+    }
+
     map.update();
 
-    map.Draw(scene, camera);
+    map.Draw(scene, *camera);
 
     // vérification des erreurs
     bbopErrorCheck();
@@ -45,3 +87,5 @@ int main()
 
   return 0;
 }
+
+
