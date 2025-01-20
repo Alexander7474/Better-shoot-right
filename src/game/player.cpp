@@ -17,11 +17,11 @@ Player::Player()
 void Player::Draw(GLint renderModeLoc) const
 {
   character.Draw(renderModeLoc);
+  crossair.Draw(renderModeLoc);
 }
 
 void Player::update(Camera *playerCam, Map* map)
 {
-
   //recup de la pos de la souris pour faire regarder le character 
   double mouseX, mouseY;
   glfwGetCursorPos(gameWindow, &mouseX, &mouseY);
@@ -29,6 +29,11 @@ void Player::update(Camera *playerCam, Map* map)
   Vector2f mousePos = playerCam->screenPosToCamPos(Vector2f(static_cast<float>(mouseX),static_cast<float>(mouseY)));
   mousePos = playerCam->camPosToWorldPos(mousePos);
   character.lookAt(mousePos);
+
+  float crossairS = bbopGetDistance(mousePos, character.getPosition());
+  crossair.setSize(crossairS/10.f,crossairS/10.f);
+
+  crossair.setPosition(mousePos.x, mousePos.y);
 
   #ifdef DEBUG
   cout << "Position de la souris: " << mousePos.x << "|" << mousePos.y << endl;
@@ -47,9 +52,13 @@ void Player::update(Camera *playerCam, Map* map)
     character.jump();
   }
   if(glfwGetKey(gameWindow, GLFW_KEY_R) == GLFW_PRESS){
+    character.getGun().reload();
+  }
+  if(glfwGetMouseButton(gameWindow, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS){
     character.getGun().shoot();
   }
   character.update(map);
 }
 
 GameCharacter& Player::getCharacter() { return character;}
+Crossair& Player::getCrossair() { return crossair;}
