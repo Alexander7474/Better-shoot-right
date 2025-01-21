@@ -3082,28 +3082,6 @@
 						},
 						{
 							"__identifier": "Light_point",
-							"__grid": [943,152],
-							"__pivot": [0.5,0.5],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#FFE33F",
-							"iid": "9e73a1f0-c210-11ef-bf55-a568b7f562bf",
-							"width": 16,
-							"height": 16,
-							"defUid": 323,
-							"px": [943,152],
-							"fieldInstances": [
-								{ "__identifier": "Intensity", "__type": "Float", "__value": 0.9, "__tile": null, "defUid": 325, "realEditorValues": [{ "id": "V_Float", "params": [0.9] }] },
-								{ "__identifier": "C_attenuation", "__type": "Float", "__value": 0.2, "__tile": null, "defUid": 326, "realEditorValues": [] },
-								{ "__identifier": "L_attenuation", "__type": "Float", "__value": 0.9, "__tile": null, "defUid": 327, "realEditorValues": [{ "id": "V_Float", "params": [0.9] }] },
-								{ "__identifier": "Q_attenuation", "__type": "Float", "__value": 1.2, "__tile": null, "defUid": 328, "realEditorValues": [{ "id": "V_Float", "params": [1.2] }] },
-								{ "__identifier": "Color", "__type": "Array<Int>", "__value": [255,255,255], "__tile": null, "defUid": 329, "realEditorValues": [ null, null, null ] },
-								{ "__identifier": "OpenAngle", "__type": "Float", "__value": 0.4, "__tile": null, "defUid": 554, "realEditorValues": [{ "id": "V_Float", "params": [0.4] }] },
-								{ "__identifier": "RotationAngle", "__type": "Float", "__value": 1.58, "__tile": null, "defUid": 555, "realEditorValues": [{ "id": "V_Float", "params": [1.58] }] }
-							]
-						},
-						{
-							"__identifier": "Light_point",
 							"__grid": [1206,152],
 							"__pivot": [0.5,0.5],
 							"__tags": [],
