@@ -30,32 +30,33 @@ GameCharacter::GameCharacter()
     isJumping(false)
 {
   characterDirection = rightDir;
+  scale = 0.75f;
 
   //--------------------------------------------------------------
 
-  leftArm.setSize(32,32);
+  leftArm.setSize(32*scale,32*scale);
   //leftArm.getCollisionBox().setOffsetX(3.f,3.f);
   //leftArm.getCollisionBox().setOffsetY(6.f,10.f);
   leftArm.name = "left arm";
 
-  rightArm.setSize(32,32);
+  rightArm.setSize(32*scale,32*scale);
   //rightArm.getCollisionBox().setOffsetX(3.f,3.f);
   //rightArm.getCollisionBox().setOffsetY(4.f,15.f);
   rightArm.name = "right arm";
 
-  body.setSize(32,32);
-  body.setOrigin(16,16); // origine au centre du torse
+  body.setSize(32*scale,32*scale);
+  body.setOrigin(16*scale,16*scale); // origine au centre du torse
   body.name = "body";
 
-  head.setSize(32,32);
-  head.setOrigin(16,16); // origine au coup
+  head.setSize(32*scale,32*scale);
+  head.setOrigin(16*scale,16*scale); // origine au coup
   head.name = "head";
 
-  legs.setSize(64,32);
-  legs.setOrigin(32,0); // origine sur les hanche
+  legs.setSize(64*scale,32*scale);
+  legs.setOrigin(32*scale,0*scale); // origine sur les hanche
    legs.name = "legs";
 
-  gun.setSize(64,32);
+  gun.setSize(64*scale,32*scale);
 
   //--------------------------------------------------------------
 
@@ -107,7 +108,7 @@ void GameCharacter::update(Map* map)
     if(legs.getCollisionBox().check(box) && box.getTop() < legs.getCollisionBox().getBottom()){
       inertie.y = 0.f;
       startFall = glfwGetTime();
-      setPos(getPosition().x, box.getTop()-40.f);
+      setPos(getPosition().x, box.getTop()-40.f*scale);
       canJump = true;
       groundCollide = true;
     }
@@ -152,29 +153,29 @@ void GameCharacter::setPos(Vector2f pos)
 
   if(characterDirection == rightDir){
     
-    leftArm.setOrigin(8,16); // origine au niveau de l'épaule 
-    rightArm.setOrigin(8,16); 
-    gun.setOrigin(8,16);
+    leftArm.setOrigin(8*scale,16*scale); // origine au niveau de l'épaule 
+    rightArm.setOrigin(8*scale,16*scale); 
+    gun.setOrigin(8*scale,16*scale);
   
-    rightArm.setAttachPoint(pos.x-5, pos.y-2);
-    leftArm.setAttachPoint(pos.x-2, pos.y-2);
+    rightArm.setAttachPoint(pos.x-5*scale, pos.y-2*scale);
+    leftArm.setAttachPoint(pos.x-2*scale, pos.y-2*scale);
 
   }else{
 
-    leftArm.setOrigin(24,16); // origine au niveau de l'épaule 
-    rightArm.setOrigin(24,16);
-    gun.setOrigin(56,16);
+    leftArm.setOrigin(24*scale,16*scale); // origine au niveau de l'épaule 
+    rightArm.setOrigin(24*scale,16*scale);
+    gun.setOrigin(56*scale,16*scale);
   
-    rightArm.setAttachPoint(pos.x+5, pos.y-2);
-    leftArm.setAttachPoint(pos.x+2, pos.y-2);
+    rightArm.setAttachPoint(pos.x+5*scale, pos.y-2*scale);
+    leftArm.setAttachPoint(pos.x+2*scale, pos.y-2*scale);
 
   }
   
   gun.setAttachPoint(rightArm.attachPoint);
 
-  head.setAttachPoint(pos.x, pos.y-9);
+  head.setAttachPoint(pos.x, pos.y-9*scale);
 
-  legs.setAttachPoint(pos.x, pos.y+8);
+  legs.setAttachPoint(pos.x, pos.y+8*scale);
 }
 
 void GameCharacter::setPos(float x, float y)
@@ -279,22 +280,22 @@ void GameCharacter::flipY()
 
   if(characterDirection == rightDir){
     
-    leftArm.setOrigin(8,8); // origine au niveau de l'épaule 
-    rightArm.setOrigin(8,8); 
+    leftArm.setOrigin(8*scale,8*scale); // origine au niveau de l'épaule 
+    rightArm.setOrigin(8*scale,8*scale); 
   
-    rightArm.setAttachPoint(body.getPosition().x-5, rightArm.getPosition().y);
-    leftArm.setAttachPoint(body.getPosition().x-2, leftArm.getPosition().y);
+    rightArm.setAttachPoint(body.getPosition().x-5*scale, rightArm.getPosition().y);
+    leftArm.setAttachPoint(body.getPosition().x-2*scale, leftArm.getPosition().y);
 
     gun.gunDirection = rightDir;
   }else{
 
-    leftArm.setOrigin(24,8); // origine au niveau de l'épaule 
-    rightArm.setOrigin(24,8);
+    leftArm.setOrigin(24*scale,8*scale); // origine au niveau de l'épaule 
+    rightArm.setOrigin(24*scale,8*scale);
 
     gun.gunDirection = leftDir;
   
-    rightArm.setAttachPoint(body.getPosition().x+5, rightArm.getPosition().y);
-    leftArm.setAttachPoint(body.getPosition().x+2, leftArm.getPosition().y);
+    rightArm.setAttachPoint(body.getPosition().x+5*scale, rightArm.getPosition().y);
+    leftArm.setAttachPoint(body.getPosition().x+2*scale, leftArm.getPosition().y);
   }
 
   #ifdef DEBUG

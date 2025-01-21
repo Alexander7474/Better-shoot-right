@@ -31,7 +31,7 @@ void Game::update()
   float distance = bbopGetDistance(mainPlayer.getCrossair().getPosition(), mainPlayer.getCharacter().getPosition());
   distance = distance/BBOP_WINDOW_RESOLUTION.x;
 
-  mainPlayerCam.setScale(1.0);
+  mainPlayerCam.setScale(0.6);
   mainPlayerCam.setPosition(middlePos);
 
   mainPlayer.update(&mainPlayerCam, &map);

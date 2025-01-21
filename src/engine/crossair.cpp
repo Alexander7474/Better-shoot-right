@@ -3,12 +3,12 @@
 Crossair::Crossair()
 {
 
-  middleRect.setColor(0,0,0);
+  middleRect.setColor(255,0,0);
   middleRect.setSize(1,1);
   middleRect.setOrigin(middleRect.getSize().x/2.f, middleRect.getSize().y/2.f);
 
   for(int i = 0; i < 4; i++){
-    externRect[i].setColor(0,0,0);
+    externRect[i].setColor(255,0,0);
     if(i%2==0){
       externRect[i].setSize(5,1);
     }else{

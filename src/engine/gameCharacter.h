@@ -39,6 +39,8 @@ private:
   //gestion du regard et de l'orientation du character
   Vector2f lookingPoint; //<! Ou le character regarde
   Direction characterDirection; //<! Direction du regard
+  //
+  float scale;
   
   //gestion de la physique
   float speed;

@@ -38,7 +38,7 @@ int main()
 {
   //initialisation de la lib
   GLFWwindow *gameWindow;
-  bbopInit(2080,512,"window name",gameWindow);
+  bbopInit(640,360,"window name",gameWindow);
   cout << "Version prototype" << endl;
 
   glfwSwapInterval(1);
