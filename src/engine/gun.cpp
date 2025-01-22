@@ -3,6 +3,7 @@
 #include "bullet.h"
 #include <GLFW/glfw3.h>
 #include <cmath>
+#include <random>
 #include <string>
 #include <nlohmann/json.hpp>
 #include <vector>
@@ -184,17 +185,24 @@ void Gun::shoot()
 
     //creation de la balle 
     Vector2f mouth(getPosition().x + gunMouth.x, getPosition().y + gunMouth.y); // position bouche du canon
-    float rotation = getRotation(); //rotation de l'arme 
-    Vector2f inertie(cos(getRotation()) * bulletSpeed,sin(getRotation()) * bulletSpeed); //vecteur d'inertie en fonction de la rotaion du canon
+
+    // ajout d'un peu d'aléatoire dans la direction
+    uniform_real_distribution<float> distribution(-0.1f,0.1f);
+    float r = distribution(RANDOM_ENGINE);
+    cout << r << endl;
+    float rotation = getRotation() + r; //rotation de l'arme
+
+
+    Vector2f inertie(cos(rotation) * bulletSpeed,sin(rotation) * bulletSpeed); //vecteur d'inertie en fonction de la rotaion du canon
     
     if(gunDirection == leftDir){
-      inertie = Vector2f(cos(getRotation()) * -bulletSpeed,sin(getRotation()) * -bulletSpeed);
+      inertie = Vector2f(cos(rotation) * -bulletSpeed,sin(rotation) * -bulletSpeed);
       mouth = Vector2f(getPosition().x - gunMouth.x, mouth.y);
     }
 
     //calcule position de sortie de la balle 
-    float outX = getPosition().x + (mouth.x - getPosition().x) * cos(rotation) - (mouth.y - getPosition().y) * sin(rotation);
-    float outY = getPosition().y + (mouth.x - getPosition().x) * sin(rotation) + (mouth.y - getPosition().y) * cos(rotation);
+    float outX = getPosition().x + (mouth.x - getPosition().x) * cos(getRotation()) - (mouth.y - getPosition().y) * sin(getRotation());
+    float outY = getPosition().y + (mouth.x - getPosition().x) * sin(getRotation()) + (mouth.y - getPosition().y) * cos(getRotation());
     
     Bullet b(bulletTexture, inertie);
     b.setPosition(outX, outY);

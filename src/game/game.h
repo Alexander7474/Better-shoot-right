@@ -7,6 +7,7 @@
 #include <irrKlang/ik_ISoundEngine.h>
 #include <vector>
 #include <irrKlang/irrKlang.h>
+#include <random>
 
 // pointeur vers la fentre de jeu utilisable de partout
 extern GLFWwindow * gameWindow;
@@ -16,6 +17,7 @@ extern irrklang::ISoundEngine *soundEngine;
 extern float DELTA_TIME;
 extern float GRAVITY;
 extern float FPS;
+extern std::default_random_engine RANDOM_ENGINE; 
 
 class Game 
 {

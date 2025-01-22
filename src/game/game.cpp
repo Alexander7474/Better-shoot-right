@@ -10,6 +10,7 @@ irrklang::ISoundEngine *soundEngine = nullptr;
 float DELTA_TIME = 0.f;
 float FPS = 0.f; 
 float GRAVITY = 981.f;
+default_random_engine RANDOM_ENGINE; 
 
 Game::Game()
 {
