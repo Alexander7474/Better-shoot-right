@@ -14,9 +14,10 @@ default_random_engine RANDOM_ENGINE;
 
 Game::Game()
 {
-  if(map.getSpawnPoints().size() > 1)
+  if(map.getSpawnPoints().size() > 1){
     mainPlayer.getCharacter().setPosition(map.getSpawnPoints()[0]);
-  
+    npc.setPosition(map.getSpawnPoints()[0]);
+  }
 }
 
 void Game::update()
@@ -34,6 +35,7 @@ void Game::update()
 
   mainPlayerCam.setScale(0.6);
   mainPlayerCam.setPosition(middlePos);
+  npc.Bupdate(&map , mainPlayer);
 
   mainPlayer.update(&mainPlayerCam, &map);
 
