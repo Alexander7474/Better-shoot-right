@@ -2,7 +2,6 @@
 
 #include "../../Bbop-Library/include/BBOP/Graphics.h"
 #include "player.h"
-#include "bot.h"
 
 #include <GLFW/glfw3.h>
 #include <irrKlang/ik_ISoundEngine.h>
@@ -26,7 +25,6 @@ private:
   Scene scene;
   Camera mainPlayerCam;
   Player mainPlayer;
-  Bot npc;
   Map map;
 public:
   Game();
