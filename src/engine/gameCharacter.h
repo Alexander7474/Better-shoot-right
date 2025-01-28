@@ -86,7 +86,7 @@ public:
   void setPos(float x, float y);
 
   /**
-  * @brief renvoie l'endroite ou regarde le character
+  * @brief renvoie l'endroit ou regarde le character
   */
   Vector2f getLookingPoint() const;
   

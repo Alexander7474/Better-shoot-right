@@ -11,10 +11,14 @@ class Bot : public GameCharacter
 private:
 
     Vector2f cible;
+
+    float sw_look;
+    float unlock;
+    bool detect;
 public:
     Bot();
-    void Bupdate(Map *map,Player perso1);
-
+    void Bupdate(Map *map,GameCharacter *perso1);
+    void detect_player(GameCharacter *perso1);
     GameCharacter& getCharacter();
     //Vector2f e_cible();
 };
