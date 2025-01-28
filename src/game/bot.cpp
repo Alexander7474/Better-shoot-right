@@ -1,78 +1,31 @@
 #include"bot.h"
-
-
-
+#include "../../Bbop-Library/include/BBOP/Graphics/bbopMathClass.h"
+#include "../../Bbop-Library/include/BBOP/Graphics/cameraClass.h"
+#include "game.h"
 #include "../engine/gameCharacter.h"
 
 #include <GLFW/glfw3.h>
 #include <iostream>
 
 Bot::Bot(){
-    lookAt(Vector2f(getPosition().x-5,getPosition().y));
-    sw_look=glfwGetTime();
+
 }
 
-void Bot::Bupdate(Map *map , GameCharacter *user){
+void Bot::Bupdate(Map *map , Player user){
+    this->cible=user.getCharacter().getPosition();
+    float espace = cible.x-getPosition().x;
     
-    if (detect)
+    if (espace>16.0f)
     {
-        this->cible=user->getPosition();
-        float espace = cible.x-getPosition().x;
-        if (espace>100.0f)
-        {
-            goRight();
-            lookAt(Vector2f(32.0f,getPosition().y-1.0f));
-        }else if (espace<-100.0f)
-        {
-            goLeft();
-            lookAt(Vector2f(32.0f,getPosition().y+1.0f));
-        }else{
-            lookAt(cible);
-            getGun().shoot();
-            getGun().reload();
-        }
+        goLeft();
+        lookAt(Vector2f(32.0f,getPosition().y-1.0f));
+    }else if (espace<-16.0f)
+    {
+        goRight();
+        lookAt(Vector2f(32.0f,getPosition().y+1.0f));
     }else{
-        if (sw_look-glfwGetTime()<-1.5)
-        {
-            if (getLookingPoint().x<getPosition().x)
-            {
-                lookAt(Vector2f(getPosition().x+5,getPosition().y));
-            }else{
-                lookAt(Vector2f(getPosition().x-5,getPosition().y));
-            }
-            
-        }
-        
+        lookAt(cible);
+        getGun().shoot();
     }
-    
-    
-    
-    
     update(map);  
-}
-
-void Bot::detect_player(GameCharacter * user){
-    float espace = user->getPosition().x-getPosition().x;
-    if (getLookingPoint().x>getPosition().x)
-    {
-        if (espace>-100)
-        {
-            detect=true;
-            unlock=glfwGetTime();
-        }
-        
-    }else if (getLookingPoint().x<getPosition().x)
-    {
-        if (espace<100)
-        {
-            detect=true;
-            unlock=glfwGetTime();
-        }
-    }
-    if (unlock-glfwGetTime() < -1)
-    {
-        detect=false;
-    }
-    
-    
 }

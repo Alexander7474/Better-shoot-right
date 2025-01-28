@@ -41,19 +41,18 @@ int main()
 
     // clear de la fenêtre en noire
     bbopCleanWindow(gameWindow,Vector3i(0,0,0),1.0f);
-    cerr<<"1"<<endl;
+    
     game.update();
-    cerr<<"11"<<endl;
+
     game.Draw();
-    cerr<<"111"<<endl;
+    
     // vérification des erreurs
     bbopErrorCheck();
     // swap du back buffer avec le front buffer
-    
     glfwSwapBuffers(gameWindow);
     // recupération des events glfw
     glfwPollEvents();
-    
+
     DELTA_TIME = glfwGetTime() - timeSave;
     FPS = 1/DELTA_TIME;
   }

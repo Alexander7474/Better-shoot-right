@@ -23,22 +23,22 @@ Game::Game()
 void Game::update()
 {
   map.update();
-  cerr<<"1"<<endl;
+
   //déterminer la position du milieu entre le joueur et son crossair
   Vector2f middlePos;
   middlePos.x = (mainPlayer.getCharacter().getPosition().x + mainPlayer.getCrossair().getPosition().x)/2.f;
   middlePos.y = (mainPlayer.getCharacter().getPosition().y + mainPlayer.getCrossair().getPosition().y)/2.f;
-  cerr<<"2"<<endl;
+
   //déterminer la scale de la cam en fonction de la distance entre crossair et play 
   float distance = bbopGetDistance(mainPlayer.getCrossair().getPosition(), mainPlayer.getCharacter().getPosition());
   distance = distance/BBOP_WINDOW_RESOLUTION.x;
-  cerr<<"3"<<endl;
+
   mainPlayerCam.setScale(0.6);
   mainPlayerCam.setPosition(middlePos);
-  npc.Bupdate(&map , &mainPlayer.getCharacter());
-  cerr<<"4"<<endl;
+  npc.Bupdate(&map , mainPlayer);
+
   mainPlayer.update(&mainPlayerCam, &map);
-  cerr<<"5"<<endl;
+
 }
 
 void Game::Draw()
@@ -46,7 +46,6 @@ void Game::Draw()
 
   map.Draw(scene, mainPlayerCam);
   scene.Draw(mainPlayer);
-  scene.Draw(npc);
 
   
   #ifdef DEBUG 
@@ -55,10 +54,5 @@ void Game::Draw()
   bbopDebugCollisionBox(mainPlayer.getCharacter().getBody().getCollisionBox(), scene);
   bbopDebugCollisionBox(mainPlayer.getCharacter().getHead().getCollisionBox(), scene);
   bbopDebugCollisionBox(mainPlayer.getCharacter().getLegs().getCollisionBox(), scene);
-  bbopDebugCollisionBox(npc.getLeftArm().getCollisionBox(), scene);
-  bbopDebugCollisionBox(npc.getRightArm().getCollisionBox(), scene);
-  bbopDebugCollisionBox(npc.getBody().getCollisionBox(), scene);
-  bbopDebugCollisionBox(npc.getHead().getCollisionBox(), scene);
-  bbopDebugCollisionBox(npc.getLegs().getCollisionBox(), scene);
   #endif 
 }
