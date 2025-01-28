@@ -102,6 +102,8 @@ int main()
 
     map->Draw(scene, *camera);
 
+    scene.render();
+
     // vérification des erreurs
     bbopErrorCheck();
     // swap du back buffer avec le front buffer

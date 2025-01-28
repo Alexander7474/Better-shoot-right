@@ -3010,7 +3010,7 @@
 			"__smartColor": "#9B9B9B",
 			"__bgPos": { "topLeftPx": [0,0], "scale": [4.5,4.5], "cropRect": [0,73.11111111111111,576,177.77777777777777] },
 			"externalRelPath": null,
-			"fieldInstances": [{ "__identifier": "Global_illumination", "__type": "Float", "__value": 0.1, "__tile": null, "defUid": 322, "realEditorValues": [{ "id": "V_Float", "params": [0.1] }] }],
+			"fieldInstances": [{ "__identifier": "Global_illumination", "__type": "Float", "__value": 0.05, "__tile": null, "defUid": 322, "realEditorValues": [{ "id": "V_Float", "params": [0.05] }] }],
 			"layerInstances": [
 				{
 					"__identifier": "Lights",
@@ -3038,28 +3038,6 @@
 					"entityInstances": [
 						{
 							"__identifier": "Light_point",
-							"__grid": [220,314],
-							"__pivot": [0.5,0.5],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#FFE33F",
-							"iid": "4d6bc440-c210-11ef-bf55-9d8ef0b41efe",
-							"width": 16,
-							"height": 16,
-							"defUid": 323,
-							"px": [220,314],
-							"fieldInstances": [
-								{ "__identifier": "Intensity", "__type": "Float", "__value": 0.6, "__tile": null, "defUid": 325, "realEditorValues": [{ "id": "V_Float", "params": [0.6] }] },
-								{ "__identifier": "C_attenuation", "__type": "Float", "__value": 0.3, "__tile": null, "defUid": 326, "realEditorValues": [{ "id": "V_Float", "params": [0.3] }] },
-								{ "__identifier": "L_attenuation", "__type": "Float", "__value": 1.6, "__tile": null, "defUid": 327, "realEditorValues": [{ "id": "V_Float", "params": [1.6] }] },
-								{ "__identifier": "Q_attenuation", "__type": "Float", "__value": 2, "__tile": null, "defUid": 328, "realEditorValues": [{ "id": "V_Float", "params": [2] }] },
-								{ "__identifier": "Color", "__type": "Array<Int>", "__value": [255,255,255], "__tile": null, "defUid": 329, "realEditorValues": [ null, null, null ] },
-								{ "__identifier": "OpenAngle", "__type": "Float", "__value": 3.142, "__tile": null, "defUid": 554, "realEditorValues": [] },
-								{ "__identifier": "RotationAngle", "__type": "Float", "__value": 0, "__tile": null, "defUid": 555, "realEditorValues": [] }
-							]
-						},
-						{
-							"__identifier": "Light_point",
 							"__grid": [433,315],
 							"__pivot": [0.5,0.5],
 							"__tags": [],
@@ -3071,10 +3049,10 @@
 							"defUid": 323,
 							"px": [433,315],
 							"fieldInstances": [
-								{ "__identifier": "Intensity", "__type": "Float", "__value": 0.6, "__tile": null, "defUid": 325, "realEditorValues": [{ "id": "V_Float", "params": [0.6] }] },
-								{ "__identifier": "C_attenuation", "__type": "Float", "__value": 0.3, "__tile": null, "defUid": 326, "realEditorValues": [{ "id": "V_Float", "params": [0.3] }] },
-								{ "__identifier": "L_attenuation", "__type": "Float", "__value": 1.6, "__tile": null, "defUid": 327, "realEditorValues": [{ "id": "V_Float", "params": [1.6] }] },
-								{ "__identifier": "Q_attenuation", "__type": "Float", "__value": 2, "__tile": null, "defUid": 328, "realEditorValues": [{ "id": "V_Float", "params": [2] }] },
+								{ "__identifier": "Intensity", "__type": "Float", "__value": 0.7, "__tile": null, "defUid": 325, "realEditorValues": [{ "id": "V_Float", "params": [0.7] }] },
+								{ "__identifier": "C_attenuation", "__type": "Float", "__value": 0.05, "__tile": null, "defUid": 326, "realEditorValues": [{ "id": "V_Float", "params": [0.05] }] },
+								{ "__identifier": "L_attenuation", "__type": "Float", "__value": 0, "__tile": null, "defUid": 327, "realEditorValues": [{ "id": "V_Float", "params": [0] }] },
+								{ "__identifier": "Q_attenuation", "__type": "Float", "__value": 0.2, "__tile": null, "defUid": 328, "realEditorValues": [{ "id": "V_Float", "params": [0.2] }] },
 								{ "__identifier": "Color", "__type": "Array<Int>", "__value": [255,255,255], "__tile": null, "defUid": 329, "realEditorValues": [ null, null, null ] },
 								{ "__identifier": "OpenAngle", "__type": "Float", "__value": 3.142, "__tile": null, "defUid": 554, "realEditorValues": [] },
 								{ "__identifier": "RotationAngle", "__type": "Float", "__value": 0, "__tile": null, "defUid": 555, "realEditorValues": [] }
@@ -3166,6 +3144,28 @@
 								{ "__identifier": "Color", "__type": "Array<Int>", "__value": [255,255,255], "__tile": null, "defUid": 329, "realEditorValues": [ null, null, null ] },
 								{ "__identifier": "OpenAngle", "__type": "Float", "__value": 0.4, "__tile": null, "defUid": 554, "realEditorValues": [{ "id": "V_Float", "params": [0.4] }] },
 								{ "__identifier": "RotationAngle", "__type": "Float", "__value": 1.58, "__tile": null, "defUid": 555, "realEditorValues": [{ "id": "V_Float", "params": [1.58] }] }
+							]
+						},
+						{
+							"__identifier": "Light_point",
+							"__grid": [218,315],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#FFE33F",
+							"iid": "c7115540-c210-11ef-98dc-c9a400995e9c",
+							"width": 16,
+							"height": 16,
+							"defUid": 323,
+							"px": [218,315],
+							"fieldInstances": [
+								{ "__identifier": "Intensity", "__type": "Float", "__value": 0.7, "__tile": null, "defUid": 325, "realEditorValues": [{ "id": "V_Float", "params": [0.7] }] },
+								{ "__identifier": "C_attenuation", "__type": "Float", "__value": 0.05, "__tile": null, "defUid": 326, "realEditorValues": [{ "id": "V_Float", "params": [0.05] }] },
+								{ "__identifier": "L_attenuation", "__type": "Float", "__value": 0, "__tile": null, "defUid": 327, "realEditorValues": [{ "id": "V_Float", "params": [0] }] },
+								{ "__identifier": "Q_attenuation", "__type": "Float", "__value": 0.2, "__tile": null, "defUid": 328, "realEditorValues": [{ "id": "V_Float", "params": [0.2] }] },
+								{ "__identifier": "Color", "__type": "Array<Int>", "__value": [255,255,255], "__tile": null, "defUid": 329, "realEditorValues": [ null, null, null ] },
+								{ "__identifier": "OpenAngle", "__type": "Float", "__value": 3.142, "__tile": null, "defUid": 554, "realEditorValues": [] },
+								{ "__identifier": "RotationAngle", "__type": "Float", "__value": 0, "__tile": null, "defUid": 555, "realEditorValues": [] }
 							]
 						}
 					]

@@ -45,6 +45,8 @@ void Game::Draw()
   map.Draw(scene, mainPlayerCam);
   scene.Draw(mainPlayer);
 
+  scene.render();
+
   
   #ifdef DEBUG 
   bbopDebugCollisionBox(mainPlayer.getCharacter().getLeftArm().getCollisionBox(), scene);
