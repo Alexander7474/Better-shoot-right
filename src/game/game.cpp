@@ -16,29 +16,25 @@ Game::Game()
 {
   if(map.getSpawnPoints().size() > 1){
     mainPlayer.getCharacter().setPosition(map.getSpawnPoints()[0]);
-    npc.setPosition(map.getSpawnPoints()[0]);
+    npc.setPosition(map.getSpawnPoints()[1]);
   }
+  cerr<<map.getSpawnPoints().size()<<endl;
 }
 
 void Game::update()
 {
   map.update();
-  cerr<<"1"<<endl;
   //déterminer la position du milieu entre le joueur et son crossair
   Vector2f middlePos;
   middlePos.x = (mainPlayer.getCharacter().getPosition().x + mainPlayer.getCrossair().getPosition().x)/2.f;
   middlePos.y = (mainPlayer.getCharacter().getPosition().y + mainPlayer.getCrossair().getPosition().y)/2.f;
-  cerr<<"2"<<endl;
   //déterminer la scale de la cam en fonction de la distance entre crossair et play 
   float distance = bbopGetDistance(mainPlayer.getCrossair().getPosition(), mainPlayer.getCharacter().getPosition());
   distance = distance/BBOP_WINDOW_RESOLUTION.x;
-  cerr<<"3"<<endl;
   mainPlayerCam.setScale(0.6);
   mainPlayerCam.setPosition(middlePos);
   npc.Bupdate(&map , &mainPlayer.getCharacter());
-  cerr<<"4"<<endl;
   mainPlayer.update(&mainPlayerCam, &map);
-  cerr<<"5"<<endl;
 }
 
 void Game::Draw()
