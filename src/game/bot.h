@@ -17,6 +17,7 @@ private:
     Vector2f cible;
 
     float sw_look;
+    bool direction;
     float unlock;
     bool detect;
     State etat;
@@ -26,6 +27,7 @@ public:
     void detect_player(GameCharacter *perso1);
     void patrol_mod();
     void seek_mod();
+    void engage_mod(GameCharacter *user);
     GameCharacter& getCharacter();
 };
 
