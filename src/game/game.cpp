@@ -19,15 +19,20 @@ Game::Game()
     npc.setPosition(map.getSpawnPoints()[1]);
   }
   cerr<<map.getSpawnPoints().size()<<endl;
+
 }
 
 void Game::update()
 {
   map.update();
+
+
+
   //déterminer la position du milieu entre le joueur et son crossair
   Vector2f middlePos;
   middlePos.x = (mainPlayer.getCharacter().getPosition().x + mainPlayer.getCrossair().getPosition().x)/2.f;
   middlePos.y = (mainPlayer.getCharacter().getPosition().y + mainPlayer.getCrossair().getPosition().y)/2.f;
+
   //déterminer la scale de la cam en fonction de la distance entre crossair et play 
   float distance = bbopGetDistance(mainPlayer.getCrossair().getPosition(), mainPlayer.getCharacter().getPosition());
   distance = distance/BBOP_WINDOW_RESOLUTION.x;
@@ -35,6 +40,18 @@ void Game::update()
   mainPlayerCam.setPosition(middlePos);
   npc.Bupdate(&map , &mainPlayer.getCharacter());
   mainPlayer.update(&mainPlayerCam, &map);
+
+
+  //déterminer la scale de la cam en fonction de la distance entre crossair et play 
+  float distance = bbopGetDistance(mainPlayer.getCrossair().getPosition(), mainPlayer.getCharacter().getPosition());
+  distance = distance/BBOP_WINDOW_RESOLUTION.x;
+
+  mainPlayerCam.setScale(0.6);
+  mainPlayerCam.setPosition(middlePos);
+
+  mainPlayer.update(&mainPlayerCam, &map);
+
+
 }
 
 void Game::Draw()
@@ -42,7 +59,8 @@ void Game::Draw()
 
   map.Draw(scene, mainPlayerCam);
   scene.Draw(mainPlayer);
-  scene.Draw(npc);
+
+  scene.render();
 
   
   #ifdef DEBUG 
@@ -51,10 +69,5 @@ void Game::Draw()
   bbopDebugCollisionBox(mainPlayer.getCharacter().getBody().getCollisionBox(), scene);
   bbopDebugCollisionBox(mainPlayer.getCharacter().getHead().getCollisionBox(), scene);
   bbopDebugCollisionBox(mainPlayer.getCharacter().getLegs().getCollisionBox(), scene);
-  bbopDebugCollisionBox(npc.getLeftArm().getCollisionBox(), scene);
-  bbopDebugCollisionBox(npc.getRightArm().getCollisionBox(), scene);
-  bbopDebugCollisionBox(npc.getBody().getCollisionBox(), scene);
-  bbopDebugCollisionBox(npc.getHead().getCollisionBox(), scene);
-  bbopDebugCollisionBox(npc.getLegs().getCollisionBox(), scene);
   #endif 
 }
