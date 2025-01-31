@@ -109,3 +109,7 @@ void Bot::engage_mod(GameCharacter *user){
     }
     
 }
+
+void Bot::seek_mod(){
+    
+}
