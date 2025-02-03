@@ -1,6 +1,4 @@
 #include "game.h"
-#include "../../Bbop-Library/include/BBOP/Graphics/bbopFunc.h"
-#include <irrKlang/ik_ISoundEngine.h>
 
 using namespace std;
 

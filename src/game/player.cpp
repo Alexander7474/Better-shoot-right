@@ -5,7 +5,6 @@
 #include "../engine/gameCharacter.h"
 
 #include <GLFW/glfw3.h>
-#include <iostream>
 
 using namespace std;
 
@@ -14,10 +13,10 @@ Player::Player()
 
 }
 
-void Player::Draw(GLint renderModeLoc) const
+void Player::Draw(GLint *renderUniforms) const
 {
-  character.Draw(renderModeLoc);
-  crossair.Draw(renderModeLoc);
+  character.Draw(renderUniforms);
+  crossair.Draw(renderUniforms);
 }
 
 void Player::update(Camera *playerCam, Map* map)

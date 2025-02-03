@@ -4,8 +4,6 @@
 #include "bullet.h"
 #include "member.h"
 
-#include <irrKlang/ik_ISoundSource.h>
-#include <irrKlang/irrKlang.h>
 #include <string>
 
 enum GunState 
@@ -50,7 +48,7 @@ private:
   int animCnt;
 
   //ressource
-  irrklang::ISoundSource* gunShotSound; // bruit de tir du gun 
+  //irrklang::ISoundSource* gunShotSound; // bruit de tir du gun 
   Texture *bulletTexture; // Pointeur vers la texture des balles pour la charger une seule fois 
 
   //gestion des tirs

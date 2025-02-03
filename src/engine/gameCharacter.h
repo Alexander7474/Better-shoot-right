@@ -46,6 +46,8 @@ private:
   float speed;
   float jumpForce;
   float weight;
+
+  // gérer par le caractère
   Vector2f inertie;
   float forceInertie;
   double startFall;
@@ -76,7 +78,7 @@ public:
   /**
   * @brief Draw the character
   */
-  virtual void Draw(GLint renderModeLoc) const override;
+  void Draw(GLint *renderUniforms) const override;
 
   /**
   * @brief change la postition du character 
@@ -114,4 +116,13 @@ public:
   Member& getHead();
   Member& getLegs();
   Gun& getGun();
+  float getSpeed();
+  float getJumpForce();
+  float getWeight();
+
+  //SETTER
+  //
+  void setSpeed(float _speed);
+  void setJumpForce(float _jumpForce);
+  void setWeight(float _weight);
 };

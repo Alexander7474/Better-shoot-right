@@ -33,10 +33,10 @@ void Crossair::setPosition(float x_, float y_)
   externRect[3].setPosition(pos.x,pos.y+size.y);
 }
 
-void Crossair::Draw(GLint renderModeLoc) const
+void Crossair::Draw(GLint *renderUniforms) const
 {
-  middleRect.Draw(renderModeLoc);
+  middleRect.Draw(renderUniforms);
   for(int i = 0; i < 4; i++){
-    externRect[i].Draw(renderModeLoc);
+    externRect[i].Draw(renderUniforms);
   }
 }

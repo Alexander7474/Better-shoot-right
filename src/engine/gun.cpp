@@ -86,7 +86,7 @@ void Gun::loadJsonFile(string path)
     bulletSpeed = jsonData.at("bullet_speed");
 
     string sound = jsonData.at("shot_sound");
-    gunShotSound = soundEngine->addSoundSourceFromFile(sound.c_str());
+    //gunShotSound = soundEngine->addSoundSourceFromFile(sound.c_str());
 
     string bullet = jsonData.at("bullet_texture");
     delete bulletTexture;
@@ -177,7 +177,6 @@ void Gun::setAttachPoint(float x, float y)
 void Gun::shoot()
 {
   if(isArmed){
-    soundEngine->play2D(gunShotSound, false);
     lastShotTime = glfwGetTime();
     ammo--;
     isArmed = false;

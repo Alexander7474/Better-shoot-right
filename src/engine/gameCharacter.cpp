@@ -183,17 +183,17 @@ void GameCharacter::setPos(float x, float y)
   setPos(Vector2f(x ,y));
 }
 
-void GameCharacter::Draw(GLint renderModeLoc) const
+void GameCharacter::Draw(GLint *renderUniforms) const
 {
-  leftArm.Draw(renderModeLoc);
-  legs.Draw(renderModeLoc);
-  body.Draw(renderModeLoc);
-  head.Draw(renderModeLoc);
-  gun.Draw(renderModeLoc);
-  rightArm.Draw(renderModeLoc);
+  leftArm.Draw(renderUniforms);
+  legs.Draw(renderUniforms);
+  body.Draw(renderUniforms);
+  head.Draw(renderUniforms);
+  gun.Draw(renderUniforms);
+  rightArm.Draw(renderUniforms);
 
   for(Bullet b : gun.getBullets()){
-    b.Draw(renderModeLoc);
+    b.Draw(renderUniforms);
   }
 }
 
@@ -350,3 +350,12 @@ Member& GameCharacter::getBody() { return body; }
 Member& GameCharacter::getHead() { return head; }
 Member& GameCharacter::getLegs() { return legs; }
 Gun& GameCharacter::getGun() { return gun; }
+float GameCharacter::getSpeed() { return speed; }
+float GameCharacter::getJumpForce() { return jumpForce; }
+float GameCharacter::getWeight() { return weight; }
+
+// SETTER 
+
+void GameCharacter::setSpeed(float _speed) { this->speed = _speed; }
+void GameCharacter::setJumpForce(float _jumpForce) { this->jumpForce = _jumpForce; }
+void GameCharacter::setWeight(float _weight) { this->weight = _weight; }
