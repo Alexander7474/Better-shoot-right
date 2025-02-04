@@ -16,3 +16,12 @@ TODO
 - Ajouter les animations de rechargement, idle, acroupissement
 - Créer des enemis
 - Distribution légérement aleatoire des tires en fonctions de la distance et adapation du crossair
+
+## bott mekanic
+
+default = patrouille_mod
+-scale = 0.8
+
+palier en fontion de l'etat
+ex : etat patrouille > etat recherche suite a un bruit ou un visuel < etat attack quand un contact visuel ou physique
+

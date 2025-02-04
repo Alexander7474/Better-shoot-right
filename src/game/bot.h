@@ -15,7 +15,7 @@ class Bot : public GameCharacter
 private:
 
     Vector2f cible;
-
+    float fov ;
     float sw_look;
     bool direction;
     float unlock;
@@ -29,6 +29,7 @@ public:
     void seek_mod();
     void engage_mod(GameCharacter *user);
     GameCharacter& getCharacter();
+    bool champ_visuel(GameCharacter *user);
 };
 
 

@@ -42,16 +42,6 @@ void Game::update()
   mainPlayer.update(&mainPlayerCam, &map);
 
 
-  //déterminer la scale de la cam en fonction de la distance entre crossair et play 
-  float distance = bbopGetDistance(mainPlayer.getCrossair().getPosition(), mainPlayer.getCharacter().getPosition());
-  distance = distance/BBOP_WINDOW_RESOLUTION.x;
-
-  mainPlayerCam.setScale(0.6);
-  mainPlayerCam.setPosition(middlePos);
-
-  mainPlayer.update(&mainPlayerCam, &map);
-
-
 }
 
 void Game::Draw()
