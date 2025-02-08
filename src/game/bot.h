@@ -21,6 +21,7 @@ private:
     float unlock;
     bool detect;
     State etat;
+    vector<float> precision;
 public:
     Bot();
     void Bupdate(Map *map,GameCharacter *perso1);

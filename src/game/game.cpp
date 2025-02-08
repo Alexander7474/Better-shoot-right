@@ -25,7 +25,7 @@ Game::Game()
 void Game::update()
 {
   map.update();
-
+  cerr << npc.getSize().x << endl;
 
 
   //déterminer la position du milieu entre le joueur et son crossair
@@ -46,10 +46,10 @@ void Game::update()
 
 void Game::Draw()
 {
-
+  
   map.Draw(scene, mainPlayerCam);
   scene.Draw(mainPlayer);
-
+  scene.Draw(npc);
   scene.render();
 
   
