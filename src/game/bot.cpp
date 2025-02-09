@@ -3,10 +3,23 @@
 
 #include<cmath>
 #include "../engine/gameCharacter.h"
-
+#include <algorithm>
+#include <random>
+#include <ctime>
 #include <GLFW/glfw3.h>
 #include <iostream>
 using namespace std;
+
+void shuffleTable(vector<float>* table) {
+    
+
+    // Initialize random number generator with a time-based seed
+    std::mt19937 rng(static_cast<unsigned int>(std::time(0)));
+
+    // Shuffle the array in place
+    std::shuffle(table, table + 6, rng);
+}
+
 
 Bot::Bot(){
     lookAt(Vector2f(getPosition().x-5,getPosition().y));
@@ -15,6 +28,7 @@ Bot::Bot(){
     etat=patrol;
     fov = M_PI / 4;
     precision={-1.f,1.f,5.f,9.f,0,-9};
+    //setSpeed(2.0f);
 }
 
 void Bot::Bupdate(Map *map , GameCharacter *user){
@@ -140,12 +154,28 @@ void Bot::engage_mod(GameCharacter *user){
     float espace = user->getPosition().x-getPosition().x;
     if (etat==engage)
     {
-        lookAt(user->getPosition()); 
+        
+        cerr<<"coco"<<endl;
+        
+        if (glfwGetTime()-sw_shoot>1.5f)
+        {
+            shuffleTable(&precision);
+            point_shot.y=user->getPosition().y+precision[0];
+            point_shot.x=user->getPosition().x;
+            sw_shoot=glfwGetTime();
+        }else{
+            point_shot.x=user->getPosition().y;
+            point_shot.y=user->getPosition().y+precision[0];
+        }
+        
+        
+        lookAt(point_shot); 
         if (espace>100.0f && espace<200.0f)
         {
             goRight();
             if (espace<120.0f)
             {
+                
                 getGun().shoot();
                 getGun().reload();
             }
@@ -167,6 +197,20 @@ void Bot::engage_mod(GameCharacter *user){
     
 }
 
-void Bot::seek_mod(){
+void Bot::seek_mod(GameCharacter *user){
+    if (etat==seek)
+    {
+        float espace = user->getPosition().x - getPosition().x;
+        //setspeed(1.5f);
+        if (espace>0)
+        {
+            goRight();
+            lookAt(Vector2f(getPosition().x+5,getPosition().y));
+        }else{
+            goLeft();
+            lookAt(Vector2f(getPosition().x-5,getPosition().y));
+        }
+        
+    }
     
 }

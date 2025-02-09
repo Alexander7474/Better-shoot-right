@@ -16,18 +16,19 @@ private:
 
     Vector2f cible;
     float fov ;
-    float sw_look;
+    float sw_look , sw_shoot;
     bool direction;
     float unlock;
     bool detect;
     State etat;
-    vector<float> precision;
+    Vector2f point_shot;
+    std::vector<float> precision;
 public:
     Bot();
     void Bupdate(Map *map,GameCharacter *perso1);
     void detect_player(GameCharacter *perso1);
     void patrol_mod();
-    void seek_mod();
+    void seek_mod(GameCharacter *user);
     void engage_mod(GameCharacter *user);
     GameCharacter& getCharacter();
     bool champ_visuel(GameCharacter *user);
