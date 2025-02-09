@@ -11,5 +11,5 @@ public:
   Crossair();
 
   void setPosition(float x_, float y_) override;
-  void Draw(GLint renderModeLoc) const override;
+  void Draw(GLint *renderUniforms) const override;
 };

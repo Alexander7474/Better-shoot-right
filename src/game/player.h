@@ -20,7 +20,7 @@ public:
   */
   void update(Camera *playerCam, Map* map);
 
-  virtual void Draw(GLint renderModeLoc) const override;
+  virtual void Draw(GLint *renderUniforms) const override;
 
   //GETTER 
   

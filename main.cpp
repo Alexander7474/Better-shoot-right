@@ -1,8 +1,6 @@
 #include <iostream>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include <irrKlang/ik_ESoundOutputDrivers.h>
-#include <irrKlang/irrKlang.h>
 
 #include "src/game/game.h"
 
@@ -14,8 +12,6 @@ int main()
   bbopInit(640,360,"window name",gameWindow);
   cout << "Version prototype" << endl;
 
-  soundEngine = irrklang::createIrrKlangDevice(irrklang::ESOD_ALSA);
-
   Game game;
 
   glfwSwapInterval(1);
@@ -23,6 +19,13 @@ int main()
   #ifdef DEBUG
   LOGS.push_back("VERSION DE DEBUG");
   #endif
+
+    for(string &s: LOGS){
+      cout << s << endl;
+    }
+    cout << "DELTA_TIME: " << DELTA_TIME << endl;
+    cout << "FPS: " << FPS << endl;
+    cout << "----------------------------------------------------------------" << endl;
 
   //main while loop
   while (!glfwWindowShouldClose(gameWindow))
