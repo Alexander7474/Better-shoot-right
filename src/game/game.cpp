@@ -16,14 +16,14 @@ Game::Game()
     mainPlayer.getCharacter().setPosition(map.getSpawnPoints()[0]);
     npc.setPosition(map.getSpawnPoints()[1]);
   }
-  cerr<<map.getSpawnPoints().size()<<endl;
+  
 
 }
 
 void Game::update()
 {
   map.update();
-  cerr << npc.getSize().x << endl;
+  
 
 
   //déterminer la position du milieu entre le joueur et son crossair

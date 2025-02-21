@@ -14,15 +14,18 @@ class Bot : public GameCharacter
 {
 private:
 
-    Vector2f cible;
+    Vector2f *points;
+    Vector2f spawn;
+    Vector2f seekp;
+    Vector2f oldp; 
+    float *theta;
     float fov ;
-    float sw_look , sw_shoot;
+    float sw_look;
     bool direction;
     float unlock;
-    bool detect;
+    float detect,detect2,divi;
     State etat;
-    Vector2f point_shot;
-    std::vector<float> precision;
+    bool ftd;
 public:
     Bot();
     void Bupdate(Map *map,GameCharacter *perso1);

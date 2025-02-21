@@ -222,7 +222,7 @@ void GameCharacter::lookAt(Vector2f lp)
 
 
   #ifdef DEBUG
-  cout << "Character new looking point: " << lookingPoint.x << "|" << lookingPoint.y << endl;
+  //cout << "Character new looking point: " << lookingPoint.x << "|" << lookingPoint.y << endl;
   #endif
 
   setMemberRotation(leftArm);
