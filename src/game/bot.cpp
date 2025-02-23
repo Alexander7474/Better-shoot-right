@@ -34,7 +34,7 @@ Bot::Bot(){
     detect=10.0f;
     ftd=false;
     spawn=new Vector2f[3]{
-        Vector2f(1.0f,1.0f),
+        Vector2f(417.f,418.),
         Vector2f(1.0f,1.0f),
         Vector2f(1.0f,1.0f)
     };
@@ -45,12 +45,11 @@ void Bot::Bupdate(Map *map , GameCharacter *user){
     detect_player(user);
 
     patrol_mod();
-
+    bc_patrol(spawn[0]);
     engage_mod(user);
     seek_mod(user);
-    cerr<<"x:"<<getLookingPoint().x-getPosition().x<<endl;
-    cerr<<"y:"<<getLookingPoint().y-getPosition().y<<endl;
-    cerr<<"etat:"<<etat<<endl;
+    cerr<<"x:"<<getPosition().y<<endl;
+    cerr<<"y:"<<spawn[0].y<<endl;
     update(map);  
 }
 
@@ -67,11 +66,11 @@ void Bot::detect_player(GameCharacter *user) {
     }
 
     if (etat==engage && glfwGetTime() - unlock > 5) {
-        etat = patrol;
+        etat = bczone;
         ftd=false;
     }else if (etat==seek && glfwGetTime() - unlock > 5)
     {
-        etat = patrol;
+        etat = bczone;
         ftd=false;
     }
     
@@ -79,18 +78,32 @@ void Bot::detect_player(GameCharacter *user) {
 
 
 
+
 bool Bot::champ_visuel(GameCharacter *user) {
-    float range = 500.0f;
-
+    float range = 200.0f;
+    
+    // Vérification de la distance avant d'effectuer les calculs
     if (bbopGetDistance(getPosition(), user->getPosition()) < range) {
-        float theta0 = (getLookingPoint().x > getPosition().x) ? 0 : M_PI;
 
+        // Calculer un angle d'orientation basé sur la direction réelle du regard
+        Vector2f direction = {
+            getLookingPoint().x - getPosition().x,
+            getLookingPoint().y - getPosition().y
+        };        
+        float theta0 = atan2(direction.y, direction.x); // Angle en radians
 
+        std::cout << "Theta0: " << theta0 
+                  << " | Looking Point: (" << getLookingPoint().x << ", " << getLookingPoint().y << ")"
+                  << " | Position: (" << getPosition().x << ", " << getPosition().y << ")"
+                  << std::endl;
+
+        // Création des angles de balayage pour le champ visuel
         std::vector<float> theta(21);
         for (int i = 0; i < 21; i++) {
             theta[i] = theta0 - (fov / 2) + (i * (fov / 20)); 
         }
 
+        // Récupération des boîtes de collision du bot
         CollisionBox partie[5] = {
             getRightArm().getCollisionBox(),
             getLeftArm().getCollisionBox(),
@@ -99,6 +112,7 @@ bool Bot::champ_visuel(GameCharacter *user) {
             getHead().getCollisionBox()
         };
 
+        // Balayage du champ visuel
         for (int i = 0; i < 21; i++) {
             Vector2f start_p = getPosition();
             Vector2f step = {
@@ -106,23 +120,21 @@ bool Bot::champ_visuel(GameCharacter *user) {
                 (range * sin(theta[i])) / 5
             };
 
+            // Vérifier si une partie du bot est détectée dans le champ visuel
             for (int j = 0; j < 5; j++) {
                 if (detect_point(partie, start_p)) {
-                    if (!ftd)
-                    {
-                        ftd=true;
-                        detect2=glfwGetTime();
-                        seekp=user->getPosition();  
+                    if (!ftd) {
+                        ftd = true;
+                        detect2 = glfwGetTime();
+                        seekp = user->getPosition();
                     }
-                    divi=(getPosition().x-start_p.x)/5;
-                    if (divi<0) divi=divi*-1;
+                    divi = fabs((getPosition().x - start_p.x) / 5); // Correction absolue
                     return true;
                 }
                 start_p.x += step.x;
                 start_p.y += step.y;
             }
         }
-
         return false;
     }
     return false;
@@ -130,25 +142,49 @@ bool Bot::champ_visuel(GameCharacter *user) {
 
 
 
+
 void Bot::patrol_mod(){
     if (etat==patrol)
     {
-        setSpeed(6.0f);
-        if (glfwGetTime()-sw_look<10)
+        cerr<<patrol_zone()<<endl;
+        if (patrol_zone())
         {
-            if (direction)
-            {
-                goLeft();
-                lookAt(Vector2f(getPosition().x-5,getPosition().y));
-            }else{
-                goRight();
-                lookAt(Vector2f(getPosition().x+5,getPosition().y));
-            }
             
+            setSpeed(6.0f);
+            if (glfwGetTime()-sw_look<10)
+            {
+                if (direction)
+                {
+                    goLeft();
+                    lookAt(Vector2f(getPosition().x-5,getPosition().y));
+                }else{
+                    goRight();
+                    lookAt(Vector2f(getPosition().x+5,getPosition().y));
+                }
+                
+            }else{
+                direction=!direction;
+                sw_look=glfwGetTime();
+            }
         }else{
-            direction=!direction;
-            sw_look=glfwGetTime();
+            float a = bbopGetDistance(getPosition(),spawn[0]);
+            Vector2f zonev=spawn[0];
+            Vector2f re;
+            for (int i = 0; i < 3; i++)
+            {
+                if (bbopGetDistance(getPosition(),spawn[i])<a)
+                {
+                    a=bbopGetDistance(getPosition(),spawn[i]);
+                    zonev=spawn[i];
+                    re=spawn[0];
+                    spawn[0]=zonev;
+                    spawn[i]=re;
+                }
+            }
+            etat=bczone;
         }
+        
+        
         
     }
     
@@ -158,7 +194,8 @@ void Bot::engage_mod(GameCharacter *user){
     float espace = user->getPosition().x-getPosition().x;
     if (etat==engage)
     {
-        setSpeed(3.0f);   
+        
+        setSpeed(10.0f);   
         lookAt(user->getPosition()); 
         if (espace<200.0f)
         {
@@ -187,17 +224,58 @@ void Bot::seek_mod(GameCharacter *user){
     if (etat==seek)
     {
         float espace = bbopGetDistance(user->getPosition(),getPosition());
-        setSpeed(1.5f);
+        setSpeed(4.5f);
         lookAt(seekp);
         if (espace>0)
         {
-            goLeft();
-            
+            goLeft();            
         }else{
             goRight();
         }
-        
-        
     }
+    
+}
+
+
+bool Bot::patrol_zone(){
+
+    for (int i = 0; i < 3; i++)
+    {
+        float distance=bbopGetDistance(getPosition(),spawn[i]);
+        if (distance <150 )
+        {
+            etat=patrol;
+            return true;
+        }
+    }
+    etat=bczone;
+    return false;
+}
+
+void Bot::bc_patrol(Vector2f point){
+    if (etat==bczone)
+    {
+        if (getPosition().x!=point.x && getPosition().y!=point.y)
+        {
+            if (oldp.x==getPosition().x)
+            {
+                jump();
+            }
+            
+            if (bbopGetDistance(point,getPosition())>0)
+            {
+                goRight();
+            }else{
+                goLeft();
+            }
+            oldp={
+                getPosition().x,
+                getPosition().y
+            };
+        }
+    }
+    
+    
+    
     
 }

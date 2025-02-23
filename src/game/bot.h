@@ -6,6 +6,7 @@
 #include "../engine/crossair.h"
 
 enum State{
+    bczone=0,
     patrol =1,
     seek =2,
     engage =3
@@ -15,7 +16,7 @@ class Bot : public GameCharacter
 private:
 
     Vector2f *points;
-    Vector2f spawn;
+    Vector2f *spawn;
     Vector2f seekp;
     Vector2f oldp; 
     float *theta;
@@ -35,6 +36,8 @@ public:
     void engage_mod(GameCharacter *user);
     GameCharacter& getCharacter();
     bool champ_visuel(GameCharacter *user);
+    bool patrol_zone();
+    void bc_patrol(Vector2f point);
 };
 
 
