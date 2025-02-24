@@ -48,8 +48,7 @@ void Bot::Bupdate(Map *map , GameCharacter *user){
     bc_patrol(spawn[0]);
     engage_mod(user);
     seek_mod(user);
-    cerr<<"x:"<<getPosition().y<<endl;
-    cerr<<"y:"<<spawn[0].y<<endl;
+    cerr<<etat<<endl;
     update(map);  
 }
 
@@ -82,28 +81,31 @@ void Bot::detect_player(GameCharacter *user) {
 bool Bot::champ_visuel(GameCharacter *user) {
     float range = 200.0f;
     
-    // Vérification de la distance avant d'effectuer les calculs
+    Vector2f toUser = {
+        user->getPosition().x - getPosition().x,
+        user->getPosition().y - getPosition().y
+    };
+    float angleToUser = atan2(toUser.y, toUser.x);
+
+
+    Vector2f direction = {
+        getLookingPoint().x - getPosition().x,
+        getLookingPoint().y - getPosition().y
+    };
+    float theta0 = atan2(direction.y, direction.x);
+
+    float halfFov = fov / 2;
+    if (fabs(angleToUser - theta0) > halfFov) {
+        return false;
+    }
+
     if (bbopGetDistance(getPosition(), user->getPosition()) < range) {
 
-        // Calculer un angle d'orientation basé sur la direction réelle du regard
-        Vector2f direction = {
-            getLookingPoint().x - getPosition().x,
-            getLookingPoint().y - getPosition().y
-        };        
-        float theta0 = atan2(direction.y, direction.x); // Angle en radians
-
-        std::cout << "Theta0: " << theta0 
-                  << " | Looking Point: (" << getLookingPoint().x << ", " << getLookingPoint().y << ")"
-                  << " | Position: (" << getPosition().x << ", " << getPosition().y << ")"
-                  << std::endl;
-
-        // Création des angles de balayage pour le champ visuel
         std::vector<float> theta(21);
         for (int i = 0; i < 21; i++) {
-            theta[i] = theta0 - (fov / 2) + (i * (fov / 20)); 
+            theta[i] = theta0 - halfFov + (i * (fov / 20));
         }
 
-        // Récupération des boîtes de collision du bot
         CollisionBox partie[5] = {
             getRightArm().getCollisionBox(),
             getLeftArm().getCollisionBox(),
@@ -112,7 +114,6 @@ bool Bot::champ_visuel(GameCharacter *user) {
             getHead().getCollisionBox()
         };
 
-        // Balayage du champ visuel
         for (int i = 0; i < 21; i++) {
             Vector2f start_p = getPosition();
             Vector2f step = {
@@ -120,7 +121,6 @@ bool Bot::champ_visuel(GameCharacter *user) {
                 (range * sin(theta[i])) / 5
             };
 
-            // Vérifier si une partie du bot est détectée dans le champ visuel
             for (int j = 0; j < 5; j++) {
                 if (detect_point(partie, start_p)) {
                     if (!ftd) {
@@ -128,17 +128,17 @@ bool Bot::champ_visuel(GameCharacter *user) {
                         detect2 = glfwGetTime();
                         seekp = user->getPosition();
                     }
-                    divi = fabs((getPosition().x - start_p.x) / 5); // Correction absolue
+                    divi = fabs((getPosition().x - start_p.x) / 5);
                     return true;
                 }
                 start_p.x += step.x;
                 start_p.y += step.y;
             }
         }
-        return false;
     }
     return false;
 }
+
 
 
 
@@ -255,23 +255,29 @@ bool Bot::patrol_zone(){
 void Bot::bc_patrol(Vector2f point){
     if (etat==bczone)
     {
-        if (getPosition().x!=point.x && getPosition().y!=point.y)
+        setSpeed(15.0f);
+        
+        if (bbopGetDistance(point,getPosition())>50)
         {
             if (oldp.x==getPosition().x)
             {
                 jump();
             }
             
-            if (bbopGetDistance(point,getPosition())>0)
+            if (point.x-getPosition().x>0)
             {
                 goRight();
+                lookAt(Vector2f(getPosition().x+5,getPosition().y));
             }else{
                 goLeft();
+                lookAt(Vector2f(getPosition().x-5,getPosition().y));
             }
             oldp={
                 getPosition().x,
                 getPosition().y
             };
+        }else{
+            etat=patrol;
         }
     }
     
