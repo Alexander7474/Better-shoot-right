@@ -6,7 +6,6 @@
 #include "../engine/crossair.h"
 
 enum State{
-    bczone=0,
     patrol =1,
     seek =2,
     engage =3
@@ -19,10 +18,10 @@ private:
     Vector2f *spawn;
     Vector2f seekp;
     Vector2f oldp; 
+    Vector2f cible;
+    bool direction;
     float *theta;
     float fov ;
-    float sw_look;
-    bool direction;
     float unlock;
     float detect,detect2,divi;
     State etat;
@@ -34,10 +33,9 @@ public:
     void patrol_mod();
     void seek_mod(GameCharacter *user);
     void engage_mod(GameCharacter *user);
-    GameCharacter& getCharacter();
     bool champ_visuel(GameCharacter *user);
     bool patrol_zone();
-    void bc_patrol(Vector2f point);
+    bool bc_patrol(Vector2f point);
 };
 
 

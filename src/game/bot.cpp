@@ -21,11 +21,21 @@ bool detect_point(CollisionBox* menber,Vector2f point){
     return false;
 }
 
+Vector2f closestp(Vector2f *point , Vector2f b){
+    Vector2f clos = point[0];
+    for (int i = 0; i < 3; i++)
+    {
+        if (bbopGetDistance(point[i],b)<bbopGetDistance(clos,b))
+        {
+            clos=point[i];
+        }
+        
+    }
+    return clos;
+}
 
 Bot::Bot(){
     lookAt(Vector2f(getPosition().x+5,getPosition().y));
-    sw_look=glfwGetTime();
-    direction=true;
     etat=patrol;
     fov = M_PI / 4;
     setSpeed(2.0f);
@@ -33,11 +43,13 @@ Bot::Bot(){
     theta=new float[21];
     detect=10.0f;
     ftd=false;
+    direction = true;
     spawn=new Vector2f[3]{
-        Vector2f(417.f,418.),
-        Vector2f(1.0f,1.0f),
-        Vector2f(1.0f,1.0f)
+        Vector2f(417.f,418.f),
+        Vector2f(450.f,418.f),
+        Vector2f(500.f,418.f)
     };
+    cible=spawn[1];
 }
 
 void Bot::Bupdate(Map *map , GameCharacter *user){
@@ -48,7 +60,7 @@ void Bot::Bupdate(Map *map , GameCharacter *user){
     bc_patrol(spawn[0]);
     engage_mod(user);
     seek_mod(user);
-    cerr<<etat<<endl;
+    cerr<<getPosition().x<<endl;
     update(map);  
 }
 
@@ -65,11 +77,11 @@ void Bot::detect_player(GameCharacter *user) {
     }
 
     if (etat==engage && glfwGetTime() - unlock > 5) {
-        etat = bczone;
+        etat = patrol;
         ftd=false;
     }else if (etat==seek && glfwGetTime() - unlock > 5)
     {
-        etat = bczone;
+        etat = patrol;
         ftd=false;
     }
     
@@ -149,39 +161,53 @@ void Bot::patrol_mod(){
         cerr<<patrol_zone()<<endl;
         if (patrol_zone())
         {
-            
-            setSpeed(6.0f);
-            if (glfwGetTime()-sw_look<10)
+            if (direction)
             {
-                if (direction)
+                if (cible.x==spawn[2].x&& bbopGetDistance(getPosition(),cible)<10)
                 {
-                    goLeft();
-                    lookAt(Vector2f(getPosition().x-5,getPosition().y));
-                }else{
+                    direction=!direction;
+                }else 
+                {
+                    if (bc_patrol(cible))
+                    {
+                        for (int i = 0; i < 3; i++)
+                        {
+                            if (cible.x==spawn[i].x)
+                            {
+                                cible=spawn[i+1];
+                                break;
+                            }
+                            
+                        }
+                        
+                    }
                     goRight();
-                    lookAt(Vector2f(getPosition().x+5,getPosition().y));
                 }
                 
             }else{
-                direction=!direction;
-                sw_look=glfwGetTime();
-            }
-        }else{
-            float a = bbopGetDistance(getPosition(),spawn[0]);
-            Vector2f zonev=spawn[0];
-            Vector2f re;
-            for (int i = 0; i < 3; i++)
-            {
-                if (bbopGetDistance(getPosition(),spawn[i])<a)
+                if (cible.x==spawn[0].x&& bbopGetDistance(getPosition(),cible)<10)
                 {
-                    a=bbopGetDistance(getPosition(),spawn[i]);
-                    zonev=spawn[i];
-                    re=spawn[0];
-                    spawn[0]=zonev;
-                    spawn[i]=re;
+                    direction=!direction;
+                }else 
+                {
+                    if (bc_patrol(cible))
+                    {
+                        for (int i = 0; i < 3; i++)
+                        {
+                            if (cible.x==spawn[i].x)
+                            {
+                                cible=spawn[i-1];
+                                break;
+                            }
+                            
+                        }
+                        
+                    }
                 }
             }
-            etat=bczone;
+            
+        }else{
+            bc_patrol(spawn[0]);
         }
         
         
@@ -239,49 +265,47 @@ void Bot::seek_mod(GameCharacter *user){
 
 bool Bot::patrol_zone(){
 
-    for (int i = 0; i < 3; i++)
+    for (int i = 1; i < 3; i++)
     {
-        float distance=bbopGetDistance(getPosition(),spawn[i]);
-        if (distance <150 )
+        if (bbopGetDistance(getPosition(),cible)<60)
         {
-            etat=patrol;
             return true;
         }
+        
     }
-    etat=bczone;
+
     return false;
 }
 
-void Bot::bc_patrol(Vector2f point){
-    if (etat==bczone)
+bool Bot::bc_patrol(Vector2f point){
+
+    setSpeed(15.0f);
+    
+    if (bbopGetDistance(point,getPosition())>10)
     {
-        setSpeed(15.0f);
-        
-        if (bbopGetDistance(point,getPosition())>50)
+        if (oldp.x==getPosition().x)
         {
-            if (oldp.x==getPosition().x)
-            {
-                jump();
-            }
-            
-            if (point.x-getPosition().x>0)
-            {
-                goRight();
-                lookAt(Vector2f(getPosition().x+5,getPosition().y));
-            }else{
-                goLeft();
-                lookAt(Vector2f(getPosition().x-5,getPosition().y));
-            }
-            oldp={
-                getPosition().x,
-                getPosition().y
-            };
-        }else{
-            etat=patrol;
+            jump();
         }
+        
+        if (point.x-getPosition().x>0)
+        {
+            goRight();
+            lookAt(Vector2f(getPosition().x+5,getPosition().y));
+        }else{
+            goLeft();
+            lookAt(Vector2f(getPosition().x-5,getPosition().y));
+        }
+        oldp={
+            getPosition().x,
+            getPosition().y
+        };
+        return false;
+    }else{
+        return true;
     }
-    
-    
-    
-    
 }
+    
+    
+    
+    
