@@ -49,7 +49,7 @@ Bot::Bot(){
         Vector2f(450.f,418.f),
         Vector2f(500.f,418.f)
     };
-    cible=spawn[1];
+    cible=spawn[0];
 }
 
 void Bot::Bupdate(Map *map , GameCharacter *user){
@@ -60,7 +60,6 @@ void Bot::Bupdate(Map *map , GameCharacter *user){
     bc_patrol(spawn[0]);
     engage_mod(user);
     seek_mod(user);
-    cerr<<getPosition().x<<endl;
     update(map);  
 }
 
@@ -155,66 +154,39 @@ bool Bot::champ_visuel(GameCharacter *user) {
 
 
 
-void Bot::patrol_mod(){
-    if (etat==patrol)
-    {
-        cerr<<patrol_zone()<<endl;
-        if (patrol_zone())
-        {
-            if (direction)
-            {
-                if (cible.x==spawn[2].x&& bbopGetDistance(getPosition(),cible)<10)
-                {
-                    direction=!direction;
-                }else 
-                {
-                    if (bc_patrol(cible))
-                    {
-                        for (int i = 0; i < 3; i++)
-                        {
-                            if (cible.x==spawn[i].x)
-                            {
-                                cible=spawn[i+1];
-                                break;
+void Bot::patrol_mod() {
+    if (etat == patrol) {
+        
+
+        if (patrol_zone()) {
+            if (bbopGetDistance(getPosition(), cible) < 10) {
+                for (int i = 0; i < 3; i++) {
+                    if (cible.x == spawn[i].x) {
+                        if (direction) {
+                            if (i < 2) { 
+                                cible = spawn[i + 1];
+                            } else {
+                                direction = !direction; 
                             }
-                            
-                        }
-                        
-                    }
-                    goRight();
-                }
-                
-            }else{
-                if (cible.x==spawn[0].x&& bbopGetDistance(getPosition(),cible)<10)
-                {
-                    direction=!direction;
-                }else 
-                {
-                    if (bc_patrol(cible))
-                    {
-                        for (int i = 0; i < 3; i++)
-                        {
-                            if (cible.x==spawn[i].x)
-                            {
-                                cible=spawn[i-1];
-                                break;
+                        } else {
+                            if (i > 0) {
+                                cible = spawn[i - 1];
+                            } else {
+                                direction = !direction; 
                             }
-                            
                         }
-                        
+                        break; 
                     }
                 }
             }
-            
-        }else{
-            bc_patrol(spawn[0]);
+            cerr << "Current Target: " << cible.x << endl;
+            bc_patrol(cible);
+        } else {
+            bc_patrol(spawn[0]); 
         }
-        
-        
-        
     }
-    
 }
+
 
 void Bot::engage_mod(GameCharacter *user){
     float espace = user->getPosition().x-getPosition().x;
@@ -277,35 +249,30 @@ bool Bot::patrol_zone(){
     return false;
 }
 
-bool Bot::bc_patrol(Vector2f point){
-
+bool Bot::bc_patrol(Vector2f point) {
     setSpeed(15.0f);
-    
-    if (bbopGetDistance(point,getPosition())>10)
-    {
-        if (oldp.x==getPosition().x)
-        {
-            jump();
+
+    if (bbopGetDistance(point, getPosition()) > 20) { 
+        if (oldp.x == getPosition().x) {
+            jump();  
         }
-        
-        if (point.x-getPosition().x>0)
-        {
+
+        if (point.x - getPosition().x > 0) {
             goRight();
-            lookAt(Vector2f(getPosition().x+5,getPosition().y));
-        }else{
+            lookAt(Vector2f(getPosition().x + 5, getPosition().y));
+        } else {
             goLeft();
-            lookAt(Vector2f(getPosition().x-5,getPosition().y));
+            lookAt(Vector2f(getPosition().x - 5, getPosition().y));
         }
-        oldp={
-            getPosition().x,
-            getPosition().y
-        };
+
+        oldp = getPosition();  
         return false;
-    }else{
+    } else {
+        setSpeed(0);  
         return true;
     }
 }
-    
+
     
     
     
