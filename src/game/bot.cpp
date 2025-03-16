@@ -49,7 +49,8 @@ Bot::Bot(){
         Vector2f(450.f,418.f),
         Vector2f(500.f,418.f)
     };
-    cible=spawn[0];
+    cpt=0;
+    iterateur=1;
 }
 
 void Bot::Bupdate(Map *map , GameCharacter *user){
@@ -57,7 +58,6 @@ void Bot::Bupdate(Map *map , GameCharacter *user){
     detect_player(user);
 
     patrol_mod();
-    bc_patrol(spawn[0]);
     engage_mod(user);
     seek_mod(user);
     update(map);  
@@ -66,13 +66,15 @@ void Bot::Bupdate(Map *map , GameCharacter *user){
 void Bot::detect_player(GameCharacter *user) {
     if (champ_visuel(user)) {
         unlock=glfwGetTime();
-        if (glfwGetTime()-3>detect2)
+        if (glfwGetTime()-divi>detect2)
         {
             etat=engage;
-        }else 
+        }else if (glfwGetTime()-divi/2>detect2)
         {
             etat=seek;
         }
+        
+        
     }
 
     if (etat==engage && glfwGetTime() - unlock > 5) {
@@ -140,6 +142,7 @@ bool Bot::champ_visuel(GameCharacter *user) {
                         seekp = user->getPosition();
                     }
                     divi = fabs((getPosition().x - start_p.x) / 5);
+                    cerr<<divi<<endl;
                     return true;
                 }
                 start_p.x += step.x;
@@ -157,30 +160,22 @@ bool Bot::champ_visuel(GameCharacter *user) {
 void Bot::patrol_mod() {
     if (etat == patrol) {
         
-
+        
         if (patrol_zone()) {
-            if (bbopGetDistance(getPosition(), cible) < 10) {
-                for (int i = 0; i < 3; i++) {
-                    if (cible.x == spawn[i].x) {
-                        if (direction) {
-                            if (i < 2) { 
-                                cible = spawn[i + 1];
-                            } else {
-                                direction = !direction; 
-                            }
-                        } else {
-                            if (i > 0) {
-                                cible = spawn[i - 1];
-                            } else {
-                                direction = !direction; 
-                            }
-                        }
-                        break; 
-                    }
+            if (bbopGetDistance(getPosition(),spawn[cpt])<5.0f)
+            {
+                if (cpt==2)
+                {
+                    iterateur=-1;
+                    cerr<<spawn[cpt].x<<endl;
                 }
+                if (cpt==0)
+                {
+                    iterateur=1;
+                }
+                cpt+=iterateur;
             }
-            cerr << "Current Target: " << cible.x << endl;
-            bc_patrol(cible);
+            bc_patrol(spawn[cpt]);
         } else {
             bc_patrol(spawn[0]); 
         }
@@ -189,30 +184,29 @@ void Bot::patrol_mod() {
 
 
 void Bot::engage_mod(GameCharacter *user){
-    float espace = user->getPosition().x-getPosition().x;
+    float espace = getPosition().x-user->getPosition().x;
     if (etat==engage)
     {
         
         setSpeed(10.0f);   
         lookAt(user->getPosition()); 
-        if (espace<200.0f)
+        if (espace>50.0f)
         {
             goLeft();
-            if (espace<120.0f)
-            {
-                getGun().shoot();
-                getGun().reload();
-            }
         }
-        if (espace>-200.0f)
+        if (espace<-50.0f)
         {
             goRight();
-            if (espace>-120.0f)
-            {
-                getGun().shoot();
-                getGun().reload();
-            }
         }        
+        if (espace<100.0f && espace>-100.0f)
+        {
+            getGun().shoot();
+            getGun().reload();
+        }
+        if (espace<50 && espace>-50)
+        {
+            setSpeed(0);
+        }
         
     }
     
@@ -237,9 +231,9 @@ void Bot::seek_mod(GameCharacter *user){
 
 bool Bot::patrol_zone(){
 
-    for (int i = 1; i < 3; i++)
+    for (int i = 0; i < 3; i++)
     {
-        if (bbopGetDistance(getPosition(),cible)<60)
+        if (bbopGetDistance(getPosition(),spawn[cpt])<60)
         {
             return true;
         }
@@ -252,7 +246,7 @@ bool Bot::patrol_zone(){
 bool Bot::bc_patrol(Vector2f point) {
     setSpeed(15.0f);
 
-    if (bbopGetDistance(point, getPosition()) > 20) { 
+    if (bbopGetDistance(point, getPosition())> 5) { 
         if (oldp.x == getPosition().x) {
             jump();  
         }

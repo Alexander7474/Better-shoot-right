@@ -19,10 +19,12 @@ private:
     Vector2f seekp;
     Vector2f oldp; 
     Vector2f cible;
+    int cpt,iterateur;
     bool direction;
     float *theta;
     float fov ;
     float unlock;
+    float ammo,reloadtime;
     float detect,detect2,divi;
     State etat;
     bool ftd;
