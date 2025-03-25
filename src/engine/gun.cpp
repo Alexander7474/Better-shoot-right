@@ -223,3 +223,8 @@ const vector<Bullet>& Gun::getBullets() const
 {
   return bulletVector;
 }
+
+float Gun::getDamage(){
+  return damage;
+}
+

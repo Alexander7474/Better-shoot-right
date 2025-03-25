@@ -51,15 +51,20 @@ Bot::Bot(){
     };
     cpt=0;
     iterateur=1;
+    hp=10.f;
 }
 
 void Bot::Bupdate(Map *map , GameCharacter *user){
-
-    detect_player(user);
-
-    patrol_mod();
-    engage_mod(user);
-    seek_mod(user);
+    cerr<<etat<<endl;
+    getshot(user->getGun().getBullets(),user->getGun().getDamage());
+    if (etat!=dead)
+    {
+        detect_player(user);
+        patrol_mod();
+        engage_mod(user);
+        seek_mod(user);
+    }
+    
     update(map);  
 }
 
@@ -270,3 +275,28 @@ bool Bot::bc_patrol(Vector2f point) {
     
     
     
+void Bot::getshot(vector<Bullet> balls ,float dmg){
+    CollisionBox partie[5] = {
+        getRightArm().getCollisionBox(),
+        getLeftArm().getCollisionBox(),
+        getLegs().getCollisionBox(),
+        getBody().getCollisionBox(),
+        getHead().getCollisionBox()
+    };
+    for (int i = 0; i < 5; i++)
+    {
+        for (long unsigned int j = 0; j < balls.size(); j++)
+        {
+            if (partie[i].check(balls[j].getCollisionBox()))
+            {
+                hp-=dmg;
+                break;
+            }
+        }
+    }
+    if (hp<=0)
+    {
+        etat=dead;
+    }
+    
+}

@@ -8,7 +8,8 @@
 enum State{
     patrol =1,
     seek =2,
-    engage =3
+    engage =3,
+    dead=4
 };
 class Bot : public GameCharacter
 {
@@ -28,6 +29,7 @@ private:
     float detect,detect2,divi;
     State etat;
     bool ftd;
+    float hp;
 public:
     Bot();
     void Bupdate(Map *map,GameCharacter *perso1);
@@ -38,6 +40,7 @@ public:
     bool champ_visuel(GameCharacter *user);
     bool patrol_zone();
     bool bc_patrol(Vector2f point);
+    void getshot(std::vector<Bullet> balls , float dmg);
 };
 
 
