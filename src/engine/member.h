@@ -9,7 +9,8 @@
 enum MemberState
 {
   idle,
-  run
+  run,
+  dead
 };
 
 //structure de stockage d'un animation, respecte la structure des fichier json

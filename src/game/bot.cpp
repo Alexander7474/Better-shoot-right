@@ -51,7 +51,7 @@ Bot::Bot(){
     };
     cpt=0;
     iterateur=1;
-    hp=10.f;
+    
 }
 
 void Bot::Bupdate(Map *map , GameCharacter *user){
@@ -289,12 +289,12 @@ void Bot::getshot(vector<Bullet> balls ,float dmg){
         {
             if (partie[i].check(balls[j].getCollisionBox()))
             {
-                hp-=dmg;
+                sethp(gethp()-2);
                 break;
             }
         }
     }
-    if (hp<=0)
+    if (gethp()<=0)
     {
         etat=dead;
     }

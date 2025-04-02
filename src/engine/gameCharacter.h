@@ -46,6 +46,7 @@ private:
   float speed;
   float jumpForce;
   float weight;
+  float hp;
 
   // gérer par le caractère
   Vector2f inertie;
@@ -119,10 +120,13 @@ public:
   float getSpeed();
   float getJumpForce();
   float getWeight();
+  float gethp();
+  
 
   //SETTER
   //
   void setSpeed(float _speed);
   void setJumpForce(float _jumpForce);
   void setWeight(float _weight);
+  void sethp(float hp);
 };
