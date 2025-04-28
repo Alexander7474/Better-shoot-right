@@ -19,19 +19,19 @@ int main()
   #ifdef DEBUG
   LOGS.push_back("VERSION DE DEBUG");
   #endif
-
+    cerr<<"1"<<endl;
     for(string &s: LOGS){
       cout << s << endl;
     }
     cout << "DELTA_TIME: " << DELTA_TIME << endl;
     cout << "FPS: " << FPS << endl;
     cout << "----------------------------------------------------------------" << endl;
-
+  
   //main while loop
   while (!glfwWindowShouldClose(gameWindow))
   {
     double timeSave = glfwGetTime();
-
+    cerr<<"2"<<endl;
     #ifdef DEBUG 
     system("clear");
     for(string &s: LOGS){

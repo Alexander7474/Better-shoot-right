@@ -150,3 +150,23 @@ void Member::createTextureCache(std::string path)
     return;
   }
 }
+
+void Member::setetat(int k){
+  if (k==0)
+  {
+    state = idle;
+  }else if (k==1)
+  {
+    state = run;
+  }else if (k==2)
+  {
+    state = dead;
+  }else{
+    cerr<<"state do not exist"<<endl;
+  }
+  
+}
+
+int Member::getetat(){
+  return state;
+}

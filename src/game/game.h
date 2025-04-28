@@ -4,9 +4,7 @@
 #include "player.h"
 #include"bot.h"
 #include <GLFW/glfw3.h>
-#include <irrKlang/ik_ISoundEngine.h>
 #include <vector>
-#include <irrKlang/irrKlang.h>
 #include <random>
 
 // pointeur vers la fentre de jeu utilisable de partout

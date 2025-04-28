@@ -3,7 +3,7 @@
 using namespace std;
 
 GLFWwindow* gameWindow = nullptr;
-irrklang::ISoundEngine *soundEngine = nullptr;
+
 
 float DELTA_TIME = 0.f;
 float FPS = 0.f; 

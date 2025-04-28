@@ -52,4 +52,7 @@ public:
   Vector2f getAttachPoint() const;
 
   void createTextureCache(std::string path);
+
+  void setetat(int k);
+  int getetat();
 };

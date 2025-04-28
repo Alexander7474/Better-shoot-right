@@ -1,6 +1,6 @@
 CC = g++
 CFLAGS = -std=c++11 -Wall -I/usr/include/freetype2 -g
-LIBS = -L./Bbop-Library -lbbop -lglfw -lGLEW -lGL -lfreetype -lLDtkLoader -lIrrKlang
+LIBS = -L./Bbop-Library -lbbop -lglfw -lGLEW -lGL -lfreetype -lLDtkLoader 
 
 SRCS = main.cpp src/engine/gameCharacter.cpp src/game/bot.cpp src/game/player.cpp src/game/game.cpp src/engine/member.cpp src/engine/gun.cpp src/engine/bullet.cpp src/engine/crossair.cpp
 OBJS = $(SRCS:.cpp=.o)

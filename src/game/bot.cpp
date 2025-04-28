@@ -57,7 +57,7 @@ Bot::Bot(){
 void Bot::Bupdate(Map *map , GameCharacter *user){
     cerr<<etat<<endl;
     getshot(user->getGun().getBullets(),user->getGun().getDamage());
-    if (etat!=dead)
+    if (getHead().getetat()!=dead)
     {
         detect_player(user);
         patrol_mod();
@@ -296,7 +296,7 @@ void Bot::getshot(vector<Bullet> balls ,float dmg){
     }
     if (gethp()<=0)
     {
-        etat=dead;
+        getHead().setetat(2);
     }
     
 }
