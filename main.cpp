@@ -19,7 +19,6 @@ int main()
   #ifdef DEBUG
   LOGS.push_back("VERSION DE DEBUG");
   #endif
-    cerr<<"1"<<endl;
     for(string &s: LOGS){
       cout << s << endl;
     }
@@ -30,8 +29,9 @@ int main()
   //main while loop
   while (!glfwWindowShouldClose(gameWindow))
   {
+    
     double timeSave = glfwGetTime();
-    cerr<<"2"<<endl;
+    
     #ifdef DEBUG 
     system("clear");
     for(string &s: LOGS){
@@ -41,11 +41,12 @@ int main()
     cout << "FPS: " << FPS << endl;
     cout << "----------------------------------------------------------------" << endl;
     #endif
-
+  
     // clear de la fenêtre en noire
     bbopCleanWindow(gameWindow,Vector3i(0,0,0),1.0f);
 
     game.update();
+
     game.Draw();
 
     // vérification des erreurs
@@ -54,7 +55,6 @@ int main()
     glfwSwapBuffers(gameWindow);
     // recupération des events glfw
     glfwPollEvents();
-
     DELTA_TIME = glfwGetTime() - timeSave;
     FPS = 1/DELTA_TIME;
   }

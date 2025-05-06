@@ -25,7 +25,6 @@ void Game::update()
   map.update();
   
 
-
   //déterminer la position du milieu entre le joueur et son crossair
   Vector2f middlePos;
   middlePos.x = (mainPlayer.getCharacter().getPosition().x + mainPlayer.getCrossair().getPosition().x)/2.f;
@@ -38,7 +37,6 @@ void Game::update()
   mainPlayerCam.setPosition(middlePos);
   npc.Bupdate(&map , &mainPlayer.getCharacter());
   mainPlayer.update(&mainPlayerCam, &map);
-
 
 }
 

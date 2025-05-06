@@ -55,17 +55,17 @@ Bot::Bot(){
 }
 
 void Bot::Bupdate(Map *map , GameCharacter *user){
-    cerr<<etat<<endl;
     getshot(user->getGun().getBullets(),user->getGun().getDamage());
     if (getHead().getetat()!=dead)
     {
+
         detect_player(user);
         patrol_mod();
         engage_mod(user);
         seek_mod(user);
     }
-    
     update(map);  
+ 
 }
 
 void Bot::detect_player(GameCharacter *user) {
@@ -147,7 +147,6 @@ bool Bot::champ_visuel(GameCharacter *user) {
                         seekp = user->getPosition();
                     }
                     divi = fabs((getPosition().x - start_p.x) / 5);
-                    cerr<<divi<<endl;
                     return true;
                 }
                 start_p.x += step.x;
@@ -172,7 +171,6 @@ void Bot::patrol_mod() {
                 if (cpt==2)
                 {
                     iterateur=-1;
-                    cerr<<spawn[cpt].x<<endl;
                 }
                 if (cpt==0)
                 {

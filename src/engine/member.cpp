@@ -26,30 +26,35 @@ void Member::update()
 
   //play animation 
   //
-  if(glfwGetTime() - animations[state].lastFrameStartTime >= animations[state].frameTime){
-    if(!isReverse)
-      animCnt++;
-    else
-      animCnt--;
-    animations[state].lastFrameStartTime = glfwGetTime();
-  }
+  if (state!=dead)
+  {
+    if(glfwGetTime() - animations[state].lastFrameStartTime >= animations[state].frameTime && state){
+      if(!isReverse)
+        animCnt++;
+      else
+        animCnt--;
+      animations[state].lastFrameStartTime = glfwGetTime();
+    }
 
-  //débordement anim sens normal
-  if(animCnt >= animations[state].nFrame && !isReverse){
-    animCnt = 0;
-  }
+    //débordement anim sens normal
+    if(animCnt >= animations[state].nFrame && !isReverse){
+      animCnt = 0;
+    }
 
-  //débordement anim a l'envers
-  if(animCnt < 0 && isReverse){
-    animCnt = animations[state].nFrame -1;
-  }
+    //débordement anim a l'envers
+    if(animCnt < 0 && isReverse){
+      animCnt = animations[state].nFrame -1;
+    }
 
-  //evite que les anims a 1 frame sois bugué après une anim reverse
-  if(animations[state].nFrame == 1){
-    animCnt = 0;
-  }
+    //evite que les anims a 1 frame sois bugué après une anim reverse
+    if(animations[state].nFrame == 1){
+      animCnt = 0;
+    }
 
-  setTexture(animations[state].textures[animCnt]);
+    setTexture(animations[state].textures[animCnt]);
+  }
+  
+  
 
   #ifdef DEBUG 
   cout << "Character Member: " << name << endl;
@@ -118,21 +123,22 @@ void Member::createTextureCache(std::string path)
     for(int i = 0; i <= run; i++){
 
       if(jsonData.contains(to_string(i))){
-
+        
         string stateSheetPath = jsonData.at(to_string(i)).at("sprite_sheet");
         stateSheetPath = path + stateSheetPath;
-
+    
         int columns = jsonData.at(to_string(i)).at("columns");
         int rows = jsonData.at(to_string(i)).at("rows");
         int nFrame = jsonData.at(to_string(i)).at("n_frame");
-
+        
         double duration = jsonData.at(to_string(i)).at("duration");
-      
+  
         animations[i].textures.clear();
         animations[i].textures = bbopLoadSpriteSheet(stateSheetPath.c_str(), rows, columns);
         animations[i].duration = duration;
         animations[i].nFrame = nFrame;
         animations[i].frameTime = duration/nFrame;
+
       }else{
 
         #ifdef DEBUG 
