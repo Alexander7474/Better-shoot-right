@@ -27,7 +27,8 @@ GameCharacter::GameCharacter()
     canJump(false),
     startJump(glfwGetTime()),
     jumpTime(0.1f),
-    isJumping(false)
+    isJumping(false),
+    hp(10.f)
 {
   characterDirection = rightDir;
   scale = 0.75f;
@@ -85,7 +86,7 @@ void GameCharacter::createTextureCache(string path)
 void GameCharacter::update(Map* map)
 {
   //si imoblie alors state = idle 
-  if(inertie.x == 0)
+  if(inertie.x == 0 && legs.state!=dead)
     legs.state = idle;
 
   //application de la gravité si pas de saut
@@ -222,7 +223,7 @@ void GameCharacter::lookAt(Vector2f lp)
 
 
   #ifdef DEBUG
-  cout << "Character new looking point: " << lookingPoint.x << "|" << lookingPoint.y << endl;
+  //cout << "Character new looking point: " << lookingPoint.x << "|" << lookingPoint.y << endl;
   #endif
 
   setMemberRotation(leftArm);
@@ -309,28 +310,38 @@ void GameCharacter::flipY()
 
 void GameCharacter::goLeft()
 {
-  inertie.x = -speed * DELTA_TIME;
-  if(legs.state != run){
-    legs.state = run;
-    legs.animations[run].lastFrameStartTime = glfwGetTime();
-    if(characterDirection == rightDir)
-      legs.isReverse = true;
-    else
-      legs.isReverse = false;
+  if (legs.state!=dead)
+  {
+    inertie.x = -speed * DELTA_TIME;
+    if(legs.state != run){
+      legs.state = run;
+      legs.animations[run].lastFrameStartTime = glfwGetTime();
+      if(characterDirection == rightDir)
+        legs.isReverse = true;
+      else
+        legs.isReverse = false;
+    }
   }
+  
+  
 }
 
 void GameCharacter::goRight()
 {
-  inertie.x = speed * DELTA_TIME;
-  if(legs.state != run){
-    legs.animations[run].lastFrameStartTime = glfwGetTime();
-    legs.state = run;
-    if(characterDirection == rightDir)
-      legs.isReverse = false;
-    else
-      legs.isReverse = true;
+  if (legs.state!=dead)
+  {
+    inertie.x = speed * DELTA_TIME;
+    if(legs.state != run){
+      legs.animations[run].lastFrameStartTime = glfwGetTime();
+      legs.state = run;
+      if(characterDirection == rightDir)
+        legs.isReverse = false;
+      else
+        legs.isReverse = true;
+    }
   }
+  
+  
 }
 
 void GameCharacter::jump()
@@ -353,9 +364,11 @@ Gun& GameCharacter::getGun() { return gun; }
 float GameCharacter::getSpeed() { return speed; }
 float GameCharacter::getJumpForce() { return jumpForce; }
 float GameCharacter::getWeight() { return weight; }
+float GameCharacter::gethp(){return hp;}
 
 // SETTER 
 
 void GameCharacter::setSpeed(float _speed) { this->speed = _speed; }
 void GameCharacter::setJumpForce(float _jumpForce) { this->jumpForce = _jumpForce; }
 void GameCharacter::setWeight(float _weight) { this->weight = _weight; }
+void GameCharacter::sethp(float hp){this->hp=hp;}

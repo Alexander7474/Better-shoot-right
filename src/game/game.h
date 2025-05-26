@@ -2,11 +2,9 @@
 
 #include "../../Bbop-Library/include/BBOP/Graphics.h"
 #include "player.h"
-
+#include"bot.h"
 #include <GLFW/glfw3.h>
-#include <irrKlang/ik_ISoundEngine.h>
 #include <vector>
-#include <irrKlang/irrKlang.h>
 #include <random>
 
 // pointeur vers la fentre de jeu utilisable de partout
@@ -25,6 +23,7 @@ private:
   Camera mainPlayerCam;
   Player mainPlayer;
   Map map;
+  Bot npc;
 public:
   Game();
 

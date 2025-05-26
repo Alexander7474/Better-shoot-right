@@ -3,7 +3,7 @@
 using namespace std;
 
 GLFWwindow* gameWindow = nullptr;
-irrklang::ISoundEngine *soundEngine = nullptr;
+
 
 float DELTA_TIME = 0.f;
 float FPS = 0.f; 
@@ -12,14 +12,18 @@ default_random_engine RANDOM_ENGINE;
 
 Game::Game()
 {
-  if(map.getSpawnPoints().size() > 1)
+  if(map.getSpawnPoints().size() > 1){
     mainPlayer.getCharacter().setPosition(map.getSpawnPoints()[0]);
+    npc.setPosition(map.getSpawnPoints()[1]);
+  }
   
+
 }
 
 void Game::update()
 {
   map.update();
+  
 
   //déterminer la position du milieu entre le joueur et son crossair
   Vector2f middlePos;
@@ -29,20 +33,19 @@ void Game::update()
   //déterminer la scale de la cam en fonction de la distance entre crossair et play 
   float distance = bbopGetDistance(mainPlayer.getCrossair().getPosition(), mainPlayer.getCharacter().getPosition());
   distance = distance/BBOP_WINDOW_RESOLUTION.x;
-
   mainPlayerCam.setScale(0.6);
   mainPlayerCam.setPosition(middlePos);
-
+  npc.Bupdate(&map , &mainPlayer.getCharacter());
   mainPlayer.update(&mainPlayerCam, &map);
 
 }
 
 void Game::Draw()
 {
-
+  
   map.Draw(scene, mainPlayerCam);
   scene.Draw(mainPlayer);
-
+  scene.Draw(npc);
   scene.render();
 
   

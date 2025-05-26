@@ -9,7 +9,8 @@
 enum MemberState
 {
   idle,
-  run
+  run,
+  dead
 };
 
 //structure de stockage d'un animation, respecte la structure des fichier json
@@ -51,4 +52,7 @@ public:
   Vector2f getAttachPoint() const;
 
   void createTextureCache(std::string path);
+
+  void setetat(int k);
+  int getetat();
 };

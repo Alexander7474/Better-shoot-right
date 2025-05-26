@@ -90,5 +90,8 @@ public:
 
   //GETTER 
   //
-  const std::vector<Bullet>& getBullets() const;
+  const std::vector <Bullet>& getBullets() const;
+
+  float getDamage();
+
 };
