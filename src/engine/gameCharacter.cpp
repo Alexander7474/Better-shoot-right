@@ -1,6 +1,6 @@
 #include "gameCharacter.h"
-#include "../../Bbop-Library/include/BBOP/Graphics/bbopMathClass.h"
-#include "../../Bbop-Library/include/BBOP/Graphics/collisionBoxClass.h"
+#include "../../Bbop-2D/include/BBOP/Graphics/bbopMathClass.h"
+#include "../../Bbop-2D/include/BBOP/Graphics/collisionBoxClass.h"
 #include "../game/game.h"
 #include "gun.h"
 #include "member.h"

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../../Bbop-Library/include/BBOP/Graphics.h"
+#include "../../Bbop-2D/include/BBOP/Graphics.h"
 #include "player.h"
-#include"bot.h"
+#include"ennemi.h"
 #include <GLFW/glfw3.h>
 #include <vector>
 #include <random>
@@ -23,7 +23,7 @@ private:
   Camera mainPlayerCam;
   Player mainPlayer;
   Map map;
-  Bot npc;
+  ennemi npc;
 public:
   Game();
 

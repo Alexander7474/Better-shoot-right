@@ -1,6 +1,6 @@
 #include "player.h"
-#include "../../Bbop-Library/include/BBOP/Graphics/bbopMathClass.h"
-#include "../../Bbop-Library/include/BBOP/Graphics/cameraClass.h"
+#include "../../Bbop-2D/include/BBOP/Graphics/bbopMathClass.h"
+#include "../../Bbop-2D/include/BBOP/Graphics/cameraClass.h"
 #include "game.h"
 #include "../engine/gameCharacter.h"
 

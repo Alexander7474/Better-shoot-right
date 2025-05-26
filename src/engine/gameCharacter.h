@@ -3,9 +3,9 @@
 #include <string>
 #include <vector>
 
-#include "../../Bbop-Library/include/BBOP/Graphics.h"
-#include "../../Bbop-Library/include/BBOP/Graphics/bbopMathClass.h"
-#include "../../Bbop-Library/include/BBOP/Graphics/textureClass.h"
+#include "../../Bbop-2D/include/BBOP/Graphics.h"
+#include "../../Bbop-2D/include/BBOP/Graphics/bbopMathClass.h"
+#include "../../Bbop-2D/include/BBOP/Graphics/textureClass.h"
 #include "member.h"
 #include "gun.h"
 

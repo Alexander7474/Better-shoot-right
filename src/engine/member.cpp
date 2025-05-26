@@ -1,6 +1,6 @@
 #include "member.h"
-#include "../../Bbop-Library/include/BBOP/Graphics/bbopMathClass.h"
-#include "../../Bbop-Library/include/BBOP/Graphics/textureClass.h"
+#include "../../Bbop-2D/include/BBOP/Graphics/bbopMathClass.h"
+#include "../../Bbop-2D/include/BBOP/Graphics/textureClass.h"
 
 #include <GLFW/glfw3.h>
 #include <exception>

@@ -187,7 +187,7 @@
         <mxCell id="IJogBwM3K7kCsomVMxnr-33" value="" style="swimlane;startSize=0;" vertex="1" parent="1">
           <mxGeometry x="-2380" y="70" width="1320" height="1510" as="geometry" />
         </mxCell>
-        <mxCell id="IJogBwM3K7kCsomVMxnr-34" value="&lt;span style=&quot;font-size: 40px;&quot;&gt;Class Bot mère abstraite&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+        <mxCell id="IJogBwM3K7kCsomVMxnr-34" value="&lt;span style=&quot;font-size: 40px;&quot;&gt;Class ennemi mère abstraite&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="-690" y="900" width="470" height="80" as="geometry" />
         </mxCell>
         <mxCell id="IJogBwM3K7kCsomVMxnr-35" value="" style="endArrow=classic;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="IJogBwM3K7kCsomVMxnr-38" target="IJogBwM3K7kCsomVMxnr-36">
@@ -269,7 +269,7 @@
             <mxPoint x="280" y="670" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="IJogBwM3K7kCsomVMxnr-48" value="&lt;span style=&quot;font-size: 40px;&quot;&gt;Différent type de bot&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+        <mxCell id="IJogBwM3K7kCsomVMxnr-48" value="&lt;span style=&quot;font-size: 40px;&quot;&gt;Différent type de ennemi&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="-130" y="900" width="470" height="80" as="geometry" />
         </mxCell>
         <mxCell id="IJogBwM3K7kCsomVMxnr-49" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="IJogBwM3K7kCsomVMxnr-23" target="IJogBwM3K7kCsomVMxnr-52">
