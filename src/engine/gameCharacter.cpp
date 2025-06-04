@@ -85,39 +85,7 @@ void GameCharacter::createTextureCache(string path)
 
 void GameCharacter::update(Map* map)
 {
-  //si imoblie alors state = idle 
-  if(inertie.x == 0 && legs.state!=dead)
-    legs.state = idle;
-
-  //application de la gravité si pas de saut
-  inertie.y += (glfwGetTime() - startFall) * GRAVITY * DELTA_TIME;
-
-  if(isJumping && glfwGetTime() - startJump >= jumpTime)
-    isJumping = false;
-
-  if(isJumping){
-    inertie.y = -jumpForce;
-    startFall = glfwGetTime();
-  } 
-
-  // application de l'inertie final calculé
   setPos(getPosition().x + inertie.x, getPosition().y + inertie.y * DELTA_TIME);
-
-  //check des collisions au sol
-  bool groundCollide = false;
-  for(CollisionBox & box : map->getCollision()){
-    if(legs.getCollisionBox().check(box) && box.getTop() < legs.getCollisionBox().getBottom()){
-      inertie.y = 0.f;
-      startFall = glfwGetTime();
-      setPos(getPosition().x, box.getTop()-40.f*scale);
-      canJump = true;
-      groundCollide = true;
-    }
-  }
-
-  //gestion des état après les déplacement 
-  if(!groundCollide && legs.state == run)
-    legs.state = idle;
 
   leftArm.update();
   rightArm.update();

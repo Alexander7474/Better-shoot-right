@@ -23,7 +23,8 @@ Game::Game()
 void Game::update()
 {
   map.update();
-  
+    
+  mainPlayer.getCharacter().setPos(map.getSpawnPoints()[0]);
 
   //déterminer la position du milieu entre le joueur et son crossair
   Vector2f middlePos;
@@ -35,7 +36,6 @@ void Game::update()
   distance = distance/BBOP_WINDOW_RESOLUTION.x;
   mainPlayerCam.setScale(0.6);
   mainPlayerCam.setPosition(middlePos);
-  npc.Bupdate(&map , &mainPlayer.getCharacter());
   mainPlayer.update(&mainPlayerCam, &map);
 
 }
@@ -45,7 +45,6 @@ void Game::Draw()
   
   map.Draw(scene, mainPlayerCam);
   scene.Draw(mainPlayer);
-  scene.Draw(npc);
   scene.render();
 
   
