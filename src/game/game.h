@@ -6,6 +6,7 @@
 #include <GLFW/glfw3.h>
 #include <vector>
 #include <random>
+#include <box2d/box2d.h>
 
 // pointeur vers la fentre de jeu utilisable de partout
 extern GLFWwindow * gameWindow;
@@ -24,6 +25,14 @@ private:
   Player mainPlayer;
   Map map;
   Bot npc;
+
+  //gestion physique 
+  RectangleShape testRect;
+  b2Body* body;
+  b2Body* groundBody;
+  b2World world;
+  
+
 public:
   Game();
 
