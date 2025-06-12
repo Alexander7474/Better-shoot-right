@@ -5,13 +5,10 @@
 #include "../engine/gameCharacter.h"
 #include "../engine/crossair.h"
 #include "bot.h"
+using namespace std;
 
-enum State{
-    patrol =1,
-    seek =2,
-    engage =3
-};
-class ennemi : public bot
+
+class neutre : public bot
 {
 private:
     
@@ -21,17 +18,18 @@ private:
     float *theta;
     float unlock;
     float ammo,reloadtime;
-    State etat;
-    
-    
+    bool armed;
+    bool allie;
+    vector<TexteBox> box;
+    bool show;
+    float timer;
+
 public:
-    ennemi();
-    void Bupdate(Map *map,GameCharacter *perso1);
+    neutre();
+    void Bupdate(Map *map,GameCharacter *perso1 ,GLFWwindow *gameWindow);
     void detect_player(GameCharacter *perso1);
-    void patrol_mod();
-    void seek_mod(GameCharacter *user);
+    void riposte(GameCharacter *perso);
     void engage_mod(GameCharacter *user);
-    
+    void getshot(std::vector<Bullet> balls , float dmg);
+    void Drawbox(Scene *scene);
 };
-
-

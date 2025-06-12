@@ -3,6 +3,7 @@
 #include "../../Bbop-2D/include/BBOP/Graphics.h"
 #include "player.h"
 #include"ennemi.h"
+#include"neutre.h"
 #include <GLFW/glfw3.h>
 #include <vector>
 #include <random>
@@ -23,7 +24,7 @@ private:
   Camera mainPlayerCam;
   Player mainPlayer;
   Map map;
-  ennemi npc;
+  neutre npc;
 public:
   Game();
 

@@ -5,22 +5,23 @@
 #include "../engine/gameCharacter.h"
 #include "../engine/crossair.h"
 
-enum State{
-    patrol =1,
-    seek =2,
-    engage =3
-};
+using namespace std;
+
 class bot : public GameCharacter
 {
 protected:
     Vector2f *spawn;
     Vector2f oldp; 
+    float fov ;
+    Vector2f seekp;
+    float detect,detect2,divi;
+    bool ftd;
 public:
-    bot();
+    bot()=default;
     bool champ_visuel(GameCharacter *user);
     bool patrol_zone();
     bool bc_patrol(Vector2f point);
-    void getshot(std::vector<Bullet> balls , float dmg);
+    void getshot(vector<Bullet> balls , float dmg);
     bool detect_point(CollisionBox* menber,Vector2f point);
     void add_spawn(Vector2f sp);
 };
