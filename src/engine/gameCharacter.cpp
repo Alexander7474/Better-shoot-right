@@ -110,6 +110,11 @@ void GameCharacter::update(Map* map)
   cout << "Character fall start: " << startFall << endl;
   cout << "Character Jump start: " << startJump << endl;
   cout << "Character Jump time start: " << glfwGetTime() - startJump << endl;
+  if(characterDirection == rightDir){
+    cout << "Character flipped to right" << endl;
+  }else{
+    cout << "Character flipped to left" << endl;
+  }
   cout << "----------------------------------------------------------------" << endl;
   #endif
 }
@@ -267,13 +272,7 @@ void GameCharacter::flipY()
     leftArm.setAttachPoint(body.getPosition().x+2*scale, leftArm.getPosition().y);
   }
 
-  #ifdef DEBUG
-  if(characterDirection == rightDir){
-    cout << "Character flipped to right" << endl;
-  }else{
-    cout << "Character flipped to left" << endl;
-  }
-  #endif
+
 }
 
 void GameCharacter::goLeft()

@@ -1,0 +1,33 @@
+#include "box2d-bbop-link.h"
+#include <string>
+
+/**
+* @brief Créé une boite de collision dans un monde box2d à partir d'une collision box BBOP 
+*
+* @param world Pointeur vers le monde 
+* @param box pointeur vers la boite à rajouter 
+*
+* @return body Corps box2d de la boite 
+*/
+b2Body* addStaticBox(b2World* world, CollisionBox* box)
+{
+  // 1. Définir le corps statique
+  b2BodyDef bodyDef;
+  bodyDef.position.Set((box->getPosition().x + (box->getSize().x / 2)) / PIXEL_PER_METER, (box->getPosition().y + (box->getSize().y / 2)) / PIXEL_PER_METER); 
+  bodyDef.type = b2_staticBody;
+
+  b2Body* body = world->CreateBody(&bodyDef);
+
+  // 2. Définir la forme (boîte centrée)
+  b2PolygonShape boxShape;
+  boxShape.SetAsBox((box->getSize().x / 2) / PIXEL_PER_METER, (box->getSize().y / 2) / PIXEL_PER_METER); 
+
+  std::string log = "Box ajouter au monde box2d  l:" + std::to_string(box->getSize().x) + " h:" + std::to_string(box->getSize().y) + " x:" + std::to_string(box->getPosition().x) + " y:" + std::to_string(box->getPosition().y);
+  log += "\nBox ajouter au monde box2d BOX2D COORD x:" + std::to_string(body->GetPosition().x) + " y:" + std::to_string(body->GetPosition().y);
+  LOGS.push_back(log);
+
+  // 3. Ajouter la fixture au corps
+  body->CreateFixture(&boxShape, 0.0f); // densité = 0 pour statique
+
+  return body;
+}

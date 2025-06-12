@@ -28,7 +28,9 @@ private:
 
   //gestion physique 
   RectangleShape testRect;
+  RectangleShape testRect2;
   b2Body* body;
+  b2Body* bodyStatic;
   b2Body* groundBody;
   b2World world;
   

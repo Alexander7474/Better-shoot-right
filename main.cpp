@@ -2,6 +2,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#include "Bbop-Library/include/BBOP/Graphics/bbopFunc.h"
 #include "src/game/game.h"
 
 using namespace std;
@@ -9,7 +10,8 @@ using namespace std;
 int main()
 {
   //initialisation de la lib
-  bbopInit(640,360,"window name",gameWindow);
+  bbopInit(1920,1080,"window name",gameWindow);
+  bbopChangeWindowResolution(640,360);
   cout << "Version prototype" << endl;
 
   Game game;

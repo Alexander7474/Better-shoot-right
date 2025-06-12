@@ -1,4 +1,7 @@
 #include "game.h"
+#include "../engine/box2d-bbop-link.h"
+
+#include <box2d/b2_body.h>
 #include <box2d/box2d.h>
 
 using namespace std;
@@ -19,31 +22,28 @@ Game::Game()
     npc.setPosition(map.getSpawnPoints()[1]);
   }
 
+  //-------------------------------------------------------------------------
   // Définition du corps
   b2BodyDef bodyDef;
   bodyDef.type = b2_dynamicBody;
-  bodyDef.position.Set(mainPlayer.getCharacter().getPosition().x, mainPlayer.getCharacter().getPosition().y-100.f); // position en mètres
+  bodyDef.position.Set(400.f/PIXEL_PER_METER, -100.f/PIXEL_PER_METER); // position en mètres
   body = world.CreateBody(&bodyDef);
 
   // Définir la forme du carré (1m x 1m)
   b2PolygonShape dynamicBox;
-  dynamicBox.SetAsBox(0.5f, 0.5f); // largeur/2, hauteur/2
+  dynamicBox.SetAsBox(50.f/PIXEL_PER_METER, 50.f/PIXEL_PER_METER); // largeur/2, hauteur/2
 
   // Attacher la forme au corps avec des propriétés physiques
   b2FixtureDef fixtureDef;
   fixtureDef.shape = &dynamicBox;
   fixtureDef.density = 1.0f;
   fixtureDef.friction = 0.3f;
+  //fixtureDef.restitution = 0.8f;
   body->CreateFixture(&fixtureDef);
-
-  b2BodyDef groundBodyDef;
-  groundBodyDef.position.Set(mainPlayer.getCharacter().getPosition().x, mainPlayer.getCharacter().getPosition().y+100.f);
-  groundBody = world.CreateBody(&groundBodyDef);
-
-  b2PolygonShape groundBox;
-  groundBox.SetAsBox(50.0f, 0.5f); // un sol très large
-
-  groundBody->CreateFixture(&groundBox, 0.0f); // densité = 0 car statique
+ 
+  for(CollisionBox& box : map.getCollision()){
+    addStaticBox(&world, &box);
+  }
 }
 
 void Game::update()
@@ -60,19 +60,24 @@ void Game::update()
   //déterminer la scale de la cam en fonction de la distance entre crossair et play 
   float distance = bbopGetDistance(mainPlayer.getCrossair().getPosition(), mainPlayer.getCharacter().getPosition());
   distance = distance/BBOP_WINDOW_RESOLUTION.x;
-  mainPlayerCam.setScale(0.6);
+  mainPlayerCam.setScale(1.5);
   mainPlayerCam.setPosition(middlePos);
   mainPlayer.update(&mainPlayerCam, &map);
 
-  float timeStep = 1.0f / 60.0f;
+  //-------------------------------------------------------------------------
+  float timeStep = 1.0f / 100.0f;
   int velocityIterations = 6;
   int positionIterations = 2;
 
   world.Step(timeStep, velocityIterations, positionIterations);
 
-  testRect.setPosition(body->GetPosition().x,body->GetPosition().y);
-  testRect.setSize(50.f,50.f);
-}
+  testRect.setPosition(body->GetPosition().x*PIXEL_PER_METER,body->GetPosition().y*PIXEL_PER_METER);
+  testRect.setSize(100.f,100.f);
+  testRect.setOrigin(50.f,50.f);
+
+
+  cerr << "dynamix box x:" << body->GetPosition().x << " y:" << body->GetPosition().y << endl;
+ }
 
 void Game::Draw()
 {
