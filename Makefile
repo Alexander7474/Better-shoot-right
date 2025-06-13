@@ -25,7 +25,6 @@ final.exe: $(OBJS)
 clean:
 	@echo -e "$(PURPLE)Deleting all objects files and final$(NC)"
 	@rm -f final.exe $(OBJS)
-	@(cd Bbop-Library && make clean)
 
 map:
 	@make
