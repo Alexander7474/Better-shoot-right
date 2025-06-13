@@ -25,10 +25,6 @@ int main()
   for(string &s: LOGS){
     cout << s << endl;
   }
-  cout << "DELTA_TIME: " << DELTA_TIME << endl;
-  cout << "FPS: " << FPS << endl;
-  cout << "----------------------------------------------------------------" << endl;
-
 
   //main while loop
   while (!glfwWindowShouldClose(gameWindow))

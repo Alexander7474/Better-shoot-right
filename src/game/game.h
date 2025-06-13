@@ -2,7 +2,9 @@
 
 #include "../../Bbop-Library/include/BBOP/Graphics.h"
 #include "player.h"
-#include"bot.h"
+#include "bot.h"
+#include "entity.h"
+
 #include <GLFW/glfw3.h>
 #include <vector>
 #include <random>
@@ -27,14 +29,8 @@ private:
   Bot npc;
 
   //gestion physique 
-  RectangleShape testRect;
-  RectangleShape testRect2;
-  b2Body* body;
-  b2Body* bodyStatic;
-  b2Body* groundBody;
-  b2World world;
-  
-
+  b2World physicalWorld; 
+  std::vector<Entity> entities;
 public:
   Game();
 
