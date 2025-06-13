@@ -58,7 +58,7 @@ void Game::update()
 
   //mise a jour des entitées après la mise a jour du monde box2d 
   for(auto &ent : entities){
-    ent.updatePhysique();
+    ent.updatePhysic();
   }
 
   //-----------------------------------------------------------------------------------------------

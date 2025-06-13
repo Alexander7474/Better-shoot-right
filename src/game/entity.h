@@ -10,10 +10,10 @@
   */
 class Entity
 {
-private:
+protected:
   b2Body *body; //<! pointeur vers le body Box2d pour l'update
 public:
-  virtual void updatePhysique() = 0;
+  virtual void updatePhysic() = 0;
 
   virtual ~Entity();
 };
