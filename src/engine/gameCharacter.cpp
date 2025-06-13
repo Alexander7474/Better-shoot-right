@@ -1,6 +1,5 @@
 #include "gameCharacter.h"
 #include "../../Bbop-Library/include/BBOP/Graphics/bbopMathClass.h"
-#include "../../Bbop-Library/include/BBOP/Graphics/collisionBoxClass.h"
 #include "../game/game.h"
 #include "gun.h"
 #include "member.h"
@@ -8,7 +7,6 @@
 #include <GLFW/glfw3.h>
 #include <cmath>
 #include <cstdlib>
-#include <iostream>
 
 using namespace std;
 
@@ -21,14 +19,14 @@ GameCharacter::GameCharacter()
   : speed(250.f),
     jumpForce(200.f),
     weight(1.f),
+    hp(10.f),
     inertie(0.f, 0.f),
     forceInertie(2.f),
     startFall(glfwGetTime()),
     canJump(false),
     startJump(glfwGetTime()),
     jumpTime(0.1f),
-    isJumping(false),
-    hp(10.f)
+    isJumping(false)
 {
   characterDirection = rightDir;
   scale = 0.75f;
