@@ -1,31 +1,25 @@
-#include"neutre.h"
-#include <filesystem>
-#include <iostream>
-#include <fstream>
+#include "neutre.h"
 
-neutre::neutre() {
+#include <iostream>
+
+Neutre::Neutre()
+{
     cerr<<"pp"<<endl;
-    Font *f=new Font(32,"Robot.ttf");
     cerr<<"pp1"<<endl;
-    TexteBox textbox("bbop enginer", f);
     cerr<<"pp3"<<endl;   
-    box.push_back(textbox);       
     armed = false;
     show=false;
+    font = new Font(32, "toto.ttf");
+    boxs.push_back(new TexteBox("bbop enginer", font));
 }
 
-
-
-
-void neutre::Bupdate(Map *map, GameCharacter *perso1,GLFWwindow *gameWindow){
-
-    cerr<<file.good()<<endl;
-   
+void Neutre::Bupdate(Map *map, GameCharacter *perso1,GLFWwindow *gameWindow)
+{
     if (glfwGetKey(gameWindow, GLFW_KEY_T)==GLFW_PRESS && bbopGetDistance(perso1->getPosition(),getPosition())<30)
     {
-        box[0].setPosition(Vector2f(getPosition().x,getPosition().y-5));
         show=true;
         timer=glfwGetTime();
+        boxs[0]->setPosition(Vector2f(getPosition().x,getPosition().y-5));
     }else{
         if (glfwGetTime()-timer>5 && show==true)
         {
@@ -35,11 +29,21 @@ void neutre::Bupdate(Map *map, GameCharacter *perso1,GLFWwindow *gameWindow){
     }
     update(map);
 }
-void neutre::Drawbox(Scene *scene){
+
+void Neutre::Drawbox(Scene *scene)
+{
     if (show)
     {
-        
-        scene->Draw(box[0]);
+
+      scene->Draw(*boxs[0]);
     }
     
+}
+
+Neutre::~Neutre()
+{
+  for(auto &t : boxs){
+    delete t;
+  }
+  delete font;
 }

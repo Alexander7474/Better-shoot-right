@@ -7,7 +7,7 @@
 
 using namespace std;
 
-class bot : public GameCharacter
+class Bot : public GameCharacter
 {
 protected:
     Vector2f *spawn;
@@ -17,7 +17,7 @@ protected:
     float detect,detect2,divi;
     bool ftd;
 public:
-    bot()=default;
+    Bot()=default;
     bool champ_visuel(GameCharacter *user);
     bool patrol_zone();
     bool bc_patrol(Vector2f point);

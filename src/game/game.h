@@ -24,7 +24,7 @@ private:
   Camera mainPlayerCam;
   Player mainPlayer;
   Map map;
-  neutre npc;
+  Neutre npc;
 public:
   Game();
 

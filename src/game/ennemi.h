@@ -11,7 +11,7 @@ enum State{
     seek =2,
     engage =3
 };
-class ennemi : public bot
+class Ennemi : public Bot
 {
 private:
     
@@ -25,7 +25,7 @@ private:
     
     
 public:
-    ennemi();
+    Ennemi();
     void Bupdate(Map *map,GameCharacter *perso1);
     void detect_player(GameCharacter *perso1);
     void patrol_mod();

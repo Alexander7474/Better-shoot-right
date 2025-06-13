@@ -13,7 +13,7 @@ using namespace std;
 
 
 
-ennemi::ennemi(){
+Ennemi::Ennemi(){
     lookAt(Vector2f(getPosition().x+5,getPosition().y));
     etat=patrol;
     fov = M_PI / 4;
@@ -29,12 +29,12 @@ ennemi::ennemi(){
     };
     cpt=0;
     iterateur=1;
-    bot();
+    Bot();
     
 }
 
 
-void ennemi::Bupdate(Map *map , GameCharacter *user){
+void Ennemi::Bupdate(Map *map , GameCharacter *user){
     getshot(user->getGun().getBullets(),user->getGun().getDamage());
     if (getHead().getetat()!=dead)
     {
@@ -48,7 +48,7 @@ void ennemi::Bupdate(Map *map , GameCharacter *user){
  
 }
 
-void ennemi::detect_player(GameCharacter *user) {
+void Ennemi::detect_player(GameCharacter *user) {
     if (champ_visuel(user)) {
         unlock=glfwGetTime();
         if (glfwGetTime()-divi>detect2)
@@ -73,7 +73,7 @@ void ennemi::detect_player(GameCharacter *user) {
     
 }
 
-void ennemi::patrol_mod() {
+void Ennemi::patrol_mod() {
     if (etat == patrol) {
         
         
@@ -98,7 +98,7 @@ void ennemi::patrol_mod() {
 }
 
 
-void ennemi::engage_mod(GameCharacter *user){
+void Ennemi::engage_mod(GameCharacter *user){
     float espace = getPosition().x-user->getPosition().x;
     if (etat==engage)
     {
@@ -127,7 +127,7 @@ void ennemi::engage_mod(GameCharacter *user){
     
 }
 
-void ennemi::seek_mod(GameCharacter *user){
+void Ennemi::seek_mod(GameCharacter *user){
     if (etat==seek)
     {
         float espace = bbopGetDistance(user->getPosition(),getPosition());

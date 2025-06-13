@@ -3,7 +3,7 @@
 
 
 
-bool bot::champ_visuel(GameCharacter *user) {
+bool Bot::champ_visuel(GameCharacter *user) {
     float range = 200.0f;
     
     Vector2f toUser = {
@@ -65,7 +65,7 @@ bool bot::champ_visuel(GameCharacter *user) {
 }
 
 
-bool bot::detect_point(CollisionBox* menber,Vector2f point){
+bool Bot::detect_point(CollisionBox* menber,Vector2f point){
     for (int i = 0; i < 5; i++)
     {
         if (point.x >= menber[i].getLeft() && point.x <= menber[i].getRight() && point.y >= menber[i].getTop() && point.y <= menber[i].getBottom())
@@ -76,7 +76,7 @@ bool bot::detect_point(CollisionBox* menber,Vector2f point){
     }
     return false;
 }
-bool bot::patrol_zone(){
+bool Bot::patrol_zone(){
 
     for (int i = 0; i < 3; i++)
     {
@@ -90,7 +90,7 @@ bool bot::patrol_zone(){
     return false;
 }
 
-bool bot::bc_patrol(Vector2f point) {
+bool Bot::bc_patrol(Vector2f point) {
     setSpeed(15.0f);
 
     if (bbopGetDistance(point, getPosition())> 5) { 
@@ -114,7 +114,7 @@ bool bot::bc_patrol(Vector2f point) {
     }
 }
 
-void bot::getshot(vector<Bullet> balls ,float dmg){
+void Bot::getshot(vector<Bullet> balls ,float dmg){
     CollisionBox partie[5] = {
         getRightArm().getCollisionBox(),
         getLeftArm().getCollisionBox(),
