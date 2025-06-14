@@ -3,7 +3,7 @@
 // Contient les fonction de lien entre BBOP et box2D 
 
 #include <box2d/box2d.h>
-#include "../../Bbop-Library/include/BBOP/Graphics.h"
+#include "../../Bbop-2D/include/BBOP/Graphics.h"
 
 //Box 2D foncitonne en mètre donc il faut une constante pour savoir combien de pixel vaut un mètre 
 #define PIXEL_PER_METER 32

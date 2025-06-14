@@ -1,6 +1,6 @@
 #pragma once 
 
-#include "../../Bbop-Library/include/BBOP/Graphics.h"
+#include "../../Bbop-2D/include/BBOP/Graphics.h"
 
 class Crossair : public Geometric, public BbopDrawable
 {

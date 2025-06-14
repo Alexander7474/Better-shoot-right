@@ -1,8 +1,9 @@
 #pragma once
 
-#include "../../Bbop-Library/include/BBOP/Graphics.h"
+#include "../../Bbop-2D/include/BBOP/Graphics.h"
 #include "player.h"
 #include "bot.h"
+#include "../engine/dynamicSprite.h"
 #include "entity.h"
 
 #include <GLFW/glfw3.h>
@@ -27,10 +28,11 @@ private:
   Player mainPlayer;
   Map map;
   Bot npc;
+  std::vector<DynamicSprite*> dynamics; // liste des enititées
 
   //gestion physique 
   b2World physicalWorld; 
-  std::vector<Entity> entities;
+  std::vector<Entity*> entities; // liste des enititées
 public:
   Game();
 

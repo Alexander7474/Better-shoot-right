@@ -2,7 +2,7 @@
 
 #include <box2d/box2d.h>
 
-#include "../../Bbop-Library/include/BBOP/Graphics.h"
+#include "../../Bbop-2D/include/BBOP/Graphics.h"
 #include "../game/entity.h"
 
 class DynamicSprite : public Entity, public Sprite

@@ -2,7 +2,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-#include "Bbop-Library/include/BBOP/Graphics/bbopFunc.h"
+#include "Bbop-2D/include/BBOP/Graphics/bbopFunc.h"
 #include "src/game/game.h"
 
 using namespace std;

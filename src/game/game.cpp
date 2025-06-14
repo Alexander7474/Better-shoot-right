@@ -1,6 +1,7 @@
 #include "game.h"
 #include "../engine/box2d-bbop-link.h"
 #include "entity.h"
+#include "../engine/dynamicSprite.h"
 
 #include <box2d/b2_body.h>
 #include <box2d/box2d.h>
@@ -22,6 +23,8 @@ Game::Game()
     npc.setPosition(map.getSpawnPoints()[1]);
   }
 
+  dynamics.push_back(new DynamicSprite(Texture("assets/default.png"), &physicalWorld));
+  entities.push_back(dynamics[0]);
   //-------------------------------------------------------------------------
   //rajoute le boite de collision au monde physique 
   for(CollisionBox& box : map.getCollision()){
@@ -58,9 +61,8 @@ void Game::update()
 
   //mise a jour des entitées après la mise a jour du monde box2d 
   for(auto &ent : entities){
-    ent.updatePhysic();
+    ent->updatePhysic();
   }
-
   //-----------------------------------------------------------------------------------------------
  }
 
@@ -68,6 +70,9 @@ void Game::Draw()
 {
   map.Draw(scene, mainPlayerCam);
   scene.Draw(mainPlayer);
+  for(auto& d: dynamics){
+    scene.Draw(*d);
+  }
   scene.render();
   
   #ifdef DEBUG 

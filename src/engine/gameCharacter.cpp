@@ -1,5 +1,4 @@
 #include "gameCharacter.h"
-#include "../../Bbop-Library/include/BBOP/Graphics/bbopMathClass.h"
 #include "../game/game.h"
 #include "gun.h"
 #include "member.h"

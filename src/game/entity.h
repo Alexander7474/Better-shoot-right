@@ -1,6 +1,7 @@
 #pragma once 
 
 #include <box2d/b2_body.h>
+#include <box2d/b2_world.h>
 #include <box2d/box2d.h>
 
 /**
@@ -14,6 +15,4 @@ protected:
   b2Body *body; //<! pointeur vers le body Box2d pour l'update
 public:
   virtual void updatePhysic() = 0;
-
-  virtual ~Entity();
 };
