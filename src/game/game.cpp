@@ -5,6 +5,7 @@
 
 #include <box2d/b2_body.h>
 #include <box2d/box2d.h>
+#include <string>
 
 using namespace std;
 
@@ -22,14 +23,21 @@ Game::Game()
     mainPlayer.getCharacter().setPosition(map.getSpawnPoints()[0]);
     npc.setPosition(map.getSpawnPoints()[1]);
   }
-
-  dynamics.push_back(new DynamicSprite(Texture("assets/default.png"), &physicalWorld));
-  entities.push_back(dynamics[0]);
-  //-------------------------------------------------------------------------
+  //init physic-------------------------------------------------------------------------
   //rajoute le boite de collision au monde physique 
   for(CollisionBox& box : map.getCollision()){
     addStaticBox(&physicalWorld, &box);
   }
+
+  // compute entities
+  unsigned long long cptEnt = 0;
+  for(auto& e : entities){
+    e->computePhysic(&physicalWorld);
+    cptEnt++;
+  }
+  string log = to_string(cptEnt) + " entitées initialisées dans le monde box2d pas Game";
+  LOGS.push_back(log);
+  //------------------------------------------------------------------------------------
 }
 
 void Game::update()
@@ -50,6 +58,17 @@ void Game::update()
   mainPlayerCam.setScale(1.5);
   mainPlayerCam.setPosition(middlePos);
   mainPlayer.update(&mainPlayerCam, &map);
+
+  int state = glfwGetMouseButton(gameWindow, GLFW_MOUSE_BUTTON_LEFT);
+
+  if (state == GLFW_PRESS) {
+    DynamicSprite *d = new DynamicSprite(Texture("assets/default.png"));
+    d->setPosition(mainPlayer.getCrossair().getPosition());
+    d->setSize(50,50);
+    d->computePhysic(&physicalWorld);
+    dynamics.push_back(d);
+    entities.push_back(d);
+  }
 
   //Gestion de la physique-------------------------------------------------------------------------
   float timeStep = 1.0f / 100.f;

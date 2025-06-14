@@ -2,13 +2,13 @@
 #include "box2d-bbop-link.h"
 #include <box2d/b2_world.h>
 
-DynamicSprite::DynamicSprite(Texture texture, b2World *world)
+DynamicSprite::DynamicSprite(Texture texture)
   :  Sprite(texture)
-{
+{}
 
-  setSize(100,100);
+void DynamicSprite::computePhysic(b2World *world)
+{
   setOrigin(getSize().x/2,getSize().y/2);
-  setPosition(10, -200);
   //une fois ajouter a umonde box2d c'est la galère pour récupérer la taille donc faut faire attention
   body = addDynamicBox(world, &getCollisionBox());
 }

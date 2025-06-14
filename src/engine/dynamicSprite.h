@@ -8,7 +8,8 @@
 class DynamicSprite : public Entity, public Sprite
 {
 public: 
-  DynamicSprite(Texture texture, b2World *world);
+  DynamicSprite(Texture texture);
 
+  void computePhysic(b2World *world) override;
   void updatePhysic() override;
 };
