@@ -7,6 +7,11 @@
 #include "bot.h"
 #include <vector>
 using namespace std;
+enum Sate{
+  speak,
+  allie,
+  fight
+};
 
 class Neutre : public Bot
 {
@@ -19,9 +24,9 @@ private:
     float unlock;
     float ammo,reloadtime;
     bool armed;
-    bool allie;
+    Sate etat;
     bool show;
-    float timer;
+    float distance;
     Font *font; // pointeur vers la font du bot
     std::vector<TexteBox*> boxs; // liste de pointeurs vers les textebox du bot
 
