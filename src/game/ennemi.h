@@ -20,6 +20,7 @@ private:
     bool direction;
     float *theta;
     float unlock;
+    TexteBox *hpbar;
     float ammo,reloadtime;
     State etat;
     
@@ -31,7 +32,8 @@ public:
     void patrol_mod();
     void seek_mod(GameCharacter *user);
     void engage_mod(GameCharacter *user);
-    
+    TexteBox* gethpbar();
+
 };
 
 

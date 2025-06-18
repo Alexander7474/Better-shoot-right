@@ -52,7 +52,7 @@ private:
   Texture *bulletTexture; // Pointeur vers la texture des balles pour la charger une seule fois 
 
   //gestion des tirs
-  float damage; // degat de l'arme
+  int damage; // degat de l'arme
   bool isArmed; // l'arme est armé ?
   int magazineSize; // taille du chargeur 
   int ammo; // nombre de mun dans le chargeur

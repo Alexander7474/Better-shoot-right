@@ -16,12 +16,12 @@ protected:
     Vector2f seekp;
     float detect,detect2,divi;
     bool ftd;
+    Font *font;
 public:
     Bot()=default;
     bool champ_visuel(GameCharacter *user);
     bool patrol_zone();
     bool bc_patrol(Vector2f point);
-    void getshot(vector<Bullet> balls , float dmg);
     bool detect_point(CollisionBox* menber,Vector2f point);
     void add_spawn(Vector2f sp);
 };

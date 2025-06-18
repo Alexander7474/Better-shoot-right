@@ -21,7 +21,7 @@ Gun::Gun()
   magazineSize = 20;
   ammo = 20;
   lastShotTime = glfwGetTime()-rearmTime;
-  damage = 0.5f;
+  damage = 1;
   gunMouth = Vector2f(20.f,5.f);
   bulletSpeed = 1.f;
   gunDirection = rightDir;

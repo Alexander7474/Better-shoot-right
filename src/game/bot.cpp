@@ -80,7 +80,7 @@ bool Bot::patrol_zone(){
 
     for (int i = 0; i < 3; i++)
     {
-        if (bbopGetDistance(getPosition(),spawn[0])<60)
+        if (bbopGetDistance(getPosition(),spawn[0])<500)
         {
             return true;
         }
@@ -114,28 +114,4 @@ bool Bot::bc_patrol(Vector2f point) {
     }
 }
 
-void Bot::getshot(vector<Bullet> balls ,float dmg){
-    CollisionBox partie[5] = {
-        getRightArm().getCollisionBox(),
-        getLeftArm().getCollisionBox(),
-        getLegs().getCollisionBox(),
-        getBody().getCollisionBox(),
-        getHead().getCollisionBox()
-    };
-    for (int i = 0; i < 5; i++)
-    {
-        for (long unsigned int j = 0; j < balls.size(); j++)
-        {
-            if (partie[i].check(balls[j].getCollisionBox()))
-            {
-                sethp(gethp()-2);
-                break;
-            }
-        }
-    }
-    if (gethp()<=0)
-    {
-        getHead().setetat(2);
-    }
-    
-}
+

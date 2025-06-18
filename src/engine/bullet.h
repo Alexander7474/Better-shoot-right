@@ -12,11 +12,13 @@ class Bullet : public Sprite
 {
 private:
   Vector2f inertie;
-
+  bool used;
   friend class Gun;
 
 public:
   Bullet(Texture *texture, Vector2f _inertie);
 
   void update();
+  bool hit();
+  void setused();
 };

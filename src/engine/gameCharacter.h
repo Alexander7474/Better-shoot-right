@@ -46,7 +46,7 @@ private:
   float speed;
   float jumpForce;
   float weight;
-  float hp;
+  int hp;
 
   // gérer par le caractère
   Vector2f inertie;
@@ -104,6 +104,8 @@ public:
 
   void jump();
 
+  void getshot(std::vector<Bullet> balls , int dmg);
+
   /**
   * @brief retourne le character sur l'axe y
   */
@@ -120,7 +122,7 @@ public:
   float getSpeed();
   float getJumpForce();
   float getWeight();
-  float gethp();
+  int gethp();
   
 
   //SETTER

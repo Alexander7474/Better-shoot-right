@@ -28,7 +28,7 @@ GameCharacter::GameCharacter()
     startJump(glfwGetTime()),
     jumpTime(0.1f),
     isJumping(false),
-    hp(10.f)
+    hp(500)
 {
   characterDirection = rightDir;
   scale = 0.75f;
@@ -344,6 +344,35 @@ void GameCharacter::goRight()
   
 }
 
+void GameCharacter::getshot(vector<Bullet> balls ,int dmg){
+    CollisionBox partie[5] = {
+        getRightArm().getCollisionBox(),
+        getLeftArm().getCollisionBox(),
+        getLegs().getCollisionBox(),
+        getBody().getCollisionBox(),
+        getHead().getCollisionBox()
+    };
+    for (long unsigned int j = 0; j < balls.size(); j++)
+    {
+        for (int i = 0; i < 5; i++ )
+        {
+            if (partie[i].check(balls[j].getCollisionBox())&&balls[j].hit()==false )
+            {
+                balls[j].setused();
+                cerr<<"error1"<<endl;
+                sethp(gethp()-dmg);
+                break;
+            }
+        }
+    }
+    if (gethp()<0)
+    {
+      
+      getHead().setetat(2);
+    }
+    
+}
+
 void GameCharacter::jump()
 {
   if(canJump){
@@ -364,7 +393,7 @@ Gun& GameCharacter::getGun() { return gun; }
 float GameCharacter::getSpeed() { return speed; }
 float GameCharacter::getJumpForce() { return jumpForce; }
 float GameCharacter::getWeight() { return weight; }
-float GameCharacter::gethp(){return hp;}
+int GameCharacter::gethp(){return hp;}
 
 // SETTER 
 

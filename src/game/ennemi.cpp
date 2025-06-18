@@ -17,6 +17,10 @@ Ennemi::Ennemi(){
     lookAt(Vector2f(getPosition().x+5,getPosition().y));
     etat=patrol;
     fov = M_PI / 4;
+    font = new Font(16, "toto.ttf");
+    char buffer[20];
+    sprintf(buffer, "HP: %d", gethp());
+    hpbar=new TexteBox(buffer, font);
     setSpeed(2.0f);
     theta=new float[21];
     detect=10.0f;
@@ -43,6 +47,10 @@ void Ennemi::Bupdate(Map *map , GameCharacter *user){
         patrol_mod();
         engage_mod(user);
         seek_mod(user);
+        char buffer[20];
+        sprintf(buffer, "HP: %d", gethp());
+        hpbar->setTexte(buffer);
+        hpbar->setPosition(Vector2f(getPosition().x-5,getPosition().y-20));
     }
     update(map);  
  
@@ -141,6 +149,10 @@ void Ennemi::seek_mod(GameCharacter *user){
         }
     }
     
+}
+
+TexteBox* Ennemi::gethpbar(){
+    return hpbar;
 }
 
 

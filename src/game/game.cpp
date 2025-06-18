@@ -35,7 +35,7 @@ void Game::update()
   distance = distance/BBOP_WINDOW_RESOLUTION.x;
   mainPlayerCam.setScale(0.6);
   mainPlayerCam.setPosition(middlePos);
-  npc.Bupdate(&map , &mainPlayer.getCharacter(),gameWindow);
+  npc.Bupdate(&map , &mainPlayer.getCharacter());
   mainPlayer.update(&mainPlayerCam, &map);
   
 
@@ -47,7 +47,7 @@ void Game::Draw()
   map.Draw(scene, mainPlayerCam);
   scene.Draw(mainPlayer);
   scene.Draw(npc);
-  npc.Drawbox(&scene);
+  scene.Draw(*npc.gethpbar());
   scene.render();
 
   

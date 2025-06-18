@@ -27,7 +27,7 @@ private:
     Sate etat;
     bool show;
     float distance;
-    Font *font; // pointeur vers la font du bot
+     // pointeur vers la font du bot
     std::vector<TexteBox*> boxs; // liste de pointeurs vers les textebox du bot
 
 public:
