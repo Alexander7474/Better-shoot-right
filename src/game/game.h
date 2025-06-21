@@ -2,7 +2,7 @@
 
 #include "../../Bbop-2D/include/BBOP/Graphics.h"
 #include "player.h"
-#include"ennemi.h"
+#include"trooper.h"
 #include"neutre.h"
 #include <GLFW/glfw3.h>
 #include <vector>
@@ -24,7 +24,7 @@ private:
   Camera mainPlayerCam;
   Player mainPlayer;
   Map map;
-  Ennemi npc;
+  Trooper npc;
 public:
   Game();
 

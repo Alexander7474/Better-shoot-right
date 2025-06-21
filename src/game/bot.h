@@ -17,6 +17,7 @@ protected:
     float detect,detect2,divi;
     bool ftd;
     Font *font;
+    float timer;
 public:
     Bot()=default;
     bool champ_visuel(GameCharacter *user);
