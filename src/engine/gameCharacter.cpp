@@ -5,7 +5,8 @@
 
 #include <GLFW/glfw3.h>
 #include <cmath>
-#include <cstdlib>
+
+#include "box2d-bbop-link.h"
 
 using namespace std;
 
@@ -258,9 +259,8 @@ void GameCharacter::flipY()
     leftArm.setAttachPoint(body.getPosition().x-2*scale, leftArm.getPosition().y);
 
     gun.gunDirection = rightDir;
-  }else{
-
-    leftArm.setOrigin(24*scale,8*scale); // origine au niveau de l'épaule 
+  }else {
+    leftArm.setOrigin(24*scale,8*scale); // origine au niveau de l'épaule
     rightArm.setOrigin(24*scale,8*scale);
 
     gun.gunDirection = leftDir;
@@ -268,43 +268,40 @@ void GameCharacter::flipY()
     rightArm.setAttachPoint(body.getPosition().x+5*scale, rightArm.getPosition().y);
     leftArm.setAttachPoint(body.getPosition().x+2*scale, leftArm.getPosition().y);
   }
-
-
 }
 
 void GameCharacter::goLeft()
 {
-  if (legs.state!=dead)
-  {
-    inertie.x = -speed * DELTA_TIME;
-    if(legs.state != run){
-      legs.state = run;
-      legs.animations[run].lastFrameStartTime = glfwGetTime();
-      if(characterDirection == rightDir)
-        legs.isReverse = true;
-      else
-        legs.isReverse = false;
-    }
+  //gestion physique
+  b2Vec2 velocity(-10.0f, 0.0f);
+  entityBody->SetLinearVelocity(velocity);
+
+  //gestion animation
+  if(legs.state != run){
+    legs.state = run;
+    legs.animations[run].lastFrameStartTime = glfwGetTime();
+    if(characterDirection == rightDir)
+      legs.isReverse = true;
+    else
+      legs.isReverse = false;
   }
-  
-  
 }
 
 void GameCharacter::goRight()
 {
-  if (legs.state!=dead)
-  {
-    inertie.x = speed * DELTA_TIME;
-    if(legs.state != run){
-      legs.animations[run].lastFrameStartTime = glfwGetTime();
-      legs.state = run;
-      if(characterDirection == rightDir)
-        legs.isReverse = false;
-      else
-        legs.isReverse = true;
-    }
+  //gestion physique
+  b2Vec2 velocity(10.0f, 0.0f);
+  entityBody->SetLinearVelocity(velocity);
+
+  //gestion animation
+  if(legs.state != run) {
+    legs.animations[run].lastFrameStartTime = glfwGetTime();
+    legs.state = run;
+    if(characterDirection == rightDir)
+      legs.isReverse = false;
+    else
+      legs.isReverse = true;
   }
-  
   
 }
 
@@ -315,6 +312,9 @@ void GameCharacter::jump()
     isJumping = true;
     startJump = glfwGetTime();
   }
+
+  b2Vec2 impulsion(0.0f, -entityBody->GetMass() * 10.0f); // vers le haut
+  entityBody->ApplyLinearImpulseToCenter(impulsion, true);
 }
 
 //GETTER 
@@ -325,27 +325,31 @@ Member& GameCharacter::getBody() { return body; }
 Member& GameCharacter::getHead() { return head; }
 Member& GameCharacter::getLegs() { return legs; }
 Gun& GameCharacter::getGun() { return gun; }
-float GameCharacter::getSpeed() { return speed; }
-float GameCharacter::getJumpForce() { return jumpForce; }
-float GameCharacter::getWeight() { return weight; }
-float GameCharacter::gethp(){return hp;}
+float GameCharacter::getSpeed() const { return speed; }
+float GameCharacter::getJumpForce() const { return jumpForce; }
+float GameCharacter::getWeight() const { return weight; }
+float GameCharacter::getHp() const {return hp;}
 
 // SETTER 
 
-void GameCharacter::setSpeed(float _speed) { this->speed = _speed; }
-void GameCharacter::setJumpForce(float _jumpForce) { this->jumpForce = _jumpForce; }
-void GameCharacter::setWeight(float _weight) { this->weight = _weight; }
-void GameCharacter::sethp(float hp){this->hp=hp;}
+void GameCharacter::setSpeed(const float _speed) { this->speed = _speed; }
+void GameCharacter::setJumpForce(const float _jumpForce) { this->jumpForce = _jumpForce; }
+void GameCharacter::setWeight(const float _weight) { this->weight = _weight; }
+void GameCharacter::setHp(const float _hp){this->hp=_hp;}
 
 
 //ENTITY 
 
 void GameCharacter::computePhysic(b2World* world)
 {
+  setSize(20.f,50.f);
+  setOrigin(getSize().x / 2, getSize().y / 2);
+  entityBody = addDynamicBox(world, this, 1.f, 10.f, true);
 
 }
 
 void GameCharacter::updatePhysic()
 {
-
+  setPos(entityBody->GetPosition().x * PIXEL_PER_METER,
+              entityBody->GetPosition().y * PIXEL_PER_METER - 5.f);
 }

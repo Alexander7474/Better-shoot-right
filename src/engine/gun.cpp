@@ -187,9 +187,8 @@ void Gun::shoot()
 
     // ajout d'un peu d'aléatoire dans la direction
     uniform_real_distribution<float> distribution(-0.1f,0.1f);
-    float r = distribution(RANDOM_ENGINE);
-    cout << r << endl;
-    float rotation = getRotation() + r; //rotation de l'arme
+    const float r = distribution(RANDOM_ENGINE);
+    const float rotation = getRotation() + r; //rotation de l'arme
 
 
     Vector2f inertie(cos(rotation) * bulletSpeed,sin(rotation) * bulletSpeed); //vecteur d'inertie en fonction de la rotaion du canon
@@ -200,8 +199,8 @@ void Gun::shoot()
     }
 
     //calcule position de sortie de la balle 
-    float outX = getPosition().x + (mouth.x - getPosition().x) * cos(getRotation()) - (mouth.y - getPosition().y) * sin(getRotation());
-    float outY = getPosition().y + (mouth.x - getPosition().x) * sin(getRotation()) + (mouth.y - getPosition().y) * cos(getRotation());
+    const float outX = getPosition().x + (mouth.x - getPosition().x) * cos(getRotation()) - (mouth.y - getPosition().y) * sin(getRotation());
+    const float outY = getPosition().y + (mouth.x - getPosition().x) * sin(getRotation()) + (mouth.y - getPosition().y) * cos(getRotation());
     
     Bullet b(bulletTexture, inertie);
     b.setPosition(outX, outY);
@@ -224,7 +223,7 @@ const vector<Bullet>& Gun::getBullets() const
   return bulletVector;
 }
 
-float Gun::getDamage(){
+float Gun::getDamage() const{
   return damage;
 }
 

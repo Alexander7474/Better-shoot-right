@@ -8,11 +8,11 @@ void DynamicSprite::computePhysic(b2World *world) {
   setOrigin(getSize().x / 2, getSize().y / 2);
   // une fois ajouter a umonde box2d c'est la galère pour récupérer la taille
   // donc faut faire attention
-  body = addDynamicBox(world, &getCollisionBox());
+  entityBody = addDynamicBox(world, &getCollisionBox(), 1.f, 0.f, false);
 }
 
 void DynamicSprite::updatePhysic() {
-  setPosition(body->GetPosition().x * PIXEL_PER_METER,
-              body->GetPosition().y * PIXEL_PER_METER);
-  setRotation(body->GetAngle());
+  setPosition(entityBody->GetPosition().x * PIXEL_PER_METER,
+              entityBody->GetPosition().y * PIXEL_PER_METER);
+  setRotation(entityBody->GetAngle());
 }

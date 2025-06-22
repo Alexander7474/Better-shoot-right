@@ -10,7 +10,7 @@ using namespace std;
 int main()
 {
   //initialisation de la lib
-  bbopInit(1920,1080,"window name",gameWindow);
+  bbopInit(2560,1440,"window name",gameWindow);
   bbopChangeWindowResolution(640,360);
   cout << "Version prototype" << endl;
 

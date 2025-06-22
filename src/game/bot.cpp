@@ -287,12 +287,12 @@ void Bot::getshot(vector<Bullet> balls ,float dmg){
         {
             if (partie[i].check(balls[j].getCollisionBox()))
             {
-                sethp(gethp()-2);
+                setHp(getHp()-2);
                 break;
             }
         }
     }
-    if (gethp()<=0)
+    if (getHp()<=0)
     {
         getHead().setetat(2);
     }

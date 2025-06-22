@@ -92,6 +92,6 @@ public:
   //
   const std::vector <Bullet>& getBullets() const;
 
-  float getDamage();
+  float getDamage() const;
 
 };

@@ -12,7 +12,7 @@
 class Entity
 {
 protected:
-  b2Body *body; //<! pointeur vers le body Box2d pour l'update
+  b2Body *entityBody; //<! pointeur vers le body Box2d pour l'update
 public:
 
   /**
@@ -22,7 +22,7 @@ public:
   virtual void computePhysic(b2World *world) = 0;
 
   /**
-  * @brief Met a jour la phisique dans le monde box2D
+  * @brief Met a jour la physique depuis le monde box2D
   */
   virtual void updatePhysic() = 0;
 };

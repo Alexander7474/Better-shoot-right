@@ -10,7 +10,7 @@
 *
 * @return body Corps box2d de la boite 
 */
-b2Body* addStaticBox(b2World* world, Geometric* box)
+b2Body* addStaticBox(b2World* world, const Geometric* box)
 {
   // 1. Définir le corps statique
   b2BodyDef bodyDef;
@@ -37,16 +37,20 @@ b2Body* addStaticBox(b2World* world, Geometric* box)
 * @brief Créé une boite de collision Dynamic dans un monde box2d à partir d'une collision box BBOP 
 *
 * @param world Pointeur vers le monde 
-* @param box pointeur vers la boite à rajouter 
+* @param box pointeur vers la boite à rajouter
+* @param density
+* @param friction
+* @param rotationLock Si le corp à sa rotation blocké
 *
 * @return body Corps box2d de la boite 
 */
-b2Body* addDynamicBox(b2World* world, Geometric* box)
+b2Body* addDynamicBox(b2World* world, const Geometric* box, const float density, const float friction, const bool rotationLock)
 {
   // 1. Définir le corps statique
   b2BodyDef bodyDef;
   bodyDef.position.Set((box->getPosition().x + (box->getSize().x / 2)) / PIXEL_PER_METER, (box->getPosition().y + (box->getSize().y / 2)) / PIXEL_PER_METER); 
   bodyDef.type = b2_dynamicBody;
+  bodyDef.fixedRotation = rotationLock;
 
   b2Body* body = world->CreateBody(&bodyDef);
 
@@ -57,7 +61,7 @@ b2Body* addDynamicBox(b2World* world, Geometric* box)
   b2FixtureDef fixtureDef;
   fixtureDef.shape = &boxShape;
   fixtureDef.density = 1.0f;
-  fixtureDef.friction = 0.3f;
+  fixtureDef.friction = 10.0f;
   
   std::string log = "Box dynamic ajouter l:" + std::to_string(box->getSize().x) + " h:" + std::to_string(box->getSize().y) + " x:" + std::to_string(box->getPosition().x) + " y:" + std::to_string(box->getPosition().y);
   log += "\nBOX2D COORD x:" + std::to_string(body->GetPosition().x) + " y:" + std::to_string(body->GetPosition().y);
@@ -68,3 +72,4 @@ b2Body* addDynamicBox(b2World* world, Geometric* box)
 
   return body;
 }
+

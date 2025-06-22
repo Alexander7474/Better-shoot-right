@@ -20,7 +20,7 @@ Game::Game()
   :  physicalWorld(b2Vec2(0.0f,GRAVITY)) // création du monde physique avec un vecteur de gravité
 {
   if(map.getSpawnPoints().size() > 1){
-    mainPlayer.getCharacter().setPosition(map.getSpawnPoints()[0]);
+    mainPlayer.getCharacter().setPos(map.getSpawnPoints()[0].x, -100.f);
     npc.setPosition(map.getSpawnPoints()[1]);
   }
   //init physic-------------------------------------------------------------------------
@@ -28,6 +28,8 @@ Game::Game()
   for(CollisionBox& box : map.getCollision()){
     addStaticBox(&physicalWorld, &box);
   }
+
+  entities.push_back(&mainPlayer.getCharacter());
 
   // compute entities
   unsigned long long cptEnt = 0;
@@ -44,8 +46,6 @@ void Game::update()
 {
   //simple gestion de animations
   map.update();
-    
-  mainPlayer.getCharacter().setPos(map.getSpawnPoints()[0]);
 
   //déterminer la position du milieu entre le joueur et son crossair
   Vector2f middlePos;

@@ -118,10 +118,10 @@ public:
   Member& getHead();
   Member& getLegs();
   Gun& getGun();
-  float getSpeed();
-  float getJumpForce();
-  float getWeight();
-  float gethp();
+  float getSpeed() const;
+  float getJumpForce() const;
+  float getWeight() const;
+  float getHp() const;
   
 
   //SETTER
@@ -129,7 +129,7 @@ public:
   void setSpeed(float _speed);
   void setJumpForce(float _jumpForce);
   void setWeight(float _weight);
-  void sethp(float hp);
+  void setHp(float _hp);
 
   //ENTITY HERITAGE
   void computePhysic(b2World *world) override;
