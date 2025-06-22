@@ -336,3 +336,16 @@ void GameCharacter::setSpeed(float _speed) { this->speed = _speed; }
 void GameCharacter::setJumpForce(float _jumpForce) { this->jumpForce = _jumpForce; }
 void GameCharacter::setWeight(float _weight) { this->weight = _weight; }
 void GameCharacter::sethp(float hp){this->hp=hp;}
+
+
+//ENTITY 
+
+void GameCharacter::computePhysic(b2World* world)
+{
+
+}
+
+void GameCharacter::updatePhysic()
+{
+
+}

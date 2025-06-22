@@ -10,7 +10,7 @@
 *
 * @return body Corps box2d de la boite 
 */
-b2Body* addStaticBox(b2World* world, CollisionBox* box)
+b2Body* addStaticBox(b2World* world, Geometric* box)
 {
   // 1. Définir le corps statique
   b2BodyDef bodyDef;
@@ -41,7 +41,7 @@ b2Body* addStaticBox(b2World* world, CollisionBox* box)
 *
 * @return body Corps box2d de la boite 
 */
-b2Body* addDynamicBox(b2World* world, CollisionBox* box)
+b2Body* addDynamicBox(b2World* world, Geometric* box)
 {
   // 1. Définir le corps statique
   b2BodyDef bodyDef;

@@ -8,6 +8,7 @@
 #include "../../Bbop-2D/include/BBOP/Graphics/textureClass.h"
 #include "member.h"
 #include "gun.h"
+#include "../game/entity.h"
 
 extern std::string gameCharacterStateString[2];
 
@@ -23,7 +24,7 @@ enum Direction
 
 #endif
 
-class GameCharacter : public BbopDrawable, public Geometric
+class GameCharacter : public BbopDrawable, public Geometric, public Entity
 {
 private:
   // attribute for the body of the character 
@@ -129,4 +130,8 @@ public:
   void setJumpForce(float _jumpForce);
   void setWeight(float _weight);
   void sethp(float hp);
+
+  //ENTITY HERITAGE
+  void computePhysic(b2World *world) override;
+  void updatePhysic() override;
 };

@@ -12,19 +12,19 @@
 * @brief Créé une boite de collision Static dans un monde box2d à partir d'une collision box BBOP 
 *
 * @param world Pointeur vers le monde 
-* @param box pointeur vers la boite à rajouter 
+* @param box pointeur vers la forme à rajouter 
 *
 * @return body Corps box2d de la boite 
 */
-b2Body* addStaticBox(b2World* world, CollisionBox* box);
+b2Body* addStaticBox(b2World* world, Geometric* box);
 
 /**
 * @brief Créé une boite de collision Dynamic dans un monde box2d à partir d'une collision box BBOP 
 *
 * @param world Pointeur vers le monde 
-* @param box pointeur vers la boite à rajouter 
+* @param box pointeur vers la forme à rajouter 
 *
 * @return body Corps box2d de la boite 
 */
-b2Body* addDynamicBox(b2World* world, CollisionBox* box);
+b2Body* addDynamicBox(b2World* world, Geometric* box);
 
