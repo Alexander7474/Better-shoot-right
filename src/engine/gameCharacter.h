@@ -40,23 +40,14 @@ private:
   //gestion du regard et de l'orientation du character
   Vector2f lookingPoint; //<! Ou le character regarde
   Direction characterDirection; //<! Direction du regard
-  //
+
+  //taille du caractère
   float scale;
   
   //gestion de la physique
-  float speed;
-  float jumpForce;
-  float weight;
+  float maxVelocityX;
+  float maxVelocityY;
   float hp;
-
-  // gérer par le caractère
-  Vector2f inertie;
-  float forceInertie;
-  double startFall;
-  bool canJump;
-  double startJump;
-  double jumpTime;
-  bool isJumping;
 
   /**
    *  @brief Détermine la rotaion d'un membre en fonction du lookingPoint
@@ -70,7 +61,7 @@ public:
   /**
    * @brief remplie les listes de textures 
    */
-  void createTextureCache(std::string path);
+  void createTextureCache(const std::string& path);
   
   /**
    * @brief Met jour le character
@@ -131,7 +122,7 @@ public:
   void setWeight(float _weight);
   void setHp(float _hp);
 
-  //ENTITY HERITAGE
+  //ENTITY HERITAGE gestion de la physique
   void computePhysic(b2World *world) override;
   void updatePhysic() override;
 };

@@ -38,7 +38,6 @@ Bot::Bot(){
     lookAt(Vector2f(getPosition().x+5,getPosition().y));
     etat=patrol;
     fov = M_PI / 4;
-    setSpeed(2.0f);
     points=new Vector2f[21];
     theta=new float[21];
     detect=10.0f;
@@ -190,8 +189,6 @@ void Bot::engage_mod(GameCharacter *user){
     float espace = getPosition().x-user->getPosition().x;
     if (etat==engage)
     {
-        
-        setSpeed(10.0f);   
         lookAt(user->getPosition()); 
         if (espace>50.0f)
         {
@@ -206,10 +203,6 @@ void Bot::engage_mod(GameCharacter *user){
             getGun().shoot();
             getGun().reload();
         }
-        if (espace<50 && espace>-50)
-        {
-            setSpeed(0);
-        }
         
     }
     
@@ -219,7 +212,6 @@ void Bot::seek_mod(GameCharacter *user){
     if (etat==seek)
     {
         float espace = bbopGetDistance(user->getPosition(),getPosition());
-        setSpeed(4.5f);
         lookAt(seekp);
         if (espace>0)
         {
@@ -247,7 +239,6 @@ bool Bot::patrol_zone(){
 }
 
 bool Bot::bc_patrol(Vector2f point) {
-    setSpeed(15.0f);
 
     if (bbopGetDistance(point, getPosition())> 5) { 
         if (oldp.x == getPosition().x) {
@@ -265,7 +256,6 @@ bool Bot::bc_patrol(Vector2f point) {
         oldp = getPosition();  
         return false;
     } else {
-        setSpeed(0);  
         return true;
     }
 }

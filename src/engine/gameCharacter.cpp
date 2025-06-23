@@ -6,7 +6,7 @@
 #include <GLFW/glfw3.h>
 #include <cmath>
 
-#include "box2d-bbop-link.h"
+#include "physic.h"
 
 using namespace std;
 
@@ -16,17 +16,7 @@ string gameCharacterStateString[2] = {
 };
 
 GameCharacter::GameCharacter()
-  : speed(250.f),
-    jumpForce(200.f),
-    weight(1.f),
-    hp(10.f),
-    inertie(0.f, 0.f),
-    forceInertie(2.f),
-    startFall(glfwGetTime()),
-    canJump(false),
-    startJump(glfwGetTime()),
-    jumpTime(0.1f),
-    isJumping(false)
+  : hp(10.f)
 {
   characterDirection = rightDir;
   scale = 0.75f;
@@ -63,28 +53,26 @@ GameCharacter::GameCharacter()
   createTextureCache("assets/personnages/soldier/");
 }
 
-void GameCharacter::createTextureCache(string path)
+void GameCharacter::createTextureCache(const string& path)
 {
-  string armLeftPath = path + "arm_left/";
+  const string armLeftPath = path + "arm_left/";
   leftArm.createTextureCache(armLeftPath);
 
-  string armRightPath = path + "arm_right/";
+  const string armRightPath = path + "arm_right/";
   rightArm.createTextureCache(armRightPath);
 
-  string bodyPath = path + "body/";
+  const string bodyPath = path + "body/";
   body.createTextureCache(bodyPath);
 
-  string headPath = path + "head/";
+  const string headPath = path + "head/";
   head.createTextureCache(headPath);
 
-  string legsPath = path + "legs/";
+  const string legsPath = path + "legs/";
   legs.createTextureCache(legsPath);
 }
 
 void GameCharacter::update(Map* map)
 {
-  setPos(getPosition().x + inertie.x, getPosition().y + inertie.y * DELTA_TIME);
-
   leftArm.update();
   rightArm.update();
   head.update();
@@ -96,11 +84,6 @@ void GameCharacter::update(Map* map)
   #ifdef DEBUG 
   cout << "Character inertie: " << inertie.x << "|" << inertie.y << endl;
   #endif
-
-  //diminution de l'inertie en x 
-  inertie.x = inertie.x / forceInertie;
-  if(inertie.x > -10.f*DELTA_TIME && inertie.x < 10.f*DELTA_TIME)
-    inertie.x = 0.f;
 
   #ifdef DEBUG 
   cout << "Character after slow inertie: " << inertie.x << "|" << inertie.y << endl;
@@ -273,8 +256,8 @@ void GameCharacter::flipY()
 void GameCharacter::goLeft()
 {
   //gestion physique
-  b2Vec2 velocity(-10.0f, 0.0f);
-  entityBody->SetLinearVelocity(velocity);
+  b2Vec2 velocity(-50.0f, 0.0f);
+  entityBody->ApplyForceToCenter(velocity, true);
 
   //gestion animation
   if(legs.state != run){
@@ -290,8 +273,8 @@ void GameCharacter::goLeft()
 void GameCharacter::goRight()
 {
   //gestion physique
-  b2Vec2 velocity(10.0f, 0.0f);
-  entityBody->SetLinearVelocity(velocity);
+  b2Vec2 velocity(50.0f, 0.0f);
+  entityBody->ApplyForceToCenter(velocity, true);
 
   //gestion animation
   if(legs.state != run) {
@@ -307,13 +290,7 @@ void GameCharacter::goRight()
 
 void GameCharacter::jump()
 {
-  if(canJump){
-    canJump = false;
-    isJumping = true;
-    startJump = glfwGetTime();
-  }
-
-  b2Vec2 impulsion(0.0f, -entityBody->GetMass() * 10.0f); // vers le haut
+  const b2Vec2 impulsion(0.0f, -entityBody->GetMass() * 10.0f); // vers le haut
   entityBody->ApplyLinearImpulseToCenter(impulsion, true);
 }
 
@@ -325,16 +302,9 @@ Member& GameCharacter::getBody() { return body; }
 Member& GameCharacter::getHead() { return head; }
 Member& GameCharacter::getLegs() { return legs; }
 Gun& GameCharacter::getGun() { return gun; }
-float GameCharacter::getSpeed() const { return speed; }
-float GameCharacter::getJumpForce() const { return jumpForce; }
-float GameCharacter::getWeight() const { return weight; }
 float GameCharacter::getHp() const {return hp;}
 
-// SETTER 
-
-void GameCharacter::setSpeed(const float _speed) { this->speed = _speed; }
-void GameCharacter::setJumpForce(const float _jumpForce) { this->jumpForce = _jumpForce; }
-void GameCharacter::setWeight(const float _weight) { this->weight = _weight; }
+// SETTER
 void GameCharacter::setHp(const float _hp){this->hp=_hp;}
 
 
@@ -344,7 +314,7 @@ void GameCharacter::computePhysic(b2World* world)
 {
   setSize(20.f,50.f);
   setOrigin(getSize().x / 2, getSize().y / 2);
-  entityBody = addDynamicBox(world, this, 1.f, 10.f, true);
+  entityBody = addDynamicBox(world, this, 1.f, 1.f, true);
 
 }
 
