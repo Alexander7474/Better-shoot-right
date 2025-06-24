@@ -24,7 +24,7 @@ private:
   Camera mainPlayerCam;
   Player mainPlayer;
   Map map;
-  Trooper npc;
+  std::vector<Trooper*> npc;
 public:
   Game();
 

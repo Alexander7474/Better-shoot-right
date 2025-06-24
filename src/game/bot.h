@@ -24,5 +24,6 @@ public:
     bool patrol_zone();
     bool bc_patrol(Vector2f point);
     bool detect_point(CollisionBox* menber,Vector2f point);
-    void add_spawn(Vector2f sp);
+    void setspawn(Vector2f s1,Vector2f s2,Vector2f s3);
+    
 };

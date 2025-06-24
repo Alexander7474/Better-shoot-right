@@ -22,6 +22,7 @@ private:
     TexteBox *dialoque;
     float ammo,reloadtime;
     State etat;
+    bool discussing;
     const char *name;
     
     

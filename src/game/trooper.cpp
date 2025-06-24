@@ -42,16 +42,17 @@ void Trooper::Bupdate(Map *map , GameCharacter *user){
     getshot(user->getGun().getBullets(),user->getGun().getDamage());
     if (getHead().getetat()!=dead)
     {
-    
+        cerr<<"error1"<<endl;
         detect_player(user);
         patrol_mod();
         engage_mod(user);
         seek_mod(user);
+        cerr<<"rro2"<<endl;
         char buffer[20];
         sprintf(buffer, "HP: %d", gethp());
         hpbar->setTexte(buffer);
         hpbar->setPosition(Vector2f(getPosition().x-5,getPosition().y-20));
-    
+        cerr<<"error3"<<endl;
     }
     update(map);  
     
@@ -94,7 +95,7 @@ void Trooper::patrol_mod() {
     if (etat == patrol) {
         
         
-        if (patrol_zone()) {
+        if (patrol_zone() && discussing==false) {
             if (bbopGetDistance(getPosition(),spawn[cpt])<5.0f)
             {
                 if (cpt==2)
@@ -132,12 +133,22 @@ void Trooper::seek_mod(GameCharacter *user){
 void Trooper::interact(vector<GameCharacter*> otherbots){
     for (GameCharacter *npc: otherbots)
     {
-        if (bbopGetDistance(getPosition(),npc->getPosition())<40 )
+        if (bbopGetDistance(getPosition(),npc->getPosition())<40 && discussing==false)
         {
             timer=glfwGetTime();
+            discussing=true;
         }
         
     }
+    if (glfwGetTime()-timer>3)
+    {
+        patrol_zone();
+    }
+    if (glfwGetTime()-timer>5)
+    {
+        discussing=false;
+    }
+    
     
 }
 

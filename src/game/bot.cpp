@@ -114,4 +114,11 @@ bool Bot::bc_patrol(Vector2f point) {
     }
 }
 
+void Bot::setspawn(Vector2f s1,Vector2f s2,Vector2f s3){
+    spawn=new Vector2f[3]{
+        s1,
+        s2,
+        s3
+    };
+}
 
