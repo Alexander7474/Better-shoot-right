@@ -1,35 +1,61 @@
-CC = g++
-CFLAGS = -std=c++11 -Wall -I/usr/include/freetype2 -g
+#
+# Cross Platform Makefile
+# Compatible with MSYS2/MINGW, Ubuntu 14.04.1 and Mac OS X
+#
+# You will need GLFW (http://www.glfw.org):
+# Linux:
+#   apt-get install libglfw-dev
+# Mac OS X:
+#   brew install glfw
+# MSYS2:
+#   pacman -S --noconfirm --needed mingw-w64-x86_64-toolchain mingw-w64-x86_64-glfw
+#
+#CXX = g++
+#CXX = clang++
+
+EXE = final.exe
+SRC_DIR = src/
+SOURCES = main.cpp $(SRC_DIR)engine/gameCharacter.cpp $(SRC_DIR)game/bot.cpp $(SRC_DIR)game/player.cpp $(SRC_DIR)game/game.cpp $(SRC_DIR)engine/member.cpp $(SRC_DIR)engine/gun.cpp $(SRC_DIR)engine/bullet.cpp $(SRC_DIR)engine/crossair.cpp $(SRC_DIR)engine/physic.cpp $(SRC_DIR)engine/dynamicSprite.cpp
+SOURCES += $(SRC_DIR)/imgui/imgui.cpp $(SRC_DIR)/imgui/imgui_demo.cpp $(SRC_DIR)/imgui/imgui_draw.cpp $(SRC_DIR)/imgui/imgui_tables.cpp $(SRC_DIR)/imgui/imgui_widgets.cpp
+SOURCES += $(SRC_DIR)/backends/imgui_impl_glfw.cpp $(SRC_DIR)/backends/imgui_impl_opengl3.cpp
+OBJS = $(SOURCES:.cpp=.o)
+UNAME_S := $(shell uname -s)
+LINUX_GL_LIBS = -lGL
+
+CXXFLAGS = -std=c++11 -I$(SRC_DIR)/imgui -I$(SRC_DIR)/backends
+CXXFLAGS += -g -Wall -Wformat -I/usr/include/freetype2 -g -DIMGUI_DEBUG
 LIBS = -L./Bbop-2D -lbbop -lglfw -lGLEW -lGL -lfreetype -lLDtkLoader -lbox2d
 
-SRCS = main.cpp src/engine/gameCharacter.cpp src/game/bot.cpp src/game/player.cpp src/game/game.cpp src/engine/member.cpp src/engine/gun.cpp src/engine/bullet.cpp src/engine/crossair.cpp src/engine/physic.cpp src/engine/dynamicSprite.cpp
-OBJS = $(SRCS:.cpp=.o)
+##---------------------------------------------------------------------
+## BUILD FLAGS PER PLATFORM
+##---------------------------------------------------------------------
 
-GREEN = \033[0;32m
-CYAN = \033[0;36m
-PURPLE = \033[0;35m
-NC = \033[0m
+ifeq ($(UNAME_S), Linux) #LINUX
+	ECHO_MESSAGE = "Linux"
+	LIBS += $(LINUX_GL_LIBS) `pkg-config --static --libs glfw3`
 
-all: final.exe
+	CXXFLAGS += `pkg-config --cflags glfw3`
+	CFLAGS = $(CXXFLAGS)
+endif
 
-final.exe: $(OBJS)
-	@(cd Bbop-2D && make -j && make lib)
-	@echo -e "$(PURPLE)Linking compiled files $(NC)"
-	@$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
-	@echo -e "$(GREEN)Linking done ! $(NC)"
+##---------------------------------------------------------------------
+## BUILD RULES
+##---------------------------------------------------------------------
 
-%.o: %.cpp
-	@echo -e "$(GREEN)Compiling $(CYAN)[$@] $(NC)"
-	@$(CC) $(CFLAGS) -c -o $@ $<
+%.o:%.cpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+%.o:$(SRC_DIR)/imgui/%.cpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+%.o:$(SRC_DIR)/backends/%.cpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+all: $(EXE)
+	@echo Build complete for $(ECHO_MESSAGE)
+
+$(EXE): $(OBJS)
+	$(CXX) -o $@ $^ $(CXXFLAGS) $(LIBS)
 
 clean:
-	@echo -e "$(PURPLE)Deleting all objects files and final$(NC)"
-	@rm -f final.exe $(OBJS)
-	@rm map.exe
-
-map:
-	@make
-	@$(CC) $(CFLAGS) -c liveMap.cpp
-	@$(CC) $(CFLAGS) liveMap.o $(LIBS) -o map.exe
-	@rm liveMap.o
-
+	rm -f $(EXE) $(OBJS)

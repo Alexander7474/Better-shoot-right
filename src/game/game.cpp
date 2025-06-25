@@ -11,8 +11,8 @@ using namespace std;
 
 GLFWwindow* gameWindow = nullptr;
 
-float DELTA_TIME = 0.f;
-float FPS = 0.f; 
+double DELTA_TIME = 0;
+double FPS = 0;
 float GRAVITY = 9.8f;
 default_random_engine RANDOM_ENGINE; 
 
