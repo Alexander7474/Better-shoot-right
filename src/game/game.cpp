@@ -19,6 +19,9 @@ default_random_engine RANDOM_ENGINE;
 Game::Game()
   :  physicalWorld(b2Vec2(0.0f,GRAVITY)) // création du monde physique avec un vecteur de gravité
 {
+  auto* listener = new CustomContactListener();
+  physicalWorld.SetContactListener(listener);
+
   if(map.getSpawnPoints().size() > 1){
     mainPlayer.getCharacter().setPos(map.getSpawnPoints()[0].x, -100.f);
     npc.setPosition(map.getSpawnPoints()[1]);
@@ -33,11 +36,11 @@ Game::Game()
 
   // compute entities
   unsigned long long cptEnt = 0;
-  for(auto& e : entities){
+  for(const auto& e : entities){
     e->computePhysic(&physicalWorld);
     cptEnt++;
   }
-  string log = to_string(cptEnt) + " entitées initialisées dans le monde box2d pas Game";
+  const string log = to_string(cptEnt) + " entitées initialisées dans le monde box2d pas Game";
   LOGS.push_back(log);
   //------------------------------------------------------------------------------------
 }

@@ -2,14 +2,6 @@
 #include <box2d/b2_body.h>
 #include <string>
 
-/**
-* @brief Créé une boite de collision dans un monde box2d à partir d'une collision box BBOP 
-*
-* @param world Pointeur vers le monde 
-* @param box pointeur vers la boite à rajouter 
-*
-* @return body Corps box2d de la boite 
-*/
 b2Body* addStaticBox(b2World* world, const Geometric* box)
 {
   // 1. Définir le corps statique
@@ -38,17 +30,6 @@ b2Body* addStaticBox(b2World* world, const Geometric* box)
   return body;
 }
 
-/**
-* @brief Créé une boite de collision Dynamic dans un monde box2d à partir d'une collision box BBOP 
-*
-* @param world Pointeur vers le monde 
-* @param box pointeur vers la boite à rajouter
-* @param density
-* @param friction
-* @param rotationLock Si le corp à sa rotation blocké
-*
-* @return body Corps box2d de la boite 
-*/
 b2Body* addDynamicBox(b2World* world, const Geometric* box, const float density, const float friction, const bool rotationLock)
 {
   // 1. Définir le corps statique
@@ -56,7 +37,7 @@ b2Body* addDynamicBox(b2World* world, const Geometric* box, const float density,
   bodyDef.position.Set((box->getPosition().x + (box->getSize().x / 2)) / PIXEL_PER_METER, (box->getPosition().y + (box->getSize().y / 2)) / PIXEL_PER_METER); 
   bodyDef.type = b2_dynamicBody;
   bodyDef.fixedRotation = rotationLock;
-  bodyDef.linearDamping = 3.0f; // Très utile !
+  bodyDef.linearDamping = 2.0f; // Très utile !
 
   b2Body* body = world->CreateBody(&bodyDef);
 
@@ -78,5 +59,42 @@ b2Body* addDynamicBox(b2World* world, const Geometric* box, const float density,
   body->CreateFixture(&fixtureDef);
 
   return body;
+}
+
+void CustomContactListener::BeginContact(b2Contact* contact)
+{
+  handleContact(contact, true);
+}
+
+void CustomContactListener::EndContact(b2Contact* contact)
+{
+  handleContact(contact, false);
+}
+
+void CustomContactListener::handleContact(b2Contact* contact, const bool begin)
+{
+  b2Fixture* fixtureA = contact->GetFixtureA();
+  b2Fixture* fixtureB = contact->GetFixtureB();
+  b2Body* bodyA = fixtureA->GetBody();
+  b2Body* bodyB = fixtureB->GetBody();
+
+  b2WorldManifold manifold;
+  contact->GetWorldManifold(&manifold);
+  const b2Vec2 normal = manifold.normal;
+
+  if (bodyB->GetUserData().pointer) {
+    if (normal.y < -0.5f) {
+      reinterpret_cast<BodyData *>(bodyB->GetUserData().pointer)->isTouchingDown = begin;
+    }else {
+      reinterpret_cast<BodyData *>(bodyB->GetUserData().pointer)->isTouchingDown = false;
+    }
+  }
+  if (bodyA->GetUserData().pointer) {
+    if (normal.y > 0.5f) {
+      reinterpret_cast<BodyData *>(bodyA->GetUserData().pointer)->isTouchingDown = begin;
+    }else {
+      reinterpret_cast<BodyData *>(bodyA->GetUserData().pointer)->isTouchingDown = false;
+    }
+  }
 }
 

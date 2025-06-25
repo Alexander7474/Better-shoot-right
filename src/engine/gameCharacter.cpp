@@ -100,7 +100,7 @@ void GameCharacter::update(Map* map)
   #endif
 }
 
-void GameCharacter::setPos(Vector2f pos)
+void GameCharacter::setPos(const Vector2f& pos)
 {
   setPosition(pos);
 
@@ -256,7 +256,7 @@ void GameCharacter::flipY()
 void GameCharacter::goLeft()
 {
   //gestion physique
-  b2Vec2 velocity(-50.0f, 0.0f);
+  const b2Vec2 velocity(-40.0f, 0.0f);
   entityBody->ApplyForceToCenter(velocity, true);
 
   //gestion animation
@@ -273,7 +273,7 @@ void GameCharacter::goLeft()
 void GameCharacter::goRight()
 {
   //gestion physique
-  b2Vec2 velocity(50.0f, 0.0f);
+  b2Vec2 velocity(40.0f, 0.0f);
   entityBody->ApplyForceToCenter(velocity, true);
 
   //gestion animation
@@ -290,8 +290,12 @@ void GameCharacter::goRight()
 
 void GameCharacter::jump()
 {
-  const b2Vec2 impulsion(0.0f, -entityBody->GetMass() * 10.0f); // vers le haut
-  entityBody->ApplyLinearImpulseToCenter(impulsion, true);
+  auto* data = reinterpret_cast<BodyData*>(entityBody->GetUserData().pointer);
+  if (data->isTouchingDown) {
+    const b2Vec2 impulsion(0.0f, -entityBody->GetMass() * 10.0f); // vers le haut
+    entityBody->ApplyLinearImpulseToCenter(impulsion, true);
+    data->jumpCpt++;
+  }
 }
 
 //GETTER 
@@ -314,8 +318,10 @@ void GameCharacter::computePhysic(b2World* world)
 {
   setSize(20.f,50.f);
   setOrigin(getSize().x / 2, getSize().y / 2);
-  entityBody = addDynamicBox(world, this, 1.f, 1.f, true);
+  entityBody = addDynamicBox(world, this, 1.f, 4.f, true);
 
+  auto* data = new BodyData;
+  entityBody->GetUserData().pointer = reinterpret_cast<uintptr_t>(data);
 }
 
 void GameCharacter::updatePhysic()

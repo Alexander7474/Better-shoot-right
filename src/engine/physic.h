@@ -33,3 +33,36 @@ b2Body* addStaticBox(b2World* world, const Geometric* box);
 */
 b2Body* addDynamicBox(b2World* world, const Geometric* box, const float density, const float friction, const bool rotationLock);
 
+/**
+ * @brief Données rattachées à chaque body box2D
+ * @details isTouching sert pour le listenner de gestion de collision
+ */
+struct BodyData {
+    //detection de collision
+    bool isTouchingDown = false;
+    bool isTouchingUp = false;
+    bool isTouchingLeft = false;
+    bool isTouchingRight = false;
+    //limitation
+    short unsigned jumpCpt;
+};
+
+/**
+ * @brief Listenner de contact pour gérer les collisions
+ */
+class CustomContactListener final : public b2ContactListener
+{
+public:
+    void BeginContact(b2Contact* contact) override;
+    void EndContact(b2Contact* contact) override;
+
+private:
+    /**
+     * @brief Gère les contacts
+     * @details Modifie isTouching de BodyData
+     *
+     * @param contact
+     * @param begin
+     */
+    static void handleContact(b2Contact* contact, bool begin);
+};

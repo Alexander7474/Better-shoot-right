@@ -77,7 +77,7 @@ public:
   * @brief change la postition du character 
   * @details Donc toutes les position des sprites constituant le character avec le centre du torse comment référence/origine
   */
-  void setPos(Vector2f pos);
+  void setPos(const Vector2f &pos);
   void setPos(float x, float y);
 
   /**
