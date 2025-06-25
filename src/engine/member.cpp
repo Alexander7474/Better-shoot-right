@@ -53,16 +53,6 @@ void Member::update()
 
     setTexture(animations[state].textures[animCnt]);
   }
-  
-  
-
-  #ifdef DEBUG 
-  cout << "Character Member: " << name << endl;
-  cout << "state: " << state << endl;
-  cout << "animCnt: " << animCnt << " /max: " << animations[state].nFrame << endl;
-  cout << "lastFrameStartTime: " << animations[state].lastFrameStartTime << endl;
-  cout << "----------------------------------------------------------------" << endl;
-  #endif
 }
 
 void Member::setAttachPoint(Vector2f _attachPoint)
@@ -101,9 +91,7 @@ void Member::createTextureCache(std::string path)
   string jsonPath = path + "animations.json";
   std::ifstream jsonFile(jsonPath);
   if(!jsonFile.is_open()){
-    #ifdef DEBUG 
     LOGS.push_back("Erreur loading json file for " + name);
-    #endif 
     return; 
   }
 
@@ -112,9 +100,7 @@ void Member::createTextureCache(std::string path)
   try {
     jsonFile >> jsonData;
   } catch (const std::exception &e) {
-    #ifdef DEBUG 
     LOGS.push_back("Erreur parsing json for " + name);
-    #endif 
     return;
   }
 
@@ -140,19 +126,14 @@ void Member::createTextureCache(std::string path)
         animations[i].frameTime = duration/nFrame;
 
       }else{
-
-        #ifdef DEBUG 
         LOGS.push_back("Erreur loading " + to_string(i) + " for " + name + ", loading default.png");
-        #endif
       }
 
     }
 
     setTexture(animations[idle].textures[0]);
   } catch (const json::exception &e){
-    #ifdef DEBUG 
     LOGS.push_back("Erreur getting JSON state animation for " + name);
-    #endif 
     return;
   }
 }

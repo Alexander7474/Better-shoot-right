@@ -171,11 +171,6 @@ void GameCharacter::lookAt(const Vector2f& lp)
     flipY();
   }
 
-
-  #ifdef DEBUG
-  //cout << "Character new looking point: " << lookingPoint.x << "|" << lookingPoint.y << endl;
-  #endif
-
   setMemberRotation(leftArm);
   setMemberRotation(rightArm);
   setMemberRotation(head);
@@ -204,14 +199,6 @@ void GameCharacter::setMemberRotation(Sprite &member, float m)
     rotation = -rotation;
   
   member.setRotation(rotation);
-
-  #ifdef DEBUG 
-  cout << "Character leftArm C distance to the looking Point: " << distanceC << endl;
-  cout << "Character leftArm A distance to the looking Point: " << distanceA << endl;
-  cout << "Character leftArm B distance to the looking Point: " << distanceB << endl;
-  cout << "Character leftArm rotation to the looking Point: " << rotation << endl;
-  cout << "----------------------------------------------------------------" << endl;
-  #endif
 }
 
 Vector2f GameCharacter::getLookingPoint() const

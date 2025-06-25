@@ -17,10 +17,6 @@ int main()
   Game game;
 
   glfwSwapInterval(1);
- 
-  #ifdef DEBUG
-  LOGS.push_back("VERSION DE DEBUG");
-  #endif
 
   for(string &s: LOGS){
     cout << s << endl;
@@ -30,16 +26,6 @@ int main()
   while (!glfwWindowShouldClose(gameWindow))
   {
     double timeSave = glfwGetTime();
-
-    #ifdef DEBUG 
-    system("clear");
-    for(string &s: LOGS){
-      cout << s << endl;
-    }
-    cout << "DELTA_TIME: " << DELTA_TIME << endl;
-    cout << "FPS: " << FPS << endl;
-    cout << "----------------------------------------------------------------" << endl;
-    #endif
 
     // clear de la fenêtre en noire
     bbopCleanWindow(gameWindow,Vector3i(0,0,0),1.0f);
@@ -61,7 +47,6 @@ int main()
   // destruction de la fen^tre et fin de glfw
   glfwDestroyWindow(gameWindow);
   glfwTerminate();
-
 
   return 0;
 }

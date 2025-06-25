@@ -59,9 +59,7 @@ void Gun::loadJsonFile(string path)
   string jsonPath = path + "gun.json";
   std::ifstream jsonFile(jsonPath);
   if(!jsonFile.is_open()){
-    #ifdef DEBUG 
     LOGS.push_back("Erreur loading json file for " + name);
-    #endif 
     return; 
   }
 
@@ -70,9 +68,7 @@ void Gun::loadJsonFile(string path)
   try {
     jsonFile >> jsonData;
   } catch (const std::exception &e) {
-    #ifdef DEBUG 
     LOGS.push_back("Erreur parsing json for " + name);
-    #endif 
     return;
   }
 
@@ -117,19 +113,14 @@ void Gun::loadJsonFile(string path)
         animations[i].nFrame = nFrame;
         animations[i].frameTime = duration/nFrame;
       }else{
-
-        #ifdef DEBUG 
         LOGS.push_back("Erreur loading " + to_string(i) + " for " + name + ", loading default.png");
-        #endif
       }
 
     }
 
     setTexture(animations[idle].textures[0]);
   } catch (const json::exception &e){
-    #ifdef DEBUG 
     LOGS.push_back("Erreur getting JSON info for " + name);
-    #endif 
     return;
   }
 

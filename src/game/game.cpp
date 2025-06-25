@@ -96,12 +96,4 @@ void Game::Draw()
     scene.Draw(*d);
   }
   scene.render();
-  
-  #ifdef DEBUG 
-  bbopDebugCollisionBox(mainPlayer.getCharacter().getLeftArm().getCollisionBox(), scene);
-  bbopDebugCollisionBox(mainPlayer.getCharacter().getRightArm().getCollisionBox(), scene);
-  bbopDebugCollisionBox(mainPlayer.getCharacter().getBody().getCollisionBox(), scene);
-  bbopDebugCollisionBox(mainPlayer.getCharacter().getHead().getCollisionBox(), scene);
-  bbopDebugCollisionBox(mainPlayer.getCharacter().getLegs().getCollisionBox(), scene);
-  #endif 
 }
