@@ -45,8 +45,15 @@ private:
   float scale;
   
   //gestion de la physique
-  float maxVelocityX;
-  float maxVelocityY;
+  float maxVelocityX{};
+  float maxVelocityY{};
+  float newtonX;
+  float newtonY;
+  float restitution;
+  float friction;
+  float density;
+  float linearDamping;
+
   float hp;
 
   /**
@@ -88,11 +95,21 @@ public:
   /**
   * @brief Fait regarder le character au coordonnées lp
   */
-  void lookAt(Vector2f lp);
+  void lookAt(const Vector2f& lp);
 
-  void goLeft();
+  /**
+   * @brief Déplace le personnage vers la gauche
+   *
+   * @param newtonDiff Permet d'ajouter ou de soustraire de la force au déplacement
+   */
+  void goLeft(float newtonDiff = 0.f);
 
-  void goRight();
+  /**
+   * @brief Déplace le personnage vers la droite
+   *
+   * @param newtonDiff Permet d'ajouter ou de soustraire de la force au déplacement
+   */
+  void goRight(float newtonDiff = 0.f);
 
   void jump();
 

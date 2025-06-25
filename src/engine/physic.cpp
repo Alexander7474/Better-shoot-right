@@ -30,14 +30,14 @@ b2Body* addStaticBox(b2World* world, const Geometric* box)
   return body;
 }
 
-b2Body* addDynamicBox(b2World* world, const Geometric* box, const float density, const float friction, const bool rotationLock)
+b2Body* addDynamicBox(b2World* world, const Geometric* box, const float restitution, const float density, const float friction, const float linearDamping, const bool rotationLock)
 {
   // 1. Définir le corps statique
   b2BodyDef bodyDef;
   bodyDef.position.Set((box->getPosition().x + (box->getSize().x / 2)) / PIXEL_PER_METER, (box->getPosition().y + (box->getSize().y / 2)) / PIXEL_PER_METER); 
   bodyDef.type = b2_dynamicBody;
   bodyDef.fixedRotation = rotationLock;
-  bodyDef.linearDamping = 2.0f; // Très utile !
+  bodyDef.linearDamping = linearDamping; // Très utile !
 
   b2Body* body = world->CreateBody(&bodyDef);
 
@@ -47,7 +47,7 @@ b2Body* addDynamicBox(b2World* world, const Geometric* box, const float density,
  
   b2FixtureDef fixtureDef;
   fixtureDef.shape = &boxShape;
-  fixtureDef.restitution = 0.0f;
+  fixtureDef.restitution = restitution;
   fixtureDef.density = density;
   fixtureDef.friction = friction;
   

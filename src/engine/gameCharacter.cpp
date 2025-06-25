@@ -16,7 +16,13 @@ string gameCharacterStateString[2] = {
 };
 
 GameCharacter::GameCharacter()
-  : hp(10.f)
+  : newtonX(40.f),
+    newtonY(10.f),
+    restitution(0.f),
+    friction(2.f),
+    density(1.f),
+    linearDamping(1.f),
+    hp(10.f)
 {
   characterDirection = rightDir;
   scale = 0.75f;
@@ -133,7 +139,7 @@ void GameCharacter::setPos(const Vector2f& pos)
   legs.setAttachPoint(pos.x, pos.y+8*scale);
 }
 
-void GameCharacter::setPos(float x, float y)
+void GameCharacter::setPos(const float x, const float y)
 {
   setPos(Vector2f(x ,y));
 }
@@ -152,7 +158,7 @@ void GameCharacter::Draw(GLint *renderUniforms) const
   }
 }
 
-void GameCharacter::lookAt(Vector2f lp)
+void GameCharacter::lookAt(const Vector2f& lp)
 {
   lookingPoint = lp;
   
@@ -253,10 +259,10 @@ void GameCharacter::flipY()
   }
 }
 
-void GameCharacter::goLeft()
+void GameCharacter::goLeft(const float newtonDiff)
 {
   //gestion physique
-  const b2Vec2 velocity(-40.0f, 0.0f);
+  const b2Vec2 velocity(-(newtonX+newtonDiff), 0.0f);
   entityBody->ApplyForceToCenter(velocity, true);
 
   //gestion animation
@@ -270,10 +276,10 @@ void GameCharacter::goLeft()
   }
 }
 
-void GameCharacter::goRight()
+void GameCharacter::goRight(const float newtonDiff)
 {
   //gestion physique
-  b2Vec2 velocity(40.0f, 0.0f);
+  const b2Vec2 velocity(newtonX+newtonDiff, 0.0f);
   entityBody->ApplyForceToCenter(velocity, true);
 
   //gestion animation
@@ -292,14 +298,13 @@ void GameCharacter::jump()
 {
   auto* data = reinterpret_cast<BodyData*>(entityBody->GetUserData().pointer);
   if (data->isTouchingDown) {
-    const b2Vec2 impulsion(0.0f, -entityBody->GetMass() * 10.0f); // vers le haut
+    const b2Vec2 impulsion(0.0f, -entityBody->GetMass() * newtonY); // vers le haut
     entityBody->ApplyLinearImpulseToCenter(impulsion, true);
     data->jumpCpt++;
   }
 }
 
-//GETTER 
-
+//GETTER
 Member& GameCharacter::getLeftArm() { return leftArm; }
 Member& GameCharacter::getRightArm() { return rightArm; }
 Member& GameCharacter::getBody() { return body; }
@@ -318,7 +323,7 @@ void GameCharacter::computePhysic(b2World* world)
 {
   setSize(20.f,50.f);
   setOrigin(getSize().x / 2, getSize().y / 2);
-  entityBody = addDynamicBox(world, this, 1.f, 4.f, true);
+  entityBody = addDynamicBox(world, this, restitution, density, friction, linearDamping, true);
 
   auto* data = new BodyData;
   entityBody->GetUserData().pointer = reinterpret_cast<uintptr_t>(data);

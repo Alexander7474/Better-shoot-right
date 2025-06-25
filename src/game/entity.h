@@ -18,6 +18,8 @@ public:
   /**
   * @brief créé l'objet physique dans le monde box2D
   * @details fais dans un second temps du constructeur pour permettre de modifier les caractèristiques du sprite
+  *
+  * @param world Pointeur vers le monde ou ajouter l'Entité
   */
   virtual void computePhysic(b2World *world) = 0;
 

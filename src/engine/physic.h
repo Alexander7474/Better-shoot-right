@@ -25,13 +25,15 @@ b2Body* addStaticBox(b2World* world, const Geometric* box);
 *
 * @param world Pointeur vers le monde
 * @param box pointeur vers la boite à rajouter
+* @param restitution
 * @param density
 * @param friction
+* @param linearDamping
 * @param rotationLock Si le corp a sa rotation blocké
 *
 * @return body Corps box2d de la boite
 */
-b2Body* addDynamicBox(b2World* world, const Geometric* box, const float density, const float friction, const bool rotationLock);
+b2Body* addDynamicBox(b2World* world, const Geometric* box, const float restitution, const float density, const float friction, const float linearDamping, const bool rotationLock);
 
 /**
  * @brief Données rattachées à chaque body box2D
