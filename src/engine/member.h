@@ -1,7 +1,7 @@
 #pragma once 
 
-#include "../../Bbop-Library/include/BBOP/Graphics/bbopMathClass.h"
-#include "../../Bbop-Library/include/BBOP/Graphics.h"
+#include "../../Bbop-2D/include/BBOP/Graphics/bbopMathClass.h"
+#include "../../Bbop-2D/include/BBOP/Graphics.h"
 
 #include <string>
 

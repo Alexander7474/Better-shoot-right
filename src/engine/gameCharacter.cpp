@@ -1,14 +1,12 @@
 #include "gameCharacter.h"
-#include "../../Bbop-Library/include/BBOP/Graphics/bbopMathClass.h"
-#include "../../Bbop-Library/include/BBOP/Graphics/collisionBoxClass.h"
 #include "../game/game.h"
 #include "gun.h"
 #include "member.h"
 
 #include <GLFW/glfw3.h>
 #include <cmath>
-#include <cstdlib>
-#include <iostream>
+
+#include "physic.h"
 
 using namespace std;
 
@@ -18,16 +16,12 @@ string gameCharacterStateString[2] = {
 };
 
 GameCharacter::GameCharacter()
-  : speed(250.f),
-    jumpForce(200.f),
-    weight(1.f),
-    inertie(0.f, 0.f),
-    forceInertie(2.f),
-    startFall(glfwGetTime()),
-    canJump(false),
-    startJump(glfwGetTime()),
-    jumpTime(0.1f),
-    isJumping(false),
+  : newtonX(40.f),
+    newtonY(10.f),
+    restitution(0.f),
+    friction(2.f),
+    density(1.f),
+    linearDamping(1.f),
     hp(10.f)
 {
   characterDirection = rightDir;
@@ -65,88 +59,44 @@ GameCharacter::GameCharacter()
   createTextureCache("assets/personnages/soldier/");
 }
 
-void GameCharacter::createTextureCache(string path)
+void GameCharacter::createTextureCache(const string& path)
 {
-  string armLeftPath = path + "arm_left/";
+  const string armLeftPath = path + "arm_left/";
   leftArm.createTextureCache(armLeftPath);
 
-  string armRightPath = path + "arm_right/";
+  const string armRightPath = path + "arm_right/";
   rightArm.createTextureCache(armRightPath);
 
-  string bodyPath = path + "body/";
+  const string bodyPath = path + "body/";
   body.createTextureCache(bodyPath);
 
-  string headPath = path + "head/";
+  const string headPath = path + "head/";
   head.createTextureCache(headPath);
 
-  string legsPath = path + "legs/";
+  const string legsPath = path + "legs/";
   legs.createTextureCache(legsPath);
 }
 
 void GameCharacter::update(Map* map)
 {
-  //si imoblie alors state = idle 
-  if(inertie.x == 0 && legs.state!=dead)
+  //gestion de l'état du personnage
+  if (entityBody->GetLinearVelocity().x <= 0.5f && entityBody->GetLinearVelocity().x >= -0.5f) {
     legs.state = idle;
-
-  //application de la gravité si pas de saut
-  inertie.y += (glfwGetTime() - startFall) * GRAVITY * DELTA_TIME;
-
-  if(isJumping && glfwGetTime() - startJump >= jumpTime)
-    isJumping = false;
-
-  if(isJumping){
-    inertie.y = -jumpForce;
-    startFall = glfwGetTime();
-  } 
-
-  // application de l'inertie final calculé
-  setPos(getPosition().x + inertie.x, getPosition().y + inertie.y * DELTA_TIME);
-
-  //check des collisions au sol
-  bool groundCollide = false;
-  for(CollisionBox & box : map->getCollision()){
-    if(legs.getCollisionBox().check(box) && box.getTop() < legs.getCollisionBox().getBottom()){
-      inertie.y = 0.f;
-      startFall = glfwGetTime();
-      setPos(getPosition().x, box.getTop()-40.f*scale);
-      canJump = true;
-      groundCollide = true;
-    }
+    legs.animations[idle].lastFrameStartTime = glfwGetTime();
   }
 
-  //gestion des état après les déplacement 
-  if(!groundCollide && legs.state == run)
-    legs.state = idle;
-
+  //mise à jour des membres
   leftArm.update();
   rightArm.update();
   head.update();
   body.update();
   legs.update();
 
+  //mise à jour des objets
   gun.update();
-
-  #ifdef DEBUG 
-  cout << "Character inertie: " << inertie.x << "|" << inertie.y << endl;
-  #endif
-
-  //diminution de l'inertie en x 
-  inertie.x = inertie.x / forceInertie;
-  if(inertie.x > -10.f*DELTA_TIME && inertie.x < 10.f*DELTA_TIME)
-    inertie.x = 0.f;
-
-  #ifdef DEBUG 
-  cout << "Character after slow inertie: " << inertie.x << "|" << inertie.y << endl;
-  cout << "Character pos: " << getPosition().x << "|" << getPosition().y << endl;
-  cout << "Character fall start: " << startFall << endl;
-  cout << "Character Jump start: " << startJump << endl;
-  cout << "Character Jump time start: " << glfwGetTime() - startJump << endl;
-  cout << "----------------------------------------------------------------" << endl;
-  #endif
 }
 
-void GameCharacter::setPos(Vector2f pos)
+void GameCharacter::setPos(const Vector2f& pos)
 {
   setPosition(pos);
 
@@ -179,7 +129,7 @@ void GameCharacter::setPos(Vector2f pos)
   legs.setAttachPoint(pos.x, pos.y+8*scale);
 }
 
-void GameCharacter::setPos(float x, float y)
+void GameCharacter::setPos(const float x, const float y)
 {
   setPos(Vector2f(x ,y));
 }
@@ -198,7 +148,7 @@ void GameCharacter::Draw(GLint *renderUniforms) const
   }
 }
 
-void GameCharacter::lookAt(Vector2f lp)
+void GameCharacter::lookAt(const Vector2f& lp)
 {
   lookingPoint = lp;
   
@@ -288,9 +238,8 @@ void GameCharacter::flipY()
     leftArm.setAttachPoint(body.getPosition().x-2*scale, leftArm.getPosition().y);
 
     gun.gunDirection = rightDir;
-  }else{
-
-    leftArm.setOrigin(24*scale,8*scale); // origine au niveau de l'épaule 
+  }else {
+    leftArm.setOrigin(24*scale,8*scale); // origine au niveau de l'épaule
     rightArm.setOrigin(24*scale,8*scale);
 
     gun.gunDirection = leftDir;
@@ -298,77 +247,80 @@ void GameCharacter::flipY()
     rightArm.setAttachPoint(body.getPosition().x+5*scale, rightArm.getPosition().y);
     leftArm.setAttachPoint(body.getPosition().x+2*scale, leftArm.getPosition().y);
   }
-
-  #ifdef DEBUG
-  if(characterDirection == rightDir){
-    cout << "Character flipped to right" << endl;
-  }else{
-    cout << "Character flipped to left" << endl;
-  }
-  #endif
 }
 
-void GameCharacter::goLeft()
+void GameCharacter::goLeft(const float newtonDiff)
 {
-  if (legs.state!=dead)
-  {
-    inertie.x = -speed * DELTA_TIME;
-    if(legs.state != run){
-      legs.state = run;
-      legs.animations[run].lastFrameStartTime = glfwGetTime();
-      if(characterDirection == rightDir)
-        legs.isReverse = true;
-      else
-        legs.isReverse = false;
-    }
+  //gestion physique
+  const b2Vec2 velocity(-(newtonX+newtonDiff), 0.0f);
+  entityBody->ApplyForceToCenter(velocity, true);
+
+  //gestion animation
+  if(legs.state != run){
+    legs.state = run;
+    legs.animations[run].lastFrameStartTime = glfwGetTime();
+    if(characterDirection == rightDir)
+      legs.isReverse = true;
+    else
+      legs.isReverse = false;
   }
-  
-  
 }
 
-void GameCharacter::goRight()
+void GameCharacter::goRight(const float newtonDiff)
 {
-  if (legs.state!=dead)
-  {
-    inertie.x = speed * DELTA_TIME;
-    if(legs.state != run){
-      legs.animations[run].lastFrameStartTime = glfwGetTime();
-      legs.state = run;
-      if(characterDirection == rightDir)
-        legs.isReverse = false;
-      else
-        legs.isReverse = true;
-    }
+  //gestion physique
+  const b2Vec2 velocity(newtonX+newtonDiff, 0.0f);
+  entityBody->ApplyForceToCenter(velocity, true);
+
+  //gestion animation
+  if(legs.state != run) {
+    legs.animations[run].lastFrameStartTime = glfwGetTime();
+    legs.state = run;
+    if(characterDirection == rightDir)
+      legs.isReverse = false;
+    else
+      legs.isReverse = true;
   }
-  
   
 }
 
 void GameCharacter::jump()
 {
-  if(canJump){
-    canJump = false;
-    isJumping = true;
-    startJump = glfwGetTime();
+  auto* data = reinterpret_cast<BodyData*>(entityBody->GetUserData().pointer);
+  if (data->isTouchingDown) {
+    const b2Vec2 impulsion(0.0f, -entityBody->GetMass() * newtonY); // vers le haut
+    entityBody->ApplyLinearImpulseToCenter(impulsion, true);
+    data->jumpCpt++;
   }
 }
 
-//GETTER 
-
+//GETTER
 Member& GameCharacter::getLeftArm() { return leftArm; }
 Member& GameCharacter::getRightArm() { return rightArm; }
 Member& GameCharacter::getBody() { return body; }
 Member& GameCharacter::getHead() { return head; }
 Member& GameCharacter::getLegs() { return legs; }
 Gun& GameCharacter::getGun() { return gun; }
-float GameCharacter::getSpeed() { return speed; }
-float GameCharacter::getJumpForce() { return jumpForce; }
-float GameCharacter::getWeight() { return weight; }
-float GameCharacter::gethp(){return hp;}
+float GameCharacter::getHp() const {return hp;}
 
-// SETTER 
+// SETTER
+void GameCharacter::setHp(const float _hp){this->hp=_hp;}
 
-void GameCharacter::setSpeed(float _speed) { this->speed = _speed; }
-void GameCharacter::setJumpForce(float _jumpForce) { this->jumpForce = _jumpForce; }
-void GameCharacter::setWeight(float _weight) { this->weight = _weight; }
-void GameCharacter::sethp(float hp){this->hp=hp;}
+
+//ENTITY 
+
+void GameCharacter::computePhysic(b2World* world)
+{
+  setSize(20.f,50.f);
+  setOrigin(getSize().x / 2, getSize().y / 2);
+  entityBody = addDynamicBox(world, this, restitution, density, friction, linearDamping, true);
+
+  auto* data = new BodyData;
+  entityBody->GetUserData().pointer = reinterpret_cast<uintptr_t>(data);
+}
+
+void GameCharacter::updatePhysic()
+{
+  setPos(entityBody->GetPosition().x * PIXEL_PER_METER,
+              entityBody->GetPosition().y * PIXEL_PER_METER - 5.f);
+}

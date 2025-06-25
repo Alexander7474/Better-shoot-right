@@ -1,14 +1,12 @@
 #include <iostream>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include <irrKlang/ik_ESoundOutputDrivers.h>
-#include <irrKlang/irrKlang.h>
 #include <sys/stat.h>
 #include <ctime>
 
-#include "Bbop-Library/include/BBOP/Graphics.h"
-#include "Bbop-Library/include/BBOP/Graphics/cameraClass.h"
-#include "Bbop-Library/include/BBOP/Graphics/mapClass.h"
+#include "Bbop-2D/include/BBOP/Graphics.h"
+#include "Bbop-2D/include/BBOP/Graphics/cameraClass.h"
+#include "Bbop-2D/include/BBOP/Graphics/mapClass.h"
 
 using namespace std;
 

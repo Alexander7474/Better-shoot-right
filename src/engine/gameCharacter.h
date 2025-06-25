@@ -3,11 +3,12 @@
 #include <string>
 #include <vector>
 
-#include "../../Bbop-Library/include/BBOP/Graphics.h"
-#include "../../Bbop-Library/include/BBOP/Graphics/bbopMathClass.h"
-#include "../../Bbop-Library/include/BBOP/Graphics/textureClass.h"
+#include "../../Bbop-2D/include/BBOP/Graphics.h"
+#include "../../Bbop-2D/include/BBOP/Graphics/bbopMathClass.h"
+#include "../../Bbop-2D/include/BBOP/Graphics/textureClass.h"
 #include "member.h"
 #include "gun.h"
+#include "../game/entity.h"
 
 extern std::string gameCharacterStateString[2];
 
@@ -23,7 +24,7 @@ enum Direction
 
 #endif
 
-class GameCharacter : public BbopDrawable, public Geometric
+class GameCharacter : public BbopDrawable, public Geometric, public Entity
 {
 private:
   // attribute for the body of the character 
@@ -39,23 +40,21 @@ private:
   //gestion du regard et de l'orientation du character
   Vector2f lookingPoint; //<! Ou le character regarde
   Direction characterDirection; //<! Direction du regard
-  //
+
+  //taille du caractère
   float scale;
   
   //gestion de la physique
-  float speed;
-  float jumpForce;
-  float weight;
-  float hp;
+  float maxVelocityX{};
+  float maxVelocityY{};
+  float newtonX;
+  float newtonY;
+  float restitution;
+  float friction;
+  float density;
+  float linearDamping;
 
-  // gérer par le caractère
-  Vector2f inertie;
-  float forceInertie;
-  double startFall;
-  bool canJump;
-  double startJump;
-  double jumpTime;
-  bool isJumping;
+  float hp;
 
   /**
    *  @brief Détermine la rotaion d'un membre en fonction du lookingPoint
@@ -69,7 +68,7 @@ public:
   /**
    * @brief remplie les listes de textures 
    */
-  void createTextureCache(std::string path);
+  void createTextureCache(const std::string& path);
   
   /**
    * @brief Met jour le character
@@ -85,7 +84,7 @@ public:
   * @brief change la postition du character 
   * @details Donc toutes les position des sprites constituant le character avec le centre du torse comment référence/origine
   */
-  void setPos(Vector2f pos);
+  void setPos(const Vector2f &pos);
   void setPos(float x, float y);
 
   /**
@@ -96,11 +95,21 @@ public:
   /**
   * @brief Fait regarder le character au coordonnées lp
   */
-  void lookAt(Vector2f lp);
+  void lookAt(const Vector2f& lp);
 
-  void goLeft();
+  /**
+   * @brief Déplace le personnage vers la gauche
+   *
+   * @param newtonDiff Permet d'ajouter ou de soustraire de la force au déplacement
+   */
+  void goLeft(float newtonDiff = 0.f);
 
-  void goRight();
+  /**
+   * @brief Déplace le personnage vers la droite
+   *
+   * @param newtonDiff Permet d'ajouter ou de soustraire de la force au déplacement
+   */
+  void goRight(float newtonDiff = 0.f);
 
   void jump();
 
@@ -117,10 +126,10 @@ public:
   Member& getHead();
   Member& getLegs();
   Gun& getGun();
-  float getSpeed();
-  float getJumpForce();
-  float getWeight();
-  float gethp();
+  float getSpeed() const;
+  float getJumpForce() const;
+  float getWeight() const;
+  float getHp() const;
   
 
   //SETTER
@@ -128,5 +137,9 @@ public:
   void setSpeed(float _speed);
   void setJumpForce(float _jumpForce);
   void setWeight(float _weight);
-  void sethp(float hp);
+  void setHp(float _hp);
+
+  //ENTITY HERITAGE gestion de la physique
+  void computePhysic(b2World *world) override;
+  void updatePhysic() override;
 };

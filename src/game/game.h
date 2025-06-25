@@ -1,11 +1,15 @@
 #pragma once
 
-#include "../../Bbop-Library/include/BBOP/Graphics.h"
+#include "../../Bbop-2D/include/BBOP/Graphics.h"
 #include "player.h"
-#include"bot.h"
+#include "bot.h"
+#include "../engine/dynamicSprite.h"
+#include "entity.h"
+
 #include <GLFW/glfw3.h>
 #include <vector>
 #include <random>
+#include <box2d/box2d.h>
 
 // pointeur vers la fentre de jeu utilisable de partout
 extern GLFWwindow * gameWindow;
@@ -24,6 +28,11 @@ private:
   Player mainPlayer;
   Map map;
   Bot npc;
+  std::vector<DynamicSprite*> dynamics; // liste des enititées
+
+  //gestion physique 
+  b2World physicalWorld; 
+  std::vector<Entity*> entities; // liste des enititées
 public:
   Game();
 

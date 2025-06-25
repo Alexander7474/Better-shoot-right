@@ -2,6 +2,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#include "Bbop-2D/include/BBOP/Graphics/bbopFunc.h"
 #include "src/game/game.h"
 
 using namespace std;
@@ -9,7 +10,8 @@ using namespace std;
 int main()
 {
   //initialisation de la lib
-  bbopInit(640,360,"window name",gameWindow);
+  bbopInit(2560,1440,"window name",gameWindow);
+  bbopChangeWindowResolution(640,360);
   cout << "Version prototype" << endl;
 
   Game game;
@@ -20,12 +22,9 @@ int main()
   LOGS.push_back("VERSION DE DEBUG");
   #endif
 
-    for(string &s: LOGS){
-      cout << s << endl;
-    }
-    cout << "DELTA_TIME: " << DELTA_TIME << endl;
-    cout << "FPS: " << FPS << endl;
-    cout << "----------------------------------------------------------------" << endl;
+  for(string &s: LOGS){
+    cout << s << endl;
+  }
 
   //main while loop
   while (!glfwWindowShouldClose(gameWindow))

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../../Bbop-Library/include/BBOP/Graphics/bbopGlobal.h"
-#include "../../Bbop-Library/include/BBOP/Graphics/cameraClass.h"
+#include "../../Bbop-2D/include/BBOP/Graphics/bbopGlobal.h"
+#include "../../Bbop-2D/include/BBOP/Graphics/cameraClass.h"
 #include "../engine/gameCharacter.h"
 #include "../engine/crossair.h"
 
