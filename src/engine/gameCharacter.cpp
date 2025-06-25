@@ -79,31 +79,21 @@ void GameCharacter::createTextureCache(const string& path)
 
 void GameCharacter::update(Map* map)
 {
+  //gestion de l'état du personnage
+  if (entityBody->GetLinearVelocity().x <= 0.5f && entityBody->GetLinearVelocity().x >= -0.5f) {
+    legs.state = idle;
+    legs.animations[idle].lastFrameStartTime = glfwGetTime();
+  }
+
+  //mise à jour des membres
   leftArm.update();
   rightArm.update();
   head.update();
   body.update();
   legs.update();
 
+  //mise à jour des objets
   gun.update();
-
-  #ifdef DEBUG 
-  cout << "Character inertie: " << inertie.x << "|" << inertie.y << endl;
-  #endif
-
-  #ifdef DEBUG 
-  cout << "Character after slow inertie: " << inertie.x << "|" << inertie.y << endl;
-  cout << "Character pos: " << getPosition().x << "|" << getPosition().y << endl;
-  cout << "Character fall start: " << startFall << endl;
-  cout << "Character Jump start: " << startJump << endl;
-  cout << "Character Jump time start: " << glfwGetTime() - startJump << endl;
-  if(characterDirection == rightDir){
-    cout << "Character flipped to right" << endl;
-  }else{
-    cout << "Character flipped to left" << endl;
-  }
-  cout << "----------------------------------------------------------------" << endl;
-  #endif
 }
 
 void GameCharacter::setPos(const Vector2f& pos)
