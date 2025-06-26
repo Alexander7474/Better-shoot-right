@@ -5,12 +5,11 @@
 
 #include "../../Bbop-2D/include/BBOP/Graphics.h"
 #include "../../Bbop-2D/include/BBOP/Graphics/bbopMathClass.h"
-#include "../../Bbop-2D/include/BBOP/Graphics/textureClass.h"
 #include "member.h"
 #include "gun.h"
 #include "../game/entity.h"
 
-extern std::string gameCharacterStateString[2];
+extern const char *gameCharacterStateString[3];
 
 //éviter le redéfinition 
 #ifndef DIRECTION 

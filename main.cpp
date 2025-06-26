@@ -54,8 +54,6 @@ int main()
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
-    // Interface debug
-    ImGui::Begin("Debug Info");
     #endif
 
     // clear de la fenêtre en noire
@@ -65,6 +63,8 @@ int main()
     game.Draw();
 
     #ifdef IMGUI_DEBUG
+    // Interface performance
+    ImGui::Begin("Performance Info");
     ImGui::Text("FPS: %.2f, DELTA_TIME: %.2f)", FPS, DELTA_TIME);
     ImGui::End();
     ImGui::Render();
@@ -79,7 +79,13 @@ int main()
     glfwPollEvents();
 
     DELTA_TIME = glfwGetTime() - timeSave;
-    FPS = 1/DELTA_TIME;
+
+    FPS_COUNTER++;
+    if (glfwGetTime() - LAST_FPS_UPDATE >= 1.0) {
+      FPS = FPS_COUNTER / (glfwGetTime() - LAST_FPS_UPDATE);
+      LAST_FPS_UPDATE = glfwGetTime();
+      FPS_COUNTER = 0;
+    }
   }
 
   // Nettoyage

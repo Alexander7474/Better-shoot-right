@@ -13,6 +13,8 @@ GLFWwindow* gameWindow = nullptr;
 
 double DELTA_TIME = 0;
 double FPS = 0;
+double FPS_COUNTER = 0;
+double LAST_FPS_UPDATE = glfwGetTime();
 float GRAVITY = 9.8f;
 default_random_engine RANDOM_ENGINE; 
 
@@ -23,7 +25,7 @@ Game::Game()
   physicalWorld.SetContactListener(listener);
 
   if(map.getSpawnPoints().size() > 1){
-    mainPlayer.getCharacter().setPos(map.getSpawnPoints()[0].x, -100.f);
+    mainPlayer.getCharacter().setPos(map.getSpawnPoints()[0]);
     npc.setPosition(map.getSpawnPoints()[1]);
   }
   //init physic-------------------------------------------------------------------------
@@ -58,7 +60,7 @@ void Game::update()
   //déterminer la scale de la cam en fonction de la distance entre crossair et play 
   float distance = bbopGetDistance(mainPlayer.getCrossair().getPosition(), mainPlayer.getCharacter().getPosition());
   distance = distance/BBOP_WINDOW_RESOLUTION.x;
-  mainPlayerCam.setScale(1.5);
+  mainPlayerCam.setScale(0.8);
   mainPlayerCam.setPosition(middlePos);
   mainPlayer.update(&mainPlayerCam, &map);
 
@@ -74,7 +76,7 @@ void Game::update()
   }
 
   //Gestion de la physique-------------------------------------------------------------------------
-  float timeStep = 1.0f / 100.f;
+  float timeStep = 1.0f / 60.f;
   int velocityIterations = 6;
   int positionIterations = 2;
 

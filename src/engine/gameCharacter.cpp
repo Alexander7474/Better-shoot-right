@@ -1,18 +1,25 @@
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+#include <cmath>
+
 #include "gameCharacter.h"
 #include "../game/game.h"
 #include "gun.h"
 #include "member.h"
-
-#include <GLFW/glfw3.h>
-#include <cmath>
-
 #include "physic.h"
+
+#ifdef IMGUI_DEBUG
+#include "../imgui/imgui.h"
+#include "../backends/imgui_impl_glfw.h"
+#include "../backends/imgui_impl_opengl3.h"
+#endif
 
 using namespace std;
 
-string gameCharacterStateString[2] = { 
+const char *gameCharacterStateString[3] = {
   "idle",
-  "run"
+  "run",
+  "dead"
 };
 
 GameCharacter::GameCharacter()
@@ -21,7 +28,7 @@ GameCharacter::GameCharacter()
     restitution(0.f),
     friction(2.f),
     density(1.f),
-    linearDamping(1.f),
+    linearDamping(4.f),
     hp(10.f)
 {
   characterDirection = rightDir;
@@ -80,7 +87,12 @@ void GameCharacter::createTextureCache(const string& path)
 void GameCharacter::update(Map* map)
 {
   //gestion de l'état du personnage
-  if (entityBody->GetLinearVelocity().x <= 0.5f && entityBody->GetLinearVelocity().x >= -0.5f) {
+  if (entityBody->GetLinearVelocity().x <= 0.5f && entityBody->GetLinearVelocity().x >= -0.5f && legs.state == run) {
+    legs.state = idle;
+    legs.animations[idle].lastFrameStartTime = glfwGetTime();
+  }
+
+  if (!reinterpret_cast<BodyData*>(entityBody->GetUserData().pointer)->isTouchingDown && legs.state == run) {
     legs.state = idle;
     legs.animations[idle].lastFrameStartTime = glfwGetTime();
   }
@@ -94,6 +106,20 @@ void GameCharacter::update(Map* map)
 
   //mise à jour des objets
   gun.update();
+
+  #ifdef IMGUI_DEBUG
+  // Interface character info
+  ImGui::Begin("GameCharacter Info");
+  ImGui::Text("Position: (%f, %f)", getPosition().x, getPosition().y);
+  ImGui::Text("Looking point: (%f, %f)", lookingPoint.x, lookingPoint.y);
+  ImGui::Text("Member angle: (head: %f, right arm: %f, left arm: %f)", head.getRotation(), rightArm.getRotation(), leftArm.getRotation());
+  ImGui::Text("Legs state: %s", gameCharacterStateString[legs.state]);
+  ImGui::Text("Body state: %s", gameCharacterStateString[body.state]);
+  ImGui::Text("Right Arm state: %s", gameCharacterStateString[rightArm.state]);
+  ImGui::Text("Left Arm state: %s", gameCharacterStateString[leftArm.state]);
+  ImGui::Text("Head state: %s", gameCharacterStateString[head.state]);
+  ImGui::End();
+  #endif
 }
 
 void GameCharacter::setPos(const Vector2f& pos)

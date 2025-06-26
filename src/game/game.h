@@ -16,8 +16,10 @@ extern GLFWwindow * gameWindow;
 
 // Variable global du moteur de jeu
 extern double DELTA_TIME;
-extern float GRAVITY;
 extern double FPS;
+extern double FPS_COUNTER;
+extern double LAST_FPS_UPDATE;
+extern float GRAVITY;
 extern std::default_random_engine RANDOM_ENGINE; 
 
 class Game 
