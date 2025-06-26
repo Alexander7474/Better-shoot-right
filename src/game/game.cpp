@@ -17,7 +17,7 @@ Game::Game()
     npc.push_back(new Trooper());
     npc.push_back(new Trooper());
     npc[0]->setPosition(map.getSpawnPoints()[1]);
-    npc[1]->setPosition(Vector2f(500.f,418.f));
+    npc[1]->setPosition(Vector2f(600.f,418.f));
     npc[1]->setspawn(Vector2f(500.f,418.f),Vector2f(550.f,418.f),Vector2f(600.f,418.f));
   }
   
@@ -39,8 +39,8 @@ void Game::update()
   distance = distance/BBOP_WINDOW_RESOLUTION.x;
   mainPlayerCam.setScale(0.6);
   mainPlayerCam.setPosition(middlePos);
-  npc[0]->Bupdate(&map , &mainPlayer.getCharacter());
-  npc[1]->Bupdate(&map , &mainPlayer.getCharacter());
+  npc[0]->Bupdate(&map , &mainPlayer.getCharacter(),npc);
+  npc[1]->Bupdate(&map , &mainPlayer.getCharacter(),npc);
   mainPlayer.update(&mainPlayerCam, &map);
 }
 
@@ -50,9 +50,9 @@ void Game::Draw()
   map.Draw(scene, mainPlayerCam);
   scene.Draw(mainPlayer);
   scene.Draw(*npc[0]);
-  scene.Draw(*npc[0]->gethpbar());
+  npc[0]->Draw(&scene);
   scene.Draw(*npc[1]);
-  scene.Draw(*npc[1]->gethpbar());
+  npc[1]->Draw(&scene);
   scene.render();
 
   

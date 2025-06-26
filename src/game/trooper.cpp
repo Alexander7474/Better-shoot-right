@@ -38,21 +38,19 @@ Trooper::Trooper(){
 }
 
 
-void Trooper::Bupdate(Map *map , GameCharacter *user){
+void Trooper::Bupdate(Map *map , GameCharacter *user,vector<Trooper*> otherbots){
     getshot(user->getGun().getBullets(),user->getGun().getDamage());
     if (getHead().getetat()!=dead)
     {
-        cerr<<"error1"<<endl;
+        interact(otherbots);
         detect_player(user);
-        patrol_mod();
         engage_mod(user);
         seek_mod(user);
-        cerr<<"rro2"<<endl;
         char buffer[20];
         sprintf(buffer, "HP: %d", gethp());
         hpbar->setTexte(buffer);
         hpbar->setPosition(Vector2f(getPosition().x-5,getPosition().y-20));
-        cerr<<"error3"<<endl;
+        dialoque->setPosition(Vector2f(getPosition().x,getPosition().y-50));
     }
     update(map);  
     
@@ -92,26 +90,22 @@ void Trooper::engage_mod(GameCharacter *user){
 }
 
 void Trooper::patrol_mod() {
-    if (etat == patrol) {
-        
-        
-        if (patrol_zone() && discussing==false) {
-            if (bbopGetDistance(getPosition(),spawn[cpt])<5.0f)
+    if (patrol_zone()) {
+        if (bbopGetDistance(getPosition(),spawn[cpt])<5.0f)
+        {
+            if (cpt==2)
             {
-                if (cpt==2)
-                {
-                    iterateur=-1;
-                }
-                if (cpt==0)
-                {
-                    iterateur=1;
-                }
-                cpt+=iterateur;
+                iterateur=-1;
             }
-            bc_patrol(spawn[cpt]);
-        } else {
-            bc_patrol(spawn[0]); 
+            if (cpt==0)
+            {
+                iterateur=1;
+            }
+            cpt+=iterateur;
         }
+        bc_patrol(spawn[cpt]);
+    } else {
+        bc_patrol(spawn[0]); 
     }
 }
 void Trooper::seek_mod(GameCharacter *user){
@@ -130,26 +124,26 @@ void Trooper::seek_mod(GameCharacter *user){
     
 }
 
-void Trooper::interact(vector<GameCharacter*> otherbots){
-    for (GameCharacter *npc: otherbots)
+void Trooper::interact(vector<Trooper*> otherbots){
+    if (etat==patrol)
     {
-        if (bbopGetDistance(getPosition(),npc->getPosition())<40 && discussing==false)
+        for (Trooper *npc: otherbots)
         {
-            timer=glfwGetTime();
-            discussing=true;
+            if (bbopGetDistance(getPosition(),npc->getPosition())<40 && discussing==false && npc != this)
+            {
+                timer=glfwGetTime();
+                discussing=true;
+            }  
         }
-        
+        if (glfwGetTime()-timer>3)
+        {
+            patrol_mod();
+        }
+        if (glfwGetTime()-timer>5)
+        {
+            discussing=false;
+        }
     }
-    if (glfwGetTime()-timer>3)
-    {
-        patrol_zone();
-    }
-    if (glfwGetTime()-timer>5)
-    {
-        discussing=false;
-    }
-    
-    
 }
 
 void Trooper::detect_player(GameCharacter *user) {
@@ -177,10 +171,15 @@ void Trooper::detect_player(GameCharacter *user) {
     
 }
 
-TexteBox* Trooper::gethpbar(){
-    return hpbar;
-}
 
 const char *Trooper::getname(){
     return name;
+}
+
+void Trooper::Draw(Scene *scene){
+    if (glfwGetTime()-timer<3)
+    {
+        scene->Draw(*dialoque);
+    }
+    scene->Draw(*hpbar);
 }

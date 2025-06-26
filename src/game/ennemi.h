@@ -17,5 +17,4 @@ public:
     virtual void patrol_mod() {}
     virtual void seek_mod(GameCharacter *user) {}
     virtual void engage_mod(GameCharacter *user) {}
-    virtual void interact(vector<GameCharacter*> otherbots) {}
 };

@@ -28,13 +28,13 @@ private:
     
 public:
     Trooper();
-    void Bupdate(Map *map,GameCharacter *perso1);
+    void Bupdate(Map *map,GameCharacter *perso1,vector<Trooper*> otherbots);
     void seek_mod(GameCharacter *user);
     void engage_mod(GameCharacter *user);
     void patrol_mod();
-    void interact(vector<GameCharacter*> otherbots);
+    void interact(vector<Trooper*> otherbots);
     void detect_player(GameCharacter *user); 
-    TexteBox* gethpbar();
+    void Draw(Scene* scene);
     const char * getname();
 
 };
