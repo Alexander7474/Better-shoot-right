@@ -6,13 +6,13 @@
     "n_frame" : 1,
     "duration" : 0.0
   },
- 
+
   "1": {
-    "sprite_sheet": "run-sheet.png",
-    "columns": 8,
+    "sprite_sheet": "default.png",
+    "columns": 1,
     "rows": 1,
-    "n_frame" : 8,
-    "duration" : 0.8
+    "n_frame" : 1,
+    "duration" : 0.0
   },
 
   "2": {

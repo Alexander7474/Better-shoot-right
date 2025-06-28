@@ -10,6 +10,7 @@ enum MemberState
 {
   idle,
   run,
+  ragdoll,
   dead
 };
 
