@@ -64,19 +64,13 @@ void Game::update()
   mainPlayerCam.setPosition(middlePos);
   mainPlayer.update(&mainPlayerCam, &map);
 
-  int state = glfwGetMouseButton(gameWindow, GLFW_MOUSE_BUTTON_LEFT);
-
-  if (state == GLFW_PRESS) {
-    DynamicSprite *d = new DynamicSprite(Texture("assets/default.png"));
-    d->setPosition(mainPlayer.getCrossair().getPosition());
-    d->setSize(50,50);
-    d->computePhysic(&physicalWorld);
-    dynamics.push_back(d);
-    entities.push_back(d);
+  if (const int state = glfwGetKey(gameWindow, GLFW_KEY_G); state == GLFW_PRESS) {
+    mainPlayer.getCharacter().toggleRagdollMod(&physicalWorld);
   }
 
+
   //Gestion de la physique-------------------------------------------------------------------------
-  float timeStep = 1.0f / 60.f;
+  constexpr float timeStep = 1.0f / 60.f;
   int velocityIterations = 6;
   int positionIterations = 2;
 
@@ -94,8 +88,21 @@ void Game::Draw()
 {
   map.Draw(scene, mainPlayerCam);
   scene.Draw(mainPlayer);
+
   for(auto& d: dynamics){
     scene.Draw(*d);
+    bbopDebugCollisionBox(d->getCollisionBox(), scene);
   }
+
+  bbopDebugCollisionBox(mainPlayer.getCharacter().getHead().getCollisionBox(), scene);
+  bbopDebugCollisionBox(mainPlayer.getCharacter().getLegs().getCollisionBox(), scene);
+  bbopDebugCollisionBox(mainPlayer.getCharacter().getBody().getCollisionBox(), scene);
+  bbopDebugCollisionBox(mainPlayer.getCharacter().getRightArm().getCollisionBox(), scene);
+  bbopDebugCollisionBox(mainPlayer.getCharacter().getLeftArm().getCollisionBox(), scene);
+
+  for (CollisionBox& box : map.getCollision()) {
+    bbopDebugCollisionBox(box, scene);
+  }
+
   scene.render();
 }

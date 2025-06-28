@@ -74,7 +74,7 @@ Vector2f Member::getAttachPoint() const
 void Member::createTextureCache(std::string path)
 {
   //on charge pour chaque anim la texture par default
-  for(int i = 0; i <= run; i++){
+  for(int i = 0; i <= ragdoll; i++){
     string stateSheetPath = path + "default.png";
         
     animations[i].textures = bbopLoadSpriteSheet(stateSheetPath.c_str(), 1, 1);
@@ -106,7 +106,7 @@ void Member::createTextureCache(std::string path)
 
   try{
 
-    for(int i = 0; i <= run; i++){
+    for(int i = 0; i <= ragdoll; i++){
 
       if(jsonData.contains(to_string(i))){
         
