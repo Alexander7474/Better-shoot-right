@@ -149,15 +149,12 @@ void Gun::update()
     animCnt = 0;
     state = gun_idle_state;
   }
-
   setTexture(animations[state].textures[animCnt]);
-
   if(!isArmed){
     if(glfwGetTime() - lastShotTime >= rearmTime && ammo > 0){
       isArmed = true;
     }
   }
-
   for(Bullet &b : bulletVector){
     b.update();
   }

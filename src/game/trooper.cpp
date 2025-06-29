@@ -21,7 +21,7 @@ Trooper::Trooper(){
     font = new Font(16, "toto.ttf");
     char buffer[20];
     sprintf(buffer, "HP: %d", gethp());
-    hpbar=new TexteBox(buffer, font);
+    hpbar=new RectangleShape(Vector2f(35.f,3.f),Vector2f(getPosition().x-3,getPosition().y-2),Vector3i(255,0,0),Vector2f(getPosition().x-30,getPosition().y-20));
     dialoque = new TexteBox("shut up steve",font);
     setSpeed(2.0f);
     detect=10.0f;
@@ -31,6 +31,7 @@ Trooper::Trooper(){
         Vector2f(450.f,418.f),
         Vector2f(500.f,418.f)
     };
+    hpbar->setOrigin(getPosition());
     cpt=0;
     iterateur=1;
     Bot();
@@ -48,8 +49,7 @@ void Trooper::Bupdate(Map *map , GameCharacter *user,vector<Trooper*> otherbots)
         seek_mod(user);
         char buffer[20];
         sprintf(buffer, "HP: %d", gethp());
-        hpbar->setTexte(buffer);
-        hpbar->setPosition(Vector2f(getPosition().x-5,getPosition().y-20));
+        hpbar->setPosition(Vector2f(getPosition().x+290,getPosition().y-20));
         dialoque->setPosition(Vector2f(getPosition().x,getPosition().y-50));
     }
     update(map);  
@@ -181,5 +181,8 @@ void Trooper::Draw(Scene *scene){
     {
         scene->Draw(*dialoque);
     }
+    float hp=(35.f/500.f)*gethp();
+    cerr<<hp<<endl;
+    hpbar->setSize(Vector2f(hp,hpbar->getSize().y));
     scene->Draw(*hpbar);
 }

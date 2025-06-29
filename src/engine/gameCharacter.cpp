@@ -124,9 +124,8 @@ void GameCharacter::update(Map* map)
   head.update();
   body.update();
   legs.update();
-
+  
   gun.update();
-
   #ifdef DEBUG 
   cout << "Character inertie: " << inertie.x << "|" << inertie.y << endl;
   #endif
@@ -359,15 +358,14 @@ void GameCharacter::getshot(vector<Bullet> balls ,int dmg){
             if (partie[i].check(balls[j].getCollisionBox())&&balls[j].hit()==false )
             {
                 balls[j].setused();
-                cerr<<"error1"<<endl;
                 sethp(gethp()-dmg);
                 break;
             }
         }
     }
-    if (gethp()<0)
+    if (gethp()<=0)
     {
-      
+      sethp(0.f);
       getHead().setetat(2);
     }
     

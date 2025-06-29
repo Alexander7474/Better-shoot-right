@@ -18,7 +18,7 @@ private:
     
     int cpt,iterateur;
     float unlock;
-    TexteBox *hpbar;
+    RectangleShape *hpbar;
     TexteBox *dialoque;
     float ammo,reloadtime;
     State etat;
