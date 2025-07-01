@@ -64,7 +64,8 @@ void Game::update()
   mainPlayerCam.setPosition(middlePos);
   mainPlayer.update(&mainPlayerCam, &map);
 
-  if (const int state = glfwGetKey(gameWindow, GLFW_KEY_G); state == GLFW_PRESS) {
+  const int state = glfwGetKey(gameWindow, GLFW_KEY_G);
+  if (state == GLFW_PRESS) {
     mainPlayer.getCharacter().toggleRagdollMod(&physicalWorld);
   }
 

@@ -20,7 +20,7 @@ const char *gameCharacterStateString[4] = {"idle", "run", "ragdoll", "dead"};
 
 GameCharacter::GameCharacter()
     : newtonX(40.f), newtonY(10.f), restitution(0.f), friction(2.f),
-      density(1.f), linearDamping(4.f), hp(10.f), onRagdoll(false) {
+      density(1.f), linearDamping(4.f), onRagdoll(false), hp(10.f) {
         characterDirection = rightDir;
         scale = 0.75f;
 
