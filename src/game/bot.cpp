@@ -54,7 +54,7 @@ Bot::Bot(){
 }
 
 void Bot::Bupdate(Map *map , GameCharacter *user){
-    getshot(user->getGun().getBullets(),user->getGun().getDamage());
+    getshot(user->getGun().getBulletVector(),user->getGun().getDamage());
     if (getHead().getetat()!=dead)
     {
 

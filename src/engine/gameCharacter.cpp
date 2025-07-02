@@ -19,8 +19,9 @@ using namespace std;
 const char *gameCharacterStateString[4] = {"idle", "run", "ragdoll", "dead"};
 
 GameCharacter::GameCharacter()
-    : newtonX(40.f), newtonY(10.f), restitution(0.f), friction(2.f),
-      density(1.f), linearDamping(4.f), onRagdoll(false), hp(10.f) {
+    : gun(new Gun), newtonX(40.f), newtonY(10.f), restitution(0.f),
+      friction(2.f), density(1.f), linearDamping(4.f), onRagdoll(false),
+      hp(10.f) {
         characterDirection = rightDir;
         scale = 0.75f;
 
@@ -33,18 +34,18 @@ GameCharacter::GameCharacter()
         rightArm.name = "right arm";
 
         body.setSize(32 * scale, 32 * scale);
-        body.setOrigin(16*scale,16*scale); // origine au centre du torse
+        body.setOrigin(16 * scale, 16 * scale); // origine au centre du torse
         body.name = "body";
 
         head.setSize(32 * scale, 32 * scale);
-        head.setOrigin(16*scale,16*scale); // origine au coup
+        head.setOrigin(16 * scale, 16 * scale); // origine au coup
         head.name = "head";
 
         legs.setSize(64 * scale, 32 * scale);
-        legs.setOrigin(32*scale,0*scale); // origine sur les hanche
+        legs.setOrigin(32 * scale, 0 * scale); // origine sur les hanche
         legs.name = "legs";
 
-        gun.setSize(64 * scale, 32 * scale);
+        gun->setSize(64 * scale, 32 * scale);
 
         //--------------------------------------------------------------
 
@@ -69,16 +70,23 @@ void GameCharacter::createTextureCache(const string &path) {
 }
 
 void GameCharacter::update(Map *map) {
-        //gestion de l'état du personnage
+        // gestion de l'état du personnage
         if (!onRagdoll) {
-                if (entityBody->GetLinearVelocity().x <= 0.5f && entityBody->GetLinearVelocity().x >= -0.5f && legs.state == run) {
+                if (entityBody->GetLinearVelocity().x <= 0.5f &&
+                    entityBody->GetLinearVelocity().x >= -0.5f &&
+                    legs.state == run) {
                         legs.state = idle;
-                        legs.animations[idle].lastFrameStartTime = glfwGetTime();
+                        legs.animations[idle].lastFrameStartTime =
+                            glfwGetTime();
                 }
 
-                if (!reinterpret_cast<BodyData*>(entityBody->GetUserData().pointer)->isTouchingDown && legs.state == run) {
+                if (!reinterpret_cast<BodyData *>(
+                         entityBody->GetUserData().pointer)
+                         ->isTouchingDown &&
+                    legs.state == run) {
                         legs.state = idle;
-                        legs.animations[idle].lastFrameStartTime = glfwGetTime();
+                        legs.animations[idle].lastFrameStartTime =
+                            glfwGetTime();
                 }
         }
 
@@ -90,7 +98,7 @@ void GameCharacter::update(Map *map) {
         legs.update();
 
         // mise à jour des objets
-        gun.update();
+        gun->update();
 
 #ifdef IMGUI_DEBUG
         // Interface character info
@@ -121,31 +129,32 @@ void GameCharacter::setPos(const Vector2f &pos) {
 
         body.setAttachPoint(pos);
 
-        if(characterDirection == rightDir){
+        if (characterDirection == rightDir) {
 
-                leftArm.setOrigin(8*scale,16*scale); // origine au niveau de l'épaule
-                rightArm.setOrigin(8*scale,16*scale);
-                gun.setOrigin(8*scale,16*scale);
+                leftArm.setOrigin(8 * scale,
+                                  16 * scale); // origine au niveau de l'épaule
+                rightArm.setOrigin(8 * scale, 16 * scale);
+                gun->setOrigin(8 * scale, 16 * scale);
 
-                rightArm.setAttachPoint(pos.x-5*scale, pos.y-2*scale);
-                leftArm.setAttachPoint(pos.x-2*scale, pos.y-2*scale);
+                rightArm.setAttachPoint(pos.x - 5 * scale, pos.y - 2 * scale);
+                leftArm.setAttachPoint(pos.x - 2 * scale, pos.y - 2 * scale);
 
-        }else{
+        } else {
 
-                leftArm.setOrigin(24*scale,16*scale); // origine au niveau de l'épaule
-                rightArm.setOrigin(24*scale,16*scale);
-                gun.setOrigin(56*scale,16*scale);
+                leftArm.setOrigin(24 * scale,
+                                  16 * scale); // origine au niveau de l'épaule
+                rightArm.setOrigin(24 * scale, 16 * scale);
+                gun->setOrigin(56 * scale, 16 * scale);
 
-                rightArm.setAttachPoint(pos.x+5*scale, pos.y-2*scale);
-                leftArm.setAttachPoint(pos.x+2*scale, pos.y-2*scale);
-
+                rightArm.setAttachPoint(pos.x + 5 * scale, pos.y - 2 * scale);
+                leftArm.setAttachPoint(pos.x + 2 * scale, pos.y - 2 * scale);
         }
 
-        gun.setAttachPoint(rightArm.attachPoint);
+        gun->setAttachPoint(rightArm.attachPoint);
 
-        head.setAttachPoint(pos.x, pos.y-9*scale);
+        head.setAttachPoint(pos.x, pos.y - 9 * scale);
 
-        legs.setAttachPoint(pos.x, pos.y+8*scale);
+        legs.setAttachPoint(pos.x, pos.y + 8 * scale);
 }
 
 void GameCharacter::setPos(const float x, const float y) {
@@ -157,10 +166,10 @@ void GameCharacter::Draw(GLint *renderUniforms) const {
         legs.Draw(renderUniforms);
         body.Draw(renderUniforms);
         head.Draw(renderUniforms);
-        gun.Draw(renderUniforms);
+        gun->Draw(renderUniforms);
         rightArm.Draw(renderUniforms);
 
-        for (Bullet b : gun.getBullets()) {
+        for (Bullet b : gun->getBulletVector()) {
                 b.Draw(renderUniforms);
         }
 }
@@ -173,21 +182,26 @@ void GameCharacter::lookAt(const Vector2f &lp) {
 
         lookingPoint = lp;
 
-        //on utilise le centre x entre la pos du body et du right arm pour déterminer la direction du character
+        // on utilise le centre x entre la pos du body et du right arm pour
+        // déterminer la direction du character
         float xCenter;
-        if(characterDirection == rightDir){
-                xCenter = rightArm.getPosition().x + ( (body.getPosition().x - rightArm.getPosition().x) / 2.f );
-        }else{
-                xCenter = body.getPosition().x + ( (rightArm.getPosition().x - body.getPosition().x) / 2.f );
+        if (characterDirection == rightDir) {
+                xCenter =
+                    rightArm.getPosition().x +
+                    ((body.getPosition().x - rightArm.getPosition().x) / 2.f);
+        } else {
+                xCenter =
+                    body.getPosition().x +
+                    ((rightArm.getPosition().x - body.getPosition().x) / 2.f);
         }
 
         // faut-il changer la direction ?
-        if(characterDirection == rightDir && xCenter > lookingPoint.x){
+        if (characterDirection == rightDir && xCenter > lookingPoint.x) {
                 characterDirection = leftDir;
                 flipY();
         }
 
-        if(characterDirection == leftDir && xCenter < lookingPoint.x){
+        if (characterDirection == leftDir && xCenter < lookingPoint.x) {
                 characterDirection = rightDir;
                 flipY();
         }
@@ -196,7 +210,7 @@ void GameCharacter::lookAt(const Vector2f &lp) {
         setMemberRotation(rightArm);
         setMemberRotation(head);
 
-        gun.setRotation(rightArm.getRotation());
+        gun->setRotation(rightArm.getRotation());
 }
 
 void GameCharacter::setMemberRotation(Sprite &member) {
@@ -210,16 +224,19 @@ void GameCharacter::setMemberRotation(Sprite &member, const float m) {
                 return;
 
         // on détermine l'angle de rotation des bras pour suivre la souris
-        const float distanceC = bbopGetDistance(member.getPosition(), lookingPoint);
+        const float distanceC =
+            bbopGetDistance(member.getPosition(), lookingPoint);
         const float distanceA = member.getPosition().x - lookingPoint.x;
         const float distanceB = member.getPosition().y - lookingPoint.y;
 
-        float rotation = acos((distanceA * distanceA + distanceC * distanceC - distanceB * distanceB) / (2 * distanceA * distanceC));
+        float rotation = acos((distanceA * distanceA + distanceC * distanceC -
+                               distanceB * distanceB) /
+                              (2 * distanceA * distanceC));
         rotation *= m;
 
-        if(distanceA < 0)
+        if (distanceA < 0)
                 rotation += M_PI;
-        if(distanceB < 0)
+        if (distanceB < 0)
                 rotation = -rotation;
 
         member.setRotation(rotation);
@@ -239,25 +256,31 @@ void GameCharacter::flipY() {
         head.flipVertically();
         legs.flipVertically();
 
-        gun.flipVertically();
+        gun->flipVertically();
 
-        if(characterDirection == rightDir){
+        if (characterDirection == rightDir) {
 
-                leftArm.setOrigin(8*scale,8*scale); // origine au niveau de l'épaule
-                rightArm.setOrigin(8*scale,8*scale);
+                leftArm.setOrigin(8 * scale,
+                                  8 * scale); // origine au niveau de l'épaule
+                rightArm.setOrigin(8 * scale, 8 * scale);
 
-                rightArm.setAttachPoint(body.getPosition().x-5*scale, rightArm.getPosition().y);
-                leftArm.setAttachPoint(body.getPosition().x-2*scale, leftArm.getPosition().y);
+                rightArm.setAttachPoint(body.getPosition().x - 5 * scale,
+                                        rightArm.getPosition().y);
+                leftArm.setAttachPoint(body.getPosition().x - 2 * scale,
+                                       leftArm.getPosition().y);
 
-                gun.gunDirection = rightDir;
-        }else {
-                leftArm.setOrigin(24*scale,8*scale); // origine au niveau de l'épaule
-                rightArm.setOrigin(24*scale,8*scale);
+                gun->setGunDirection(rightDir);
+        } else {
+                leftArm.setOrigin(24 * scale,
+                                  8 * scale); // origine au niveau de l'épaule
+                rightArm.setOrigin(24 * scale, 8 * scale);
 
-                gun.gunDirection = leftDir;
+                gun->setGunDirection(leftDir);
 
-                rightArm.setAttachPoint(body.getPosition().x+5*scale, rightArm.getPosition().y);
-                leftArm.setAttachPoint(body.getPosition().x+2*scale, leftArm.getPosition().y);
+                rightArm.setAttachPoint(body.getPosition().x + 5 * scale,
+                                        rightArm.getPosition().y);
+                leftArm.setAttachPoint(body.getPosition().x + 2 * scale,
+                                       leftArm.getPosition().y);
         }
 }
 
@@ -310,11 +333,13 @@ void GameCharacter::jump() {
         if (onRagdoll)
                 return;
 
-        auto* data = reinterpret_cast<BodyData*>(entityBody->GetUserData().pointer);
+        auto *data =
+            reinterpret_cast<BodyData *>(entityBody->GetUserData().pointer);
         if (!data->isTouchingDown)
                 return;
 
-        const b2Vec2 impulsion(0.0f, -entityBody->GetMass() * newtonY); // vers le haut
+        const b2Vec2 impulsion(0.0f, -entityBody->GetMass() *
+                                         newtonY); // vers le haut
         entityBody->ApplyLinearImpulseToCenter(impulsion, true);
         data->jumpCpt++;
 }
@@ -325,27 +350,28 @@ Member &GameCharacter::getRightArm() { return rightArm; }
 Member &GameCharacter::getBody() { return body; }
 Member &GameCharacter::getHead() { return head; }
 Member &GameCharacter::getLegs() { return legs; }
-Gun &GameCharacter::getGun() { return gun; }
 float GameCharacter::getHp() const { return hp; }
+Gun& GameCharacter::getGun() const { return *gun; }
 
 // SETTER
 void GameCharacter::setHp(const float _hp) { this->hp = _hp; }
 
 // ENTITY
 void GameCharacter::computePhysic(b2World *world) {
-        setSize(20.f,50.f);
+        setSize(20.f, 50.f);
         setOrigin(getSize().x / 2, getSize().y / 2);
-        entityBody = addDynamicBox(world, this, restitution, density, friction, linearDamping, true);
+        entityBody = addDynamicBox(world, this, restitution, density, friction,
+                                   linearDamping, true);
 
-        auto* data = new BodyData;
+        auto *data = new BodyData;
         entityBody->GetUserData().pointer = reinterpret_cast<uintptr_t>(data);
 }
 
-void GameCharacter::updatePhysic(){
+void GameCharacter::updatePhysic() {
         if (!onRagdoll) {
                 setPos(entityBody->GetPosition().x * PIXEL_PER_METER,
-                            entityBody->GetPosition().y * PIXEL_PER_METER - 5.f);
-        }else {
+                       entityBody->GetPosition().y * PIXEL_PER_METER - 5.f);
+        } else {
                 head.setPosition(headR->GetPosition().x * PIXEL_PER_METER,
                                  headR->GetPosition().y * PIXEL_PER_METER);
                 head.setRotation(headR->GetAngle());
@@ -358,33 +384,35 @@ void GameCharacter::updatePhysic(){
                                  legsR->GetPosition().y * PIXEL_PER_METER);
                 legs.setRotation(legsR->GetAngle());
 
-                rightArm.setPosition(rightArmR->GetPosition().x * PIXEL_PER_METER,
-                                     rightArmR->GetPosition().y * PIXEL_PER_METER);
+                rightArm.setPosition(
+                    rightArmR->GetPosition().x * PIXEL_PER_METER,
+                    rightArmR->GetPosition().y * PIXEL_PER_METER);
                 rightArm.setRotation(rightArmR->GetAngle());
 
                 leftArm.setPosition(leftArmR->GetPosition().x * PIXEL_PER_METER,
-                                    leftArmR->GetPosition().y * PIXEL_PER_METER);
+                                    leftArmR->GetPosition().y *
+                                        PIXEL_PER_METER);
                 leftArm.setRotation(leftArmR->GetAngle());
         }
 }
 
-void GameCharacter::toggleRagdollMod(b2World *world){
+void GameCharacter::toggleRagdollMod(b2World *world) {
 
         // Destruction de l'ancion corps
         world->DestroyBody(entityBody);
 
         onRagdoll = true;
 
-        for (Member* m : {&head, &body, &legs, &rightArm, &leftArm}) {
+        for (Member *m : {&head, &body, &legs, &rightArm, &leftArm}) {
                 m->state = ragdoll;
         }
 
-        //changement de taille pour les nouvelle texture ragdoll.png
-        head.setSize(12 * scale,12 * scale);
-        body.setSize(18 * scale,26 * scale);
-        legs.setSize(19 * scale,32 * scale);
-        rightArm.setSize(23 * scale,11 * scale);
-        leftArm.setSize(23 * scale,11 * scale);
+        // changement de taille pour les nouvelle texture ragdoll.png
+        head.setSize(12 * scale, 12 * scale);
+        body.setSize(18 * scale, 26 * scale);
+        legs.setSize(19 * scale, 32 * scale);
+        rightArm.setSize(23 * scale, 11 * scale);
+        leftArm.setSize(23 * scale, 11 * scale);
 
         // mise en place des ragdolls pour chaque membres (TEMPORAIRE)
         bodyR = addDynamicBox(world, &body.getCollisionBox(), 0.f, 1.f, 1.f,
@@ -396,12 +424,14 @@ void GameCharacter::toggleRagdollMod(b2World *world){
         legsR = addDynamicBox(world, &legs.getCollisionBox(), 0.f, 1.f, 1.f,
                               1.f, false, legs.getCollisionBox().getOffsetX(),
                               legs.getCollisionBox().getOffsetY());
-        rightArmR = addDynamicBox(world, &rightArm.getCollisionBox(), 0.f, 1.f,
-                                  1.f, 1.f, false, rightArm.getCollisionBox().getOffsetX(),
-                                  rightArm.getCollisionBox().getOffsetY());
-        leftArmR = addDynamicBox(world, &leftArm.getCollisionBox(), 0.f, 1.f,
-                                 1.f, 1.f, false, leftArm.getCollisionBox().getOffsetX(),
-                                 leftArm.getCollisionBox().getOffsetY());
+        rightArmR =
+            addDynamicBox(world, &rightArm.getCollisionBox(), 0.f, 1.f, 1.f,
+                          1.f, false, rightArm.getCollisionBox().getOffsetX(),
+                          rightArm.getCollisionBox().getOffsetY());
+        leftArmR =
+            addDynamicBox(world, &leftArm.getCollisionBox(), 0.f, 1.f, 1.f, 1.f,
+                          false, leftArm.getCollisionBox().getOffsetX(),
+                          leftArm.getCollisionBox().getOffsetY());
 
         headR->SetLinearVelocity(b2Vec2(20.0f, 0.0f));
 
@@ -417,11 +447,13 @@ void GameCharacter::toggleRagdollMod(b2World *world){
         neckJoint.bodyB = headR;
         neckJoint.collideConnected = false;
         neckJoint.enableLimit = false;
-        neckJoint.localAnchorA.Set(0.f, -13.f * scale/PIXEL_PER_METER); // en haut du torse
-        neckJoint.localAnchorB.Set(0.f, 6.f * scale/PIXEL_PER_METER); // en bas de la tête
+        neckJoint.localAnchorA.Set(
+            0.f, -13.f * scale / PIXEL_PER_METER); // en haut du torse
+        neckJoint.localAnchorB.Set(
+            0.f, 6.f * scale / PIXEL_PER_METER); // en bas de la tête
         neckJoint.enableLimit = true;
         neckJoint.lowerAngle = -0.3f;
-        neckJoint.upperAngle =  0.3f;
+        neckJoint.upperAngle = 0.3f;
 
         world->CreateJoint(&neckJoint);
 
@@ -430,11 +462,11 @@ void GameCharacter::toggleRagdollMod(b2World *world){
         legJoint.bodyB = legsR;
         legJoint.collideConnected = false;
         legJoint.enableLimit = false;
-        legJoint.localAnchorA.Set(0.f, 13.f * scale/PIXEL_PER_METER);
-        legJoint.localAnchorB.Set(0.f, -16.f * scale/PIXEL_PER_METER);
+        legJoint.localAnchorA.Set(0.f, 13.f * scale / PIXEL_PER_METER);
+        legJoint.localAnchorB.Set(0.f, -16.f * scale / PIXEL_PER_METER);
         legJoint.enableLimit = true;
         legJoint.lowerAngle = -0.3f;
-        legJoint.upperAngle =  0.3f;
+        legJoint.upperAngle = 0.3f;
         world->CreateJoint(&legJoint);
 
         b2RevoluteJointDef armRightJoint;
@@ -442,8 +474,10 @@ void GameCharacter::toggleRagdollMod(b2World *world){
         armRightJoint.bodyB = rightArmR;
         armRightJoint.collideConnected = false;
         armRightJoint.enableLimit = false;
-        armRightJoint.localAnchorA.Set(-9.f * scale/PIXEL_PER_METER, -13.f * scale/PIXEL_PER_METER);
-        armRightJoint.localAnchorB.Set(11.5f * scale/PIXEL_PER_METER, 5.5f * scale/PIXEL_PER_METER);
+        armRightJoint.localAnchorA.Set(-9.f * scale / PIXEL_PER_METER,
+                                       -13.f * scale / PIXEL_PER_METER);
+        armRightJoint.localAnchorB.Set(11.5f * scale / PIXEL_PER_METER,
+                                       5.5f * scale / PIXEL_PER_METER);
 
         world->CreateJoint(&armRightJoint);
 
@@ -452,8 +486,10 @@ void GameCharacter::toggleRagdollMod(b2World *world){
         armLeftJoint.bodyB = leftArmR;
         armLeftJoint.collideConnected = false;
         armLeftJoint.enableLimit = false;
-        armLeftJoint.localAnchorA.Set(9.f * scale/PIXEL_PER_METER, -13.f * scale/PIXEL_PER_METER);
-        armLeftJoint.localAnchorB.Set(-11.5f * scale/PIXEL_PER_METER, 5.5f * scale/PIXEL_PER_METER);
+        armLeftJoint.localAnchorA.Set(9.f * scale / PIXEL_PER_METER,
+                                      -13.f * scale / PIXEL_PER_METER);
+        armLeftJoint.localAnchorB.Set(-11.5f * scale / PIXEL_PER_METER,
+                                      5.5f * scale / PIXEL_PER_METER);
 
         world->CreateJoint(&armLeftJoint);
 }

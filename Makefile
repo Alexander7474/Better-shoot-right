@@ -23,7 +23,7 @@ UNAME_S := $(shell uname -s)
 LINUX_GL_LIBS = -lGL
 
 CXXFLAGS = -std=c++11 -I$(SRC_DIR)/imgui -I$(SRC_DIR)/backends
-CXXFLAGS += -g -Wall -Wformat -I/usr/include/freetype2 -g -DIMGUI_DEBUG
+CXXFLAGS += -g -Wall -Wno-delete-non-virtual-dtor -Wformat -I/usr/include/freetype2 -g -DIMGUI_DEBUG
 LIBS = -L./Bbop-2D -lbbop -lglfw -lGLEW -lGL -lfreetype -lLDtkLoader -lbox2d
 
 ##---------------------------------------------------------------------

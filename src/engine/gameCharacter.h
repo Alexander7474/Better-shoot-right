@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <string>
 
 #include "../../Bbop-2D/include/BBOP/Graphics.h"
@@ -10,7 +11,7 @@
 
 extern const char *gameCharacterStateString[4];
 
-// éviter le redéfinition
+// éviter les redéfinitions
 #ifndef DIRECTION
 #define DIRECTION
 
@@ -34,7 +35,7 @@ class GameCharacter : public BbopDrawable, public Geometric, public Entity {
         b2Body *legsR;
 
         // objet du character
-        Gun gun;
+        std::unique_ptr<Gun> gun;
 
         // gestion du regard et de l'orientation du character
         Vector2f lookingPoint;        //<! Ou le character regarde
@@ -129,17 +130,11 @@ class GameCharacter : public BbopDrawable, public Geometric, public Entity {
         Member &getBody();
         Member &getHead();
         Member &getLegs();
-        Gun &getGun();
-        float getSpeed() const;
-        float getJumpForce() const;
-        float getWeight() const;
-        float getHp() const;
+        [[nodiscard]] float getHp() const;
+        [[nodiscard]] Gun& getGun() const;
 
         // SETTER
         //
-        void setSpeed(float _speed);
-        void setJumpForce(float _jumpForce);
-        void setWeight(float _weight);
         void setHp(float _hp);
 
         // ENTITY HERITAGE gestion de la physique
