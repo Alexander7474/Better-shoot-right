@@ -2703,7 +2703,7 @@
 		{
 			"__cWid": 8,
 			"__cHei": 8,
-			"identifier": "Tileset2",
+			"identifier": "Tileset",
 			"uid": 380,
 			"relPath": "../../power_station_32/1 Tiles/Tileset.png",
 			"embedAtlas": null,

@@ -12,8 +12,8 @@ using namespace std;
 
 Camera *camera;
 
-extern const std::string mapPath = "assets/map/default/";
-extern const std::string mapPathLdtk = "assets/map/default/map.ldtk";
+extern const std::string mapPath = "assets/map/map1/";
+extern const std::string mapPathLdtk = "assets/map/map1/map.ldtk";
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {

@@ -19,18 +19,13 @@ float GRAVITY = 9.8f;
 default_random_engine RANDOM_ENGINE; 
 
 Game::Game()
-  :  physicalWorld(b2Vec2(0.0f,GRAVITY)) // création du monde physique avec un vecteur de gravité
+  :  map("assets/map/map1/"), physicalWorld(b2Vec2(0.0f,GRAVITY)) // création du monde physique avec un vecteur de gravité
 {
   auto* listener = new CustomContactListener();
   physicalWorld.SetContactListener(listener);
 
   if(map.getSpawnPoints().size() > 1){
     mainPlayer.getCharacter().setPosition(map.getSpawnPoints()[0]);
-    npc.push_back(new Trooper());
-    npc.push_back(new Trooper());
-    npc[0]->setPosition(map.getSpawnPoints()[1]);
-    npc[1]->setPosition(Vector2f(600.f,418.f));
-    npc[1]->setspawn(Vector2f(500.f,418.f),Vector2f(550.f,418.f),Vector2f(600.f,418.f));
   }
   //init physic-------------------------------------------------------------------------
   //rajoute le boite de collision au monde physique
@@ -39,8 +34,6 @@ Game::Game()
   }
 
   entities.push_back(&mainPlayer.getCharacter());
-  entities.push_back(npc[0]);
-  entities.push_back(npc[1]);
 
   // compute entities
   unsigned long long cptEnt = 0;
@@ -57,20 +50,26 @@ void Game::update()
 {
   //simple gestion de animations
   map.update();
-  
+
 
   //déterminer la position du milieu entre le joueur et son crossair
   Vector2f middlePos;
   middlePos.x = (mainPlayer.getCharacter().getPosition().x + mainPlayer.getCrossair().getPosition().x)/2.f;
   middlePos.y = (mainPlayer.getCharacter().getPosition().y + mainPlayer.getCrossair().getPosition().y)/2.f;
 
-  //déterminer la scale de la cam en fonction de la distance entre crossair et play 
-  float distance = bbopGetDistance(mainPlayer.getCrossair().getPosition(), mainPlayer.getCharacter().getPosition());
-  distance = distance/BBOP_WINDOW_RESOLUTION.x;
+  float distance = bbopGetDistance(middlePos, mainPlayer.getCharacter().getPosition());
+
+  // limite la distance à la quelle la caméra peut aller
+  if (distance > 50.f) {
+    const double dx = middlePos.x - mainPlayer.getCharacter().getPosition().x;
+    const double dy = middlePos.y - mainPlayer.getCharacter().getPosition().y;
+    const double scale = 50 / distance;
+    middlePos.x = (mainPlayer.getCharacter().getPosition().x + scale * dx);
+    middlePos.y = (mainPlayer.getCharacter().getPosition().y + scale * dy);
+  }
+
   mainPlayerCam.setScale(0.8);
   mainPlayerCam.setPosition(middlePos);
-  npc[0]->Bupdate(&map , &mainPlayer.getCharacter(),npc);
-  npc[1]->Bupdate(&map , &mainPlayer.getCharacter(),npc);
   mainPlayer.update(&mainPlayerCam, &map);
 
   const int state = glfwGetKey(gameWindow, GLFW_KEY_G);
@@ -98,10 +97,6 @@ void Game::Draw()
 {
   map.Draw(scene, mainPlayerCam);
   scene.Draw(mainPlayer);
-  scene.Draw(*npc[0]);
-  npc[0]->Draw(&scene);
-  scene.Draw(*npc[1]);
-  npc[1]->Draw(&scene);
 
   for(auto& d: dynamics){
     scene.Draw(*d);

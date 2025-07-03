@@ -1,0 +1,12 @@
+Thank you for your purchase/download :)
+
+LICENSE: 
+✔️ You are allowed to use the assets for: 
+Commercial and non-commercial video games and projects 
+Modify them as needed and display them on designated websites
+
+❌ However, the following uses are prohibited:
+Reselling, repackaging, or redistributing the assets
+Using them for AI training or NFT projects  (Crypto, Blockchain, web3)
+Incorporating them into "game development tools" or printed materials
+
