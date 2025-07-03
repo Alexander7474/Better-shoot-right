@@ -1,8 +1,6 @@
 #include <iostream>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include <irrKlang/ik_ESoundOutputDrivers.h>
-#include <irrKlang/irrKlang.h>
 #include <sys/stat.h>
 #include <ctime>
 

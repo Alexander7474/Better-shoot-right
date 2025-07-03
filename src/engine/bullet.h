@@ -2,7 +2,7 @@
 
 #include "../../Bbop-2D/include/BBOP/Graphics.h"
 
-enum BulletType
+enum class BulletType
 {
   _5x56mm,
   apfsds // lol

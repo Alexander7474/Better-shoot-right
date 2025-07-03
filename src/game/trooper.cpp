@@ -19,11 +19,8 @@ Trooper::Trooper(){
     etat=patrol;
     fov = M_PI / 4;
     font = new Font(16, "toto.ttf");
-    char buffer[20];
-    sprintf(buffer, "HP: %d", gethp());
     hpbar=new RectangleShape(Vector2f(35.f,3.f),Vector2f(getPosition().x-3,getPosition().y-2),Vector3i(255,0,0),Vector2f(getPosition().x-30,getPosition().y-20));
     dialoque = new TexteBox("shut up steve",font);
-    setSpeed(2.0f);
     detect=10.0f;
     ftd=false;
     spawn=new Vector2f[3]{
@@ -35,25 +32,22 @@ Trooper::Trooper(){
     cpt=0;
     iterateur=1;
     Bot();
-    
+
 }
 
 
 void Trooper::Bupdate(Map *map , GameCharacter *user,vector<Trooper*> otherbots){
-    getshot(user->getGun().getBullets(),user->getGun().getDamage());
     if (getHead().getetat()!=dead)
     {
         interact(otherbots);
         detect_player(user);
         engage_mod(user);
         seek_mod(user);
-        char buffer[20];
-        sprintf(buffer, "HP: %d", gethp());
         hpbar->setPosition(Vector2f(getPosition().x+290,getPosition().y-20));
         dialoque->setPosition(Vector2f(getPosition().x,getPosition().y-50));
     }
-    update(map);  
-    
+    update(map);
+
 }
 
 
@@ -64,9 +58,7 @@ void Trooper::engage_mod(GameCharacter *user){
     float espace = getPosition().x-user->getPosition().x;
     if (etat==engage)
     {
-        
-        setSpeed(10.0f);   
-        lookAt(user->getPosition()); 
+        lookAt(user->getPosition());
         if (espace>50.0f)
         {
             goLeft();
@@ -74,7 +66,7 @@ void Trooper::engage_mod(GameCharacter *user){
         if (espace<-50.0f)
         {
             goRight();
-        }        
+        }
         if (espace<100.0f && espace>-100.0f)
         {
             getGun().shoot();
@@ -82,11 +74,10 @@ void Trooper::engage_mod(GameCharacter *user){
         }
         if (espace<50 && espace>-50)
         {
-            setSpeed(0);
         }
-        
+
     }
-    
+
 }
 
 void Trooper::patrol_mod() {
@@ -105,23 +96,22 @@ void Trooper::patrol_mod() {
         }
         bc_patrol(spawn[cpt]);
     } else {
-        bc_patrol(spawn[0]); 
+        bc_patrol(spawn[0]);
     }
 }
 void Trooper::seek_mod(GameCharacter *user){
     if (etat==seek)
     {
         float espace = bbopGetDistance(user->getPosition(),getPosition());
-        setSpeed(4.5f);
         lookAt(seekp);
         if (espace>0)
         {
-            goLeft();            
+            goLeft();
         }else{
             goRight();
         }
     }
-    
+
 }
 
 void Trooper::interact(vector<Trooper*> otherbots){
@@ -133,7 +123,7 @@ void Trooper::interact(vector<Trooper*> otherbots){
             {
                 timer=glfwGetTime();
                 discussing=true;
-            }  
+            }
         }
         if (glfwGetTime()-timer>3)
         {
@@ -156,8 +146,8 @@ void Trooper::detect_player(GameCharacter *user) {
         {
             etat=seek;
         }
-        
-        
+
+
     }
 
     if (etat==engage && glfwGetTime() - unlock > 5) {
@@ -168,7 +158,7 @@ void Trooper::detect_player(GameCharacter *user) {
         etat = patrol;
         ftd=false;
     }
-    
+
 }
 
 
@@ -181,8 +171,7 @@ void Trooper::Draw(Scene *scene){
     {
         scene->Draw(*dialoque);
     }
-    float hp=(35.f/500.f)*gethp();
-    cerr<<hp<<endl;
+    float hp=(35.f/500.f)*getHp();
     hpbar->setSize(Vector2f(hp,hpbar->getSize().y));
     scene->Draw(*hpbar);
 }

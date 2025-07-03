@@ -34,12 +34,6 @@ void Player::update(Camera *playerCam, Map* map)
 
   crossair.setPosition(mousePos.x, mousePos.y);
 
-  #ifdef DEBUG
-  cout << "Position de la souris: " << mousePos.x << "|" << mousePos.y << endl;
-  cout << "Position de la souris no convert: " << mouseX << "|" << mouseY << endl;
-  cout << "----------------------------------------------------------------" << endl;
-  #endif
-
   //gestion des inputs 
   if(glfwGetKey(gameWindow, GLFW_KEY_A) == GLFW_PRESS){
     character.goLeft();

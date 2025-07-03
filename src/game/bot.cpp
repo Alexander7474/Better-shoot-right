@@ -1,11 +1,8 @@
 #include"bot.h"
 
-
-
-
 bool Bot::champ_visuel(GameCharacter *user) {
     float range = 200.0f;
-    
+
     Vector2f toUser = {
         user->getPosition().x - getPosition().x,
         user->getPosition().y - getPosition().y
@@ -72,7 +69,7 @@ bool Bot::detect_point(CollisionBox* menber,Vector2f point){
         {
             return true;
         }
-        
+
     }
     return false;
 }
@@ -84,18 +81,17 @@ bool Bot::patrol_zone(){
         {
             return true;
         }
-        
+
     }
 
     return false;
 }
 
 bool Bot::bc_patrol(Vector2f point) {
-    setSpeed(15.0f);
 
-    if (bbopGetDistance(point, getPosition())> 5) { 
+    if (bbopGetDistance(point, getPosition())> 5) {
         if (oldp.x == getPosition().x) {
-            jump();  
+            jump();
         }
 
         if (point.x - getPosition().x > 0) {
@@ -106,10 +102,9 @@ bool Bot::bc_patrol(Vector2f point) {
             lookAt(Vector2f(getPosition().x - 5, getPosition().y));
         }
 
-        oldp = getPosition();  
+        oldp = getPosition();
         return false;
     } else {
-        setSpeed(0);  
         return true;
     }
 }
@@ -121,4 +116,3 @@ void Bot::setspawn(Vector2f s1,Vector2f s2,Vector2f s3){
         s3
     };
 }
-

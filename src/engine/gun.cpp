@@ -16,12 +16,12 @@ Gun::Gun()
 {
   // arme par default
   name = "scar";
-  isArmed = true;
+  armed = true;
   rearmTime = 0.1;
   magazineSize = 20;
   ammo = 20;
   lastShotTime = glfwGetTime()-rearmTime;
-  damage = 1;
+  damage = 0.5f;
   gunMouth = Vector2f(20.f,5.f);
   bulletSpeed = 1.f;
   gunDirection = rightDir;
@@ -54,14 +54,15 @@ void Gun::loadJsonFile(string path)
   }
   setTexture(animations[gun_idle_state].textures[0]);
 
-  //après avoir toute les texture par default on charge les textures personnalisé avec leur fichier json
-  //si pas de fichier json, il reste les texture par défault
+  // Après avoir toute les texture par default on
+  // charge les textures personnalisé avec leur
+  // fichier json.
+  // Si pas de fichier json, il reste les texture
+  // par défault.
   string jsonPath = path + "gun.json";
   std::ifstream jsonFile(jsonPath);
   if(!jsonFile.is_open()){
-    #ifdef DEBUG 
     LOGS.push_back("Erreur loading json file for " + name);
-    #endif 
     return; 
   }
 
@@ -70,9 +71,7 @@ void Gun::loadJsonFile(string path)
   try {
     jsonFile >> jsonData;
   } catch (const std::exception &e) {
-    #ifdef DEBUG 
     LOGS.push_back("Erreur parsing json for " + name);
-    #endif 
     return;
   }
 
@@ -117,23 +116,21 @@ void Gun::loadJsonFile(string path)
         animations[i].nFrame = nFrame;
         animations[i].frameTime = duration/nFrame;
       }else{
-
-        #ifdef DEBUG 
         LOGS.push_back("Erreur loading " + to_string(i) + " for " + name + ", loading default.png");
-        #endif
       }
 
     }
 
     setTexture(animations[idle].textures[0]);
   } catch (const json::exception &e){
-    #ifdef DEBUG 
     LOGS.push_back("Erreur getting JSON info for " + name);
-    #endif 
     return;
   }
 
 }
+
+
+
 
 void Gun::update()
 {
@@ -149,12 +146,15 @@ void Gun::update()
     animCnt = 0;
     state = gun_idle_state;
   }
+
   setTexture(animations[state].textures[animCnt]);
-  if(!isArmed){
+
+  if(!armed){
     if(glfwGetTime() - lastShotTime >= rearmTime && ammo > 0){
-      isArmed = true;
+      armed = true;
     }
   }
+
   for(Bullet &b : bulletVector){
     b.update();
   }
@@ -173,10 +173,10 @@ void Gun::setAttachPoint(float x, float y)
 
 void Gun::shoot()
 {
-  if(isArmed){
+  if(armed){
     lastShotTime = glfwGetTime();
     ammo--;
-    isArmed = false;
+    armed = false;
     state = shoot_state;
 
     //creation de la balle 
@@ -184,9 +184,8 @@ void Gun::shoot()
 
     // ajout d'un peu d'aléatoire dans la direction
     uniform_real_distribution<float> distribution(-0.1f,0.1f);
-    float r = distribution(RANDOM_ENGINE);
-    cout << r << endl;
-    float rotation = getRotation() + r; //rotation de l'arme
+    const float r = distribution(RANDOM_ENGINE);
+    const float rotation = getRotation() + r; //rotation de l'arme
 
 
     Vector2f inertie(cos(rotation) * bulletSpeed,sin(rotation) * bulletSpeed); //vecteur d'inertie en fonction de la rotaion du canon
@@ -197,8 +196,8 @@ void Gun::shoot()
     }
 
     //calcule position de sortie de la balle 
-    float outX = getPosition().x + (mouth.x - getPosition().x) * cos(getRotation()) - (mouth.y - getPosition().y) * sin(getRotation());
-    float outY = getPosition().y + (mouth.x - getPosition().x) * sin(getRotation()) + (mouth.y - getPosition().y) * cos(getRotation());
+    const float outX = getPosition().x + (mouth.x - getPosition().x) * cos(getRotation()) - (mouth.y - getPosition().y) * sin(getRotation());
+    const float outY = getPosition().y + (mouth.x - getPosition().x) * sin(getRotation()) + (mouth.y - getPosition().y) * cos(getRotation());
     
     Bullet b(bulletTexture, inertie);
     b.setPosition(outX, outY);
@@ -216,12 +215,67 @@ void Gun::reload()
   ammo = magazineSize;
 }
 
-const vector<Bullet>& Gun::getBullets() const
-{
+const std::string & Gun::getName() const {
+  return name;
+}
+
+void Gun::setName(const std::string &name) {
+  this->name = name;
+}
+
+GunState Gun::getState() const {
+  return state;
+}
+
+void Gun::setState(const GunState state) {
+  this->state = state;
+}
+
+Direction Gun::getGunDirection() const {
+  return gunDirection;
+}
+
+void Gun::setGunDirection(const Direction gunDirection) {
+  this->gunDirection = gunDirection;
+}
+
+float Gun::getDamage() const {
+  return damage;
+}
+
+void Gun::setDamage(const float damage) {
+  this->damage = damage;
+}
+
+bool Gun::isArmed() const {
+  return armed;
+}
+
+void Gun::setArmed(const bool armed) {
+  this->armed = armed;
+}
+
+int Gun::getMagazineSize() const {
+  return magazineSize;
+}
+
+void Gun::setMagazineSize(const int magazineSize) {
+  this->magazineSize = magazineSize;
+}
+
+int Gun::getAmmo() const {
+  return ammo;
+}
+
+void Gun::setAmmo(const int ammo) {
+  this->ammo = ammo;
+}
+
+const std::vector<Bullet> & Gun::getBulletVector() const {
   return bulletVector;
 }
 
-float Gun::getDamage(){
-  return damage;
+void Gun::setBulletVector(const std::vector<Bullet> &bulletVector) {
+  this->bulletVector = bulletVector;
 }
 

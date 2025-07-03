@@ -1,134 +1,151 @@
-#pragma once 
+#pragma once
 
+#include <memory>
 #include <string>
-#include <vector>
 
 #include "../../Bbop-2D/include/BBOP/Graphics.h"
 #include "../../Bbop-2D/include/BBOP/Graphics/bbopMathClass.h"
-#include "../../Bbop-2D/include/BBOP/Graphics/textureClass.h"
-#include "member.h"
+#include "../game/entity.h"
 #include "gun.h"
+#include "member.h"
 
-extern std::string gameCharacterStateString[2];
+extern const char *gameCharacterStateString[4];
 
-//éviter le redéfinition 
-#ifndef DIRECTION 
+// éviter les redéfinitions
+#ifndef DIRECTION
 #define DIRECTION
 
-enum Direction
-{
-  rightDir,
-  leftDir
-};
+enum Direction { rightDir, leftDir };
 
 #endif
 
-class GameCharacter : public BbopDrawable, public Geometric
-{
-private:
-  // attribute for the body of the character 
-  Member legs;
-  Member rightArm;
-  Member leftArm;
-  Member body;
-  Member head;
+class GameCharacter : public BbopDrawable, public Geometric, public Entity {
+      private:
+        // membres
+        Member legs;
+        Member rightArm;
+        Member leftArm;
+        Member body;
+        Member head;
+        // membres pour les ragdolls
+        b2Body *headR;
+        b2Body *bodyR;
+        b2Body *rightArmR;
+        b2Body *leftArmR;
+        b2Body *legsR;
 
-  //objet du character 
-  Gun gun;
+        // objet du character
+        std::unique_ptr<Gun> gun;
 
-  //gestion du regard et de l'orientation du character
-  Vector2f lookingPoint; //<! Ou le character regarde
-  Direction characterDirection; //<! Direction du regard
-  //
-  float scale;
-  
-  //gestion de la physique
-  float speed;
-  float jumpForce;
-  float weight;
-  int hp;
+        // gestion du regard et de l'orientation du character
+        Vector2f lookingPoint;        //<! Ou le character regarde
+        Direction characterDirection; //<! Direction du regard
 
-  // gérer par le caractère
-  Vector2f inertie;
-  float forceInertie;
-  double startFall;
-  bool canJump;
-  double startJump;
-  double jumpTime;
-  bool isJumping;
+        // taille du caractère
+        float scale;
 
-  /**
-   *  @brief Détermine la rotaion d'un membre en fonction du lookingPoint
-   */ 
-  void setMemberRotation(Sprite &member);
-  void setMemberRotation(Sprite &member, float m);
+        // attributs de la physique
+        float maxVelocityX{};
+        float maxVelocityY{};
+        float newtonX;
+        float newtonY;
+        float restitution;
+        float friction;
+        float density;
+        float linearDamping;
+        bool onRagdoll;
 
-public:
-  GameCharacter();
+        // attributs du jeu
+        float hp;
 
-  /**
-   * @brief remplie les listes de textures 
-   */
-  void createTextureCache(std::string path);
-  
-  /**
-   * @brief Met jour le character
-   */
-  void update(Map* map);
+        /**
+         *  @brief Détermine la rotaion d'un membre en fonction du lookingPoint
+         */
+        void setMemberRotation(Sprite &member);
+        void setMemberRotation(Sprite &member, float m);
 
-  /**
-  * @brief Draw the character
-  */
-  void Draw(GLint *renderUniforms) const override;
+      public:
+        GameCharacter();
 
-  /**
-  * @brief change la postition du character 
-  * @details Donc toutes les position des sprites constituant le character avec le centre du torse comment référence/origine
-  */
-  void setPos(Vector2f pos);
-  void setPos(float x, float y);
+        /**
+         * @brief remplie les listes de textures
+         */
+        void createTextureCache(const std::string &path);
 
-  /**
-  * @brief renvoie l'endroite ou regarde le character
-  */
-  Vector2f getLookingPoint() const;
-  
-  /**
-  * @brief Fait regarder le character au coordonnées lp
-  */
-  void lookAt(Vector2f lp);
+        /**
+         * @brief Met jour le character
+         */
+        void update(Map *map);
 
-  void goLeft();
+        /**
+         * @brief Draw the character
+         */
+        void Draw(GLint *renderUniforms) const override;
 
-  void goRight();
+        /**
+         * @brief change la postition du character
+         * @details Donc toutes les position des sprites constituant le
+         * character avec le centre du torse comment référence/origine
+         */
+        void setPos(const Vector2f &pos);
+        void setPos(float x, float y);
 
-  void jump();
+        /**
+         * @brief renvoie l'endroite ou regarde le character
+         */
+        Vector2f getLookingPoint() const;
 
-  void getshot(std::vector<Bullet> balls , int dmg);
+        /**
+         * @brief Fait regarder le character au coordonnées lp
+         */
+        void lookAt(const Vector2f &lp);
 
-  /**
-  * @brief retourne le character sur l'axe y
-  */
-  void flipY();
+        /**
+         * @brief Déplace le personnage vers la gauche
+         *
+         * @param newtonDiff Permet d'ajouter ou de soustraire de la force au
+         * déplacement
+         */
+        void goLeft(float newtonDiff = 0.f);
 
-  //GETTER 
-  //
-  Member& getLeftArm();
-  Member& getRightArm();
-  Member& getBody();
-  Member& getHead();
-  Member& getLegs();
-  Gun& getGun();
-  float getSpeed();
-  float getJumpForce();
-  float getWeight();
-  int gethp();
-  
+        /**
+         * @brief Déplace le personnage vers la droite
+         *
+         * @param newtonDiff Permet d'ajouter ou de soustraire de la force au
+         * déplacement
+         */
+        void goRight(float newtonDiff = 0.f);
 
-  //SETTER
-  //
-  void setSpeed(float _speed);
-  void setJumpForce(float _jumpForce);
-  void setWeight(float _weight);
-  void sethp(float hp);
+        void jump();
+
+        /**
+         * @brief retourne le character sur l'axe y
+         */
+        void flipY();
+
+        // GETTER
+        //
+        Member &getLeftArm();
+        Member &getRightArm();
+        Member &getBody();
+        Member &getHead();
+        Member &getLegs();
+        [[nodiscard]] float getHp() const;
+        [[nodiscard]] Gun& getGun() const;
+
+        // SETTER
+        //
+        void setHp(float _hp);
+
+        // ENTITY HERITAGE gestion de la physique
+        void computePhysic(b2World *world) override;
+        void updatePhysic() override;
+
+        /**
+         * @brief Met le personnage sur le mode ragdoll
+         * @warning Dans ce mode le joueur perd le controle du personnage
+         *
+         * @param world Monde box2D
+         */
+        void toggleRagdollMod(b2World *world);
 };

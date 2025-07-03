@@ -16,7 +16,6 @@ void Neutre::Bupdate(Map *map, GameCharacter *perso1,GLFWwindow *gameWindow)
     distance=bbopGetDistance(perso1->getPosition(),getPosition());
     if (glfwGetKey(gameWindow, GLFW_KEY_T)==GLFW_PRESS && distance<30 && etat==speak)
     {
-        cerr<<"pp"<<endl;
         show=true;
         lookAt(perso1->getPosition());
         boxs[0]->setPosition(Vector2f(getPosition().x-60,getPosition().y-30));
