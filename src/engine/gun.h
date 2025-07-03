@@ -87,7 +87,7 @@ public:
   */
   void loadJsonFile(std::string path);
 
-const std::string & getName() const;
+  const std::string & getName() const;
 
   void setName(const std::string &name);
 

@@ -1,103 +1,8 @@
 #include"bot.h"
 
-
-#include<cmath>
-#include "../engine/gameCharacter.h"
-#include <algorithm>
-#include <random>
-#include <ctime>
-#include <GLFW/glfw3.h>
-#include <iostream>
-using namespace std;
-bool detect_point(CollisionBox* menber,Vector2f point){
-    for (int i = 0; i < 5; i++)
-    {
-        if (point.x >= menber[i].getLeft() && point.x <= menber[i].getRight() && point.y >= menber[i].getTop() && point.y <= menber[i].getBottom())
-        {
-            return true;
-        }
-        
-    }
-    return false;
-}
-
-Vector2f closestp(Vector2f *point , Vector2f b){
-    Vector2f clos = point[0];
-    for (int i = 0; i < 3; i++)
-    {
-        if (bbopGetDistance(point[i],b)<bbopGetDistance(clos,b))
-        {
-            clos=point[i];
-        }
-        
-    }
-    return clos;
-}
-
-Bot::Bot(){
-    lookAt(Vector2f(getPosition().x+5,getPosition().y));
-    etat=patrol;
-    fov = M_PI / 4;
-    points=new Vector2f[21];
-    theta=new float[21];
-    detect=10.0f;
-    ftd=false;
-    direction = true;
-    spawn=new Vector2f[3]{
-        Vector2f(417.f,418.f),
-        Vector2f(450.f,418.f),
-        Vector2f(500.f,418.f)
-    };
-    cpt=0;
-    iterateur=1;
-    
-}
-
-void Bot::Bupdate(Map *map , GameCharacter *user){
-    getshot(user->getGun().getBulletVector(),user->getGun().getDamage());
-    if (getHead().getetat()!=dead)
-    {
-
-        detect_player(user);
-        patrol_mod();
-        engage_mod(user);
-        seek_mod(user);
-    }
-    update(map);  
- 
-}
-
-void Bot::detect_player(GameCharacter *user) {
-    if (champ_visuel(user)) {
-        unlock=glfwGetTime();
-        if (glfwGetTime()-divi>detect2)
-        {
-            etat=engage;
-        }else if (glfwGetTime()-divi/2>detect2)
-        {
-            etat=seek;
-        }
-        
-        
-    }
-
-    if (etat==engage && glfwGetTime() - unlock > 5) {
-        etat = patrol;
-        ftd=false;
-    }else if (etat==seek && glfwGetTime() - unlock > 5)
-    {
-        etat = patrol;
-        ftd=false;
-    }
-    
-}
-
-
-
-
 bool Bot::champ_visuel(GameCharacter *user) {
     float range = 200.0f;
-    
+
     Vector2f toUser = {
         user->getPosition().x - getPosition().x,
         user->getPosition().y - getPosition().y
@@ -157,82 +62,26 @@ bool Bot::champ_visuel(GameCharacter *user) {
 }
 
 
-
-
-
-void Bot::patrol_mod() {
-    if (etat == patrol) {
-        
-        
-        if (patrol_zone()) {
-            if (bbopGetDistance(getPosition(),spawn[cpt])<5.0f)
-            {
-                if (cpt==2)
-                {
-                    iterateur=-1;
-                }
-                if (cpt==0)
-                {
-                    iterateur=1;
-                }
-                cpt+=iterateur;
-            }
-            bc_patrol(spawn[cpt]);
-        } else {
-            bc_patrol(spawn[0]); 
-        }
-    }
-}
-
-
-void Bot::engage_mod(GameCharacter *user){
-    float espace = getPosition().x-user->getPosition().x;
-    if (etat==engage)
+bool Bot::detect_point(CollisionBox* menber,Vector2f point){
+    for (int i = 0; i < 5; i++)
     {
-        lookAt(user->getPosition()); 
-        if (espace>50.0f)
+        if (point.x >= menber[i].getLeft() && point.x <= menber[i].getRight() && point.y >= menber[i].getTop() && point.y <= menber[i].getBottom())
         {
-            goLeft();
+            return true;
         }
-        if (espace<-50.0f)
-        {
-            goRight();
-        }        
-        if (espace<100.0f && espace>-100.0f)
-        {
-            getGun().shoot();
-            getGun().reload();
-        }
-        
+
     }
-    
+    return false;
 }
-
-void Bot::seek_mod(GameCharacter *user){
-    if (etat==seek)
-    {
-        float espace = bbopGetDistance(user->getPosition(),getPosition());
-        lookAt(seekp);
-        if (espace>0)
-        {
-            goLeft();            
-        }else{
-            goRight();
-        }
-    }
-    
-}
-
-
 bool Bot::patrol_zone(){
 
     for (int i = 0; i < 3; i++)
     {
-        if (bbopGetDistance(getPosition(),spawn[cpt])<60)
+        if (bbopGetDistance(getPosition(),spawn[0])<500)
         {
             return true;
         }
-        
+
     }
 
     return false;
@@ -240,9 +89,9 @@ bool Bot::patrol_zone(){
 
 bool Bot::bc_patrol(Vector2f point) {
 
-    if (bbopGetDistance(point, getPosition())> 5) { 
+    if (bbopGetDistance(point, getPosition())> 5) {
         if (oldp.x == getPosition().x) {
-            jump();  
+            jump();
         }
 
         if (point.x - getPosition().x > 0) {
@@ -253,38 +102,17 @@ bool Bot::bc_patrol(Vector2f point) {
             lookAt(Vector2f(getPosition().x - 5, getPosition().y));
         }
 
-        oldp = getPosition();  
+        oldp = getPosition();
         return false;
     } else {
         return true;
     }
 }
 
-    
-    
-    
-void Bot::getshot(vector<Bullet> balls ,float dmg){
-    CollisionBox partie[5] = {
-        getRightArm().getCollisionBox(),
-        getLeftArm().getCollisionBox(),
-        getLegs().getCollisionBox(),
-        getBody().getCollisionBox(),
-        getHead().getCollisionBox()
+void Bot::setspawn(Vector2f s1,Vector2f s2,Vector2f s3){
+    spawn=new Vector2f[3]{
+        s1,
+        s2,
+        s3
     };
-    for (int i = 0; i < 5; i++)
-    {
-        for (long unsigned int j = 0; j < balls.size(); j++)
-        {
-            if (partie[i].check(balls[j].getCollisionBox()))
-            {
-                setHp(getHp()-2);
-                break;
-            }
-        }
-    }
-    if (getHp()<=0)
-    {
-        getHead().setetat(2);
-    }
-    
 }

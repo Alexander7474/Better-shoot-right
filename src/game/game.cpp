@@ -25,16 +25,22 @@ Game::Game()
   physicalWorld.SetContactListener(listener);
 
   if(map.getSpawnPoints().size() > 1){
-    mainPlayer.getCharacter().setPos(map.getSpawnPoints()[0]);
-    npc.setPosition(map.getSpawnPoints()[1]);
+    mainPlayer.getCharacter().setPosition(map.getSpawnPoints()[0]);
+    npc.push_back(new Trooper());
+    npc.push_back(new Trooper());
+    npc[0]->setPosition(map.getSpawnPoints()[1]);
+    npc[1]->setPosition(Vector2f(600.f,418.f));
+    npc[1]->setspawn(Vector2f(500.f,418.f),Vector2f(550.f,418.f),Vector2f(600.f,418.f));
   }
   //init physic-------------------------------------------------------------------------
-  //rajoute le boite de collision au monde physique 
+  //rajoute le boite de collision au monde physique
   for(CollisionBox& box : map.getCollision()){
     addStaticBox(&physicalWorld, &box);
   }
 
   entities.push_back(&mainPlayer.getCharacter());
+  entities.push_back(npc[0]);
+  entities.push_back(npc[1]);
 
   // compute entities
   unsigned long long cptEnt = 0;
@@ -51,6 +57,7 @@ void Game::update()
 {
   //simple gestion de animations
   map.update();
+  
 
   //déterminer la position du milieu entre le joueur et son crossair
   Vector2f middlePos;
@@ -62,6 +69,8 @@ void Game::update()
   distance = distance/BBOP_WINDOW_RESOLUTION.x;
   mainPlayerCam.setScale(0.8);
   mainPlayerCam.setPosition(middlePos);
+  npc[0]->Bupdate(&map , &mainPlayer.getCharacter(),npc);
+  npc[1]->Bupdate(&map , &mainPlayer.getCharacter(),npc);
   mainPlayer.update(&mainPlayerCam, &map);
 
   const int state = glfwGetKey(gameWindow, GLFW_KEY_G);
@@ -75,10 +84,10 @@ void Game::update()
   int velocityIterations = 6;
   int positionIterations = 2;
 
-  //mis a jour du monde box2d 
+  //mis a jour du monde box2d
   physicalWorld.Step(timeStep, velocityIterations, positionIterations);
 
-  //mise a jour des entitées après la mise a jour du monde box2d 
+  //mise a jour des entitées après la mise a jour du monde box2d
   for(auto &ent : entities){
     ent->updatePhysic();
   }
@@ -89,6 +98,10 @@ void Game::Draw()
 {
   map.Draw(scene, mainPlayerCam);
   scene.Draw(mainPlayer);
+  scene.Draw(*npc[0]);
+  npc[0]->Draw(&scene);
+  scene.Draw(*npc[1]);
+  npc[1]->Draw(&scene);
 
   for(auto& d: dynamics){
     scene.Draw(*d);
