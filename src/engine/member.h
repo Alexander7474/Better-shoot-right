@@ -5,8 +5,9 @@
 
 #include <string>
 
+#include "animationComponent.h"
 
-enum MemberState
+enum class MemberState
 {
   idle,
   run,
@@ -17,7 +18,7 @@ enum MemberState
 //structure de stockage d'un animation, respecte la structure des fichier json
 struct MemberAnim 
 {
-  std::vector<Texture> textures; //<! ensemble de texture qui forma l'animation 
+  std::vector<Texture> textures; //<! ensemble de texture qui form l'animation
   double duration; // temps de l'animation
   int nFrame; // nombre de frame 
   double startTime; // depart de l'anim
@@ -25,7 +26,7 @@ struct MemberAnim
   double frameTime;
 };
 
-class Member : public Sprite 
+class Member : public Sprite, public AnimationComponent<MemberState>
 {
 private:
   //physique
@@ -36,10 +37,7 @@ private:
   std::string name;
   
   //anim
-  MemberAnim animations[15];
   MemberState state;
-  int animCnt;
-  bool isReverse;
 
   friend class GameCharacter;
 public:

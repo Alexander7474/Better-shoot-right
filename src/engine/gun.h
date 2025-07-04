@@ -27,7 +27,7 @@ enum Direction
 //structure de stockage d'un animation, respecte la structure des fichier json
 struct GunAnim 
 {
-  std::vector<Texture> textures; //<! ensemble de texture qui forma l'animation 
+  std::vector<Texture> textures; //<! ensemble de texture qui form l'animation
   double duration; // temps de l'animation
   int nFrame; // nombre de frame 
   double startTime; // depart de l'anim

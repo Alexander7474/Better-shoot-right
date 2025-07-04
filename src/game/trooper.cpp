@@ -37,7 +37,7 @@ Trooper::Trooper(){
 
 
 void Trooper::Bupdate(Map *map , GameCharacter *user,vector<Trooper*> otherbots){
-    if (getHead().getetat()!=dead)
+    if (getHead().getetat()!=3)
     {
         interact(otherbots);
         detect_player(user);

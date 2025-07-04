@@ -121,7 +121,7 @@ void Gun::loadJsonFile(string path)
 
     }
 
-    setTexture(animations[idle].textures[0]);
+    setTexture(animations[gun_idle_state].textures[0]);
   } catch (const json::exception &e){
     LOGS.push_back("Erreur getting JSON info for " + name);
     return;

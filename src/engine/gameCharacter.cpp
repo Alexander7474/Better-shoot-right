@@ -74,19 +74,15 @@ void GameCharacter::update(Map *map) {
         if (!onRagdoll) {
                 if (entityBody->GetLinearVelocity().x <= 0.5f &&
                     entityBody->GetLinearVelocity().x >= -0.5f &&
-                    legs.state == run) {
-                        legs.state = idle;
-                        legs.animations[idle].lastFrameStartTime =
-                            glfwGetTime();
+                    legs.state == MemberState::run) {
+                        legs.state = MemberState::idle;
                 }
 
                 if (!reinterpret_cast<BodyData *>(
                          entityBody->GetUserData().pointer)
                          ->isTouchingDown &&
-                    legs.state == run) {
-                        legs.state = idle;
-                        legs.animations[idle].lastFrameStartTime =
-                            glfwGetTime();
+                    legs.state == MemberState::run) {
+                        legs.state = MemberState::idle;
                 }
         }
 
@@ -108,13 +104,13 @@ void GameCharacter::update(Map *map) {
         ImGui::Text("Member angle: (head: %f, right arm: %f, left arm: %f)",
                     head.getRotation(), rightArm.getRotation(),
                     leftArm.getRotation());
-        ImGui::Text("Legs state: %s", gameCharacterStateString[legs.state]);
-        ImGui::Text("Body state: %s", gameCharacterStateString[body.state]);
+        ImGui::Text("Legs state: %s", gameCharacterStateString[static_cast<int>(legs.state)]);
+        ImGui::Text("Body state: %s", gameCharacterStateString[static_cast<int>(body.state)]);
         ImGui::Text("Right Arm state: %s",
-                    gameCharacterStateString[rightArm.state]);
+                    gameCharacterStateString[static_cast<int>(rightArm.state)]);
         ImGui::Text("Left Arm state: %s",
-                    gameCharacterStateString[leftArm.state]);
-        ImGui::Text("Head state: %s", gameCharacterStateString[head.state]);
+                    gameCharacterStateString[static_cast<int>(leftArm.state)]);
+        ImGui::Text("Head state: %s", gameCharacterStateString[static_cast<int>(head.state)]);
         ImGui::End();
 #endif
 }
@@ -295,13 +291,12 @@ void GameCharacter::goLeft(const float newtonDiff) {
         entityBody->ApplyForceToCenter(velocity, true);
 
         // gestion animation
-        if (legs.state != run) {
-                legs.state = run;
-                legs.animations[run].lastFrameStartTime = glfwGetTime();
+        if (legs.state != MemberState::run) {
+                legs.state = MemberState::run;
                 if (characterDirection == rightDir)
-                        legs.isReverse = true;
+                        legs.setReverse(true);
                 else
-                        legs.isReverse = false;
+                        legs.setReverse(false);
         }
 }
 
@@ -316,13 +311,12 @@ void GameCharacter::goRight(const float newtonDiff) {
         entityBody->ApplyForceToCenter(velocity, true);
 
         // gestion animation
-        if (legs.state != run) {
-                legs.animations[run].lastFrameStartTime = glfwGetTime();
-                legs.state = run;
+        if (legs.state != MemberState::run) {
+                legs.state = MemberState::run;
                 if (characterDirection == rightDir)
-                        legs.isReverse = false;
+                        legs.setReverse(false);
                 else
-                        legs.isReverse = true;
+                        legs.setReverse(true);
         }
 }
 
@@ -404,7 +398,7 @@ void GameCharacter::toggleRagdollMod(b2World *world) {
         onRagdoll = true;
 
         for (Member *m : {&head, &body, &legs, &rightArm, &leftArm}) {
-                m->state = ragdoll;
+                m->state = MemberState::ragdoll;
         }
 
         // changement de taille pour les nouvelle texture ragdoll.png
