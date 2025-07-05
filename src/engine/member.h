@@ -1,57 +1,49 @@
-#pragma once 
+#pragma once
 
-#include "../../Bbop-2D/include/BBOP/Graphics/bbopMathClass.h"
-#include "../../Bbop-2D/include/BBOP/Graphics.h"
-
+#include <memory>
 #include <string>
 
+#include "../../Bbop-2D/include/BBOP/Graphics.h"
+#include "../../Bbop-2D/include/BBOP/Graphics/bbopMathClass.h"
 #include "animationComponent.h"
 
-enum class MemberState
-{
-  idle,
-  run,
-  ragdoll,
-  dead
-};
+enum class MemberState { idle, run, ragdoll, dead };
 
-//structure de stockage d'un animation, respecte la structure des fichier json
-struct MemberAnim 
-{
-  std::vector<Texture> textures; //<! ensemble de texture qui form l'animation
-  double duration; // temps de l'animation
-  int nFrame; // nombre de frame 
-  double startTime; // depart de l'anim
-  double lastFrameStartTime; // depart de la dernière frame 
-  double frameTime;
-};
+class Member : public Sprite {
+       private:
+        // physique
+        Vector2f attachPoint;
+        float force;
 
-class Member : public Sprite, public AnimationComponent<MemberState>
-{
-private:
-  //physique
-  Vector2f attachPoint;
-  float force;
-  
-  //info
-  std::string name;
-  
-  //anim
-  MemberState state;
+        // info
+        std::string name;
 
-  friend class GameCharacter;
-public:
-  Member();
+        // anim
+        MemberState state;
+        std::unique_ptr<AnimationComponent<MemberState>> animation;
 
-  void update();
+        friend class GameCharacter;
 
-  void setAttachPoint(Vector2f _attachPoint);
-  void setAttachPoint(float x, float y);
+       public:
+        Member();
 
-  Vector2f getAttachPoint() const;
+        void update();
 
-  void createTextureCache(std::string path);
+        /**
+         * @brief
+         * @param _attachPoint point ou le membre se fixe
+         */
+        void setAttachPoint(const Vector2f& _attachPoint);
+        void setAttachPoint(float x, float y);
 
-  void setetat(int k);
-  int getetat();
+        Vector2f getAttachPoint() const;
+
+        /**
+         * @brief charge les animations dans le composant animation
+         * @param path chemin d'accès au animations
+         */
+        void createTextureCache(const std::string& path);
+
+        void setetat(int k);
+        int getetat();
 };

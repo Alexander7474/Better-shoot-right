@@ -4,17 +4,10 @@
   "damage" : 5.3,
   "magazine_size" : 25,
   "shot_sound" : "assets/audio/short-drill-gunshot-fx.wav",
-  "ream_time" : 0.1,
+  "ream_time" : 0.25,
   "bullet_texture" : "assets/guns/bullets/default.png",
   "bullet_speed" : 1000.0,
   "mouth_x" : 43.0,
-  "mouth_y" : -2.0,
-  "1": {
-    "sprite_sheet": "shoot-sheet.png",
-    "columns": 5,
-    "rows": 1,
-    "n_frame" : 5,
-    "duration" : 0.05
-  }
+  "mouth_y" : -2.0
 }
 

@@ -11,18 +11,18 @@
 #   pacman -S --noconfirm --needed mingw-w64-x86_64-toolchain mingw-w64-x86_64-glfw
 #
 #CXX = g++
-#CXX = clang++
+CXX = clang++
 
 EXE = final.exe
 SRC_DIR = src/
-SOURCES = main.cpp $(SRC_DIR)engine/animationComponent.cpp $(SRC_DIR)game/neutre.cpp $(SRC_DIR)game/trooper.cpp $(SRC_DIR)engine/gameCharacter.cpp $(SRC_DIR)game/bot.cpp $(SRC_DIR)game/player.cpp $(SRC_DIR)game/game.cpp $(SRC_DIR)engine/member.cpp $(SRC_DIR)engine/gun.cpp $(SRC_DIR)engine/bullet.cpp $(SRC_DIR)engine/crossair.cpp $(SRC_DIR)engine/physic.cpp $(SRC_DIR)engine/dynamicSprite.cpp
+SOURCES = main.cpp $(SRC_DIR)engine/item.cpp $(SRC_DIR)engine/animationComponent.cpp $(SRC_DIR)game/neutre.cpp $(SRC_DIR)game/trooper.cpp $(SRC_DIR)engine/gameCharacter.cpp $(SRC_DIR)game/bot.cpp $(SRC_DIR)game/player.cpp $(SRC_DIR)game/game.cpp $(SRC_DIR)engine/member.cpp $(SRC_DIR)engine/gun.cpp $(SRC_DIR)engine/bullet.cpp $(SRC_DIR)engine/crossair.cpp $(SRC_DIR)engine/physic.cpp $(SRC_DIR)engine/dynamicSprite.cpp
 SOURCES += $(SRC_DIR)/imgui/imgui.cpp $(SRC_DIR)/imgui/imgui_demo.cpp $(SRC_DIR)/imgui/imgui_draw.cpp $(SRC_DIR)/imgui/imgui_tables.cpp $(SRC_DIR)/imgui/imgui_widgets.cpp
 SOURCES += $(SRC_DIR)/backends/imgui_impl_glfw.cpp $(SRC_DIR)/backends/imgui_impl_opengl3.cpp
 OBJS = $(SOURCES:.cpp=.o)
 UNAME_S := $(shell uname -s)
 LINUX_GL_LIBS = -lGL
 
-CXXFLAGS = -std=c++11 -I$(SRC_DIR)/imgui -I$(SRC_DIR)/backends
+CXXFLAGS = -I$(SRC_DIR)/imgui -I$(SRC_DIR)/backends
 CXXFLAGS += -g -Wall -Wno-delete-non-virtual-dtor -Wformat -I/usr/include/freetype2 -g -DIMGUI_DEBUG
 LIBS = -L./Bbop-2D -lbbop -lglfw -lGLEW -lGL -lfreetype -lLDtkLoader -lbox2d
 

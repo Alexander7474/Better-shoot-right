@@ -294,9 +294,9 @@ void GameCharacter::goLeft(const float newtonDiff) {
         if (legs.state != MemberState::run) {
                 legs.state = MemberState::run;
                 if (characterDirection == rightDir)
-                        legs.setReverse(true);
+                        legs.animation->setReverse(true);
                 else
-                        legs.setReverse(false);
+                        legs.animation->setReverse(false);
         }
 }
 
@@ -314,9 +314,9 @@ void GameCharacter::goRight(const float newtonDiff) {
         if (legs.state != MemberState::run) {
                 legs.state = MemberState::run;
                 if (characterDirection == rightDir)
-                        legs.setReverse(false);
+                        legs.animation->setReverse(false);
                 else
-                        legs.setReverse(true);
+                        legs.animation->setReverse(true);
         }
 }
 

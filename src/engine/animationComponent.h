@@ -5,37 +5,41 @@
 #ifndef ANIMATIONCOMPONENT_H
 #define ANIMATIONCOMPONENT_H
 
-#include "../../Bbop-2D/include/BBOP/Graphics.h"
-
-#include <vector>
 #include <unordered_map>
+#include <vector>
+
+#include "../../Bbop-2D/include/BBOP/Graphics.h"
 
 // structure de stockage d'un animation, respecte la structure des fichier json
 struct Animation {
         std::vector<Texture>
-            textures;              //<! ensemble de texture qui form l'animation
-        double duration;           // temps de l'animation
-        int nFrame;                // nombre de frame
-        double startTime;          // depart de l'anim
-        double lastFrameStartTime; // depart de la dernière frame
+            textures;      //<! ensemble de texture qui form l'animation
+        double duration;   // temps de l'animation
+        int nFrame;        // nombre de frame
+        double startTime;  // depart de l'anim
+        double lastFrameStartTime;  // depart de la dernière frame
         double frameTime;
 };
 
+class IAnimationComponent {
+public:
+        virtual ~IAnimationComponent() = default;
+};
+
 template <typename AnimationEnum>
-class AnimationComponent {
-      private:
-        Sprite *owner; //<! class fille
+class AnimationComponent : public IAnimationComponent {
+       private:
+        Sprite *owner;  //<! class fille
         std::unordered_map<AnimationEnum, Animation>
-            animations; //<! map de toute les animations possible
-        bool reverse{}; //<! joue l'animation à l'envers
-        int animCnt{}; //<! compteur de frame de l'animation
-      public:
+            animations;  //<! map de toute les animations possible
+        bool reverse{};  //<! joue l'animation à l'envers
+        int animCnt{};   //<! compteur de frame de l'animation
+       public:
         /**
          * @brief
          * @param owner pointeur vers la class fille héritante du composant
          */
-        AnimationComponent(Sprite *owner);
-        ~AnimationComponent() = default;
+        explicit AnimationComponent(Sprite *owner);
 
         /**
          * @brief Remplis la map d'animation pour chaque state de la class
@@ -49,12 +53,13 @@ class AnimationComponent {
         /**
          * @brief joue l'animation
          * @param state etat actuelle de la class fille
+         * @return renvoie true si l'animation déborde
          */
-        void play(AnimationEnum state);
+        bool play(AnimationEnum state);
 
         [[nodiscard]] bool isReverse() const;
 
         void setReverse(bool reverse);
 };
 
-#endif // ANIMATIONCOMPONENT_H
+#endif  // ANIMATIONCOMPONENT_H

@@ -3,9 +3,12 @@
 //
 
 #include "animationComponent.h"
-#include "member.h"
 
 #include <nlohmann/json.hpp>
+
+#include "member.h"
+
+#include "gun.h"
 
 template <typename AnimationEnum>
 AnimationComponent<AnimationEnum>::AnimationComponent(Sprite *owner)
@@ -27,7 +30,7 @@ void AnimationComponent<AnimationEnum>::loadTextureCache(AnimationEnum state,
 
         // Après avoir charger la texture par default
         // on charge la sprite sheet si le fichier json
-        // là
+        // l'à
         // Si pas de fichier json, il reste les texture par défault
         std::string jsonPath = path + "animations.json";
         std::ifstream jsonFile(jsonPath);
@@ -47,22 +50,26 @@ void AnimationComponent<AnimationEnum>::loadTextureCache(AnimationEnum state,
         }
 
         try {
-
-                if (jsonData.contains(std::to_string(static_cast<int>(state)))) {
+                if (jsonData.contains(
+                        std::to_string(static_cast<int>(state)))) {
                         std::string sheetPath =
                             jsonData.at(std::to_string(static_cast<int>(state)))
                                 .at("sprite_sheet");
                         sheetPath = path + sheetPath;
 
                         int columns =
-                            jsonData.at(std::to_string(static_cast<int>(state))).at("columns");
+                            jsonData.at(std::to_string(static_cast<int>(state)))
+                                .at("columns");
                         int rows =
-                            jsonData.at(std::to_string(static_cast<int>(state))).at("rows");
+                            jsonData.at(std::to_string(static_cast<int>(state)))
+                                .at("rows");
                         int nFrame =
-                            jsonData.at(std::to_string(static_cast<int>(state))).at("n_frame");
+                            jsonData.at(std::to_string(static_cast<int>(state)))
+                                .at("n_frame");
 
                         double duration =
-                            jsonData.at(std::to_string(static_cast<int>(state))).at("duration");
+                            jsonData.at(std::to_string(static_cast<int>(state)))
+                                .at("duration");
 
                         animations[state].textures.clear();
                         animations[state].textures = bbopLoadSpriteSheet(
@@ -73,8 +80,8 @@ void AnimationComponent<AnimationEnum>::loadTextureCache(AnimationEnum state,
 
                 } else {
                         LOGS.push_back("Erreur loading " +
-                                       std::to_string(static_cast<int>(state)) + " pour " +
-                                       jsonPath);
+                                       std::to_string(static_cast<int>(state)) +
+                                       " pour " + jsonPath);
                 }
         } catch (const nlohmann::json::exception &e) {
                 LOGS.push_back("Erreur getting JSON state animation for " +
@@ -84,7 +91,8 @@ void AnimationComponent<AnimationEnum>::loadTextureCache(AnimationEnum state,
 }
 
 template <typename AnimationEnum>
-void AnimationComponent<AnimationEnum>::play(AnimationEnum state) {
+bool AnimationComponent<AnimationEnum>::play(AnimationEnum state) {
+        bool overflow = false;
         // play animation
         //
         if (glfwGetTime() - animations[state].lastFrameStartTime >=
@@ -99,11 +107,13 @@ void AnimationComponent<AnimationEnum>::play(AnimationEnum state) {
         // débordement anim sens normal
         if (animCnt >= animations[state].nFrame && !reverse) {
                 animCnt = 0;
+                overflow = true;
         }
 
         // débordement anim a l'envers
         if (animCnt < 0 && reverse) {
                 animCnt = animations[state].nFrame - 1;
+                overflow = true;
         }
 
         // evite que les anims a 1 frame sois bugué après une anim reverse
@@ -112,6 +122,7 @@ void AnimationComponent<AnimationEnum>::play(AnimationEnum state) {
         }
 
         owner->setTexture(animations[state].textures[animCnt]);
+        return overflow;
 }
 
 template <typename AnimationEnum>
@@ -124,5 +135,5 @@ void AnimationComponent<AnimationEnum>::setReverse(bool reverse) {
         this->reverse = reverse;
 }
 
-
-template class AnimationComponent<MemberState>;  // force la génération
+template class AnimationComponent<MemberState>;  // force la génération pour MemberState
+template class AnimationComponent<GunState>;  // force la génération pour GunState
