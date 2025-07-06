@@ -20,7 +20,6 @@ enum Direction { rightDir, leftDir };
 
 class Gun : public Item {
        private:
-        std::unique_ptr<AnimationComponent<GunState>> animationX;
         GunState state;
 
         Vector2f attachPoint;
@@ -64,7 +63,7 @@ class Gun : public Item {
          */
         void loadJsonFile(const std::string &path);
 
-        GunState getState() const;
+        [[nodiscard]] GunState getState() const;
 
         void setState(GunState state);
 
@@ -91,4 +90,6 @@ class Gun : public Item {
         const std::vector<Bullet> &getBulletVector() const;
 
         void setBulletVector(const std::vector<Bullet> &bulletVector);
+
+        Gun(const Gun &other);
 };

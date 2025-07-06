@@ -1,4 +1,5 @@
-#pragma once
+#ifndef GAME_CHARACTER_H
+#define GAME_CHARACTER_H
 
 #include <memory>
 #include <string>
@@ -149,3 +150,5 @@ class GameCharacter : public BbopDrawable, public Geometric, public Entity {
          */
         void toggleRagdollMod(b2World *world);
 };
+
+#endif

@@ -16,7 +16,7 @@ double FPS = 0;
 double FPS_COUNTER = 0;
 double LAST_FPS_UPDATE = glfwGetTime();
 float GRAVITY = 9.8f;
-default_random_engine RANDOM_ENGINE; 
+default_random_engine RANDOM_ENGINE;
 
 Game::Game()
   :  map("assets/map/map1/"), physicalWorld(b2Vec2(0.0f,GRAVITY)) // création du monde physique avec un vecteur de gravité
@@ -68,7 +68,7 @@ void Game::update()
     middlePos.y = (mainPlayer.getCharacter().getPosition().y + scale * dy);
   }
 
-  mainPlayerCam.setScale(0.8);
+  mainPlayerCam.setScale(1.f);
   mainPlayerCam.setPosition(middlePos);
   mainPlayer.update(&mainPlayerCam, &map);
 
@@ -76,7 +76,6 @@ void Game::update()
   if (state == GLFW_PRESS) {
     mainPlayer.getCharacter().toggleRagdollMod(&physicalWorld);
   }
-
 
   //Gestion de la physique-------------------------------------------------------------------------
   constexpr float timeStep = 1.0f / 60.f;

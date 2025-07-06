@@ -3,8 +3,6 @@
 #include "../../Bbop-2D/include/BBOP/Graphics.h"
 #include "player.h"
 #include"trooper.h"
-#include"neutre.h"
-#include "bot.h"
 #include "../engine/dynamicSprite.h"
 #include "entity.h"
 
@@ -22,7 +20,7 @@ extern double FPS;
 extern double FPS_COUNTER;
 extern double LAST_FPS_UPDATE;
 extern float GRAVITY;
-extern std::default_random_engine RANDOM_ENGINE; 
+extern std::default_random_engine RANDOM_ENGINE;
 
 class Game 
 {

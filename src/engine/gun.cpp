@@ -3,6 +3,7 @@
 #include <GLFW/glfw3.h>
 
 #include <cmath>
+#include <memory>
 #include <nlohmann/json.hpp>
 #include <random>
 #include <string>
@@ -25,11 +26,11 @@ Gun::Gun() : Item(Texture("assets/guns/scar/scar.png")) {
         gunDirection = rightDir;
 
         // texture par default des balles
-        bulletTexture = std::unique_ptr<Texture>(new Texture("assets/guns/bullets/default.png"));
+        bulletTexture = std::make_unique<Texture>("assets/guns/bullets/default.png");
 
         state = GunState::idle;
-        animation = std::unique_ptr<AnimationComponent<GunState>>(
-            new AnimationComponent<GunState>(this));
+        animation = std::make_unique<AnimationComponent<GunState>>(
+            this);
 
         loadJsonFile("assets/guns/scar/");
 }
@@ -79,7 +80,7 @@ void Gun::loadJsonFile(const string& path) {
                 // soundEngine->addSoundSourceFromFile(sound.c_str());
 
                 string bullet = jsonData.at("bullet_texture");
-                bulletTexture = std::unique_ptr<Texture>(new Texture(bullet.c_str()));
+                bulletTexture = std::make_unique<Texture>(bullet.c_str());
 
                 float x = jsonData.at("mouth_x");
                 float y = jsonData.at("mouth_y");
@@ -205,4 +206,23 @@ const std::vector<Bullet> &Gun::getBulletVector() const { return bulletVector; }
 
 void Gun::setBulletVector(const std::vector<Bullet> &bulletVector) {
         this->bulletVector = bulletVector;
+}
+
+Gun::Gun(const Gun &other)
+        : Item(other),
+          state(other.state),
+          attachPoint(other.attachPoint),
+          gunDirection(other.gunDirection),
+          damage(other.damage),
+          armed(other.armed),
+          magazineSize(other.magazineSize),
+          ammo(other.ammo),
+          lastShotTime(other.lastShotTime),
+          rearmTime(other.rearmTime),
+          bulletVector(other.bulletVector),
+          bulletSpeed(other.bulletSpeed),
+          gunMouth(other.gunMouth) {
+        // copy du unique_ptr Texture
+        if (other.bulletTexture)
+                bulletTexture = std::make_unique<Texture>(*other.bulletTexture);
 }

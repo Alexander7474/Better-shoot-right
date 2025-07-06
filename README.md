@@ -1,3 +1,2 @@
 # Better-shoot-right
-Prototype 
-
+Prototype

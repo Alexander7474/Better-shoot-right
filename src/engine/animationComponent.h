@@ -27,7 +27,7 @@ public:
 };
 
 template <typename AnimationEnum>
-class AnimationComponent : public IAnimationComponent {
+class AnimationComponent final : public IAnimationComponent {
        private:
         Sprite *owner;  //<! class fille
         std::unordered_map<AnimationEnum, Animation>

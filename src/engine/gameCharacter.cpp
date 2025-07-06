@@ -1,34 +1,31 @@
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-#include <cmath>
-
-#include "../game/game.h"
-#include "gameCharacter.h"
-#include "gun.h"
-#include "member.h"
-#include "physic.h"
-
 #ifdef IMGUI_DEBUG
 #include "../backends/imgui_impl_glfw.h"
 #include "../backends/imgui_impl_opengl3.h"
 #include "../imgui/imgui.h"
 #endif
 
-using namespace std;
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+#include <cmath>
+#include <memory>
+
+#include "../game/game.h"
+#include "gameCharacter.h"
+#include "gun.h"
+#include "item.h"
+#include "member.h"
+#include "physic.h"
 
 const char *gameCharacterStateString[4] = {"idle", "run", "ragdoll", "dead"};
 
 GameCharacter::GameCharacter()
-    : gun(new Gun), newtonX(40.f), newtonY(10.f), restitution(0.f),
-      friction(2.f), density(1.f), linearDamping(4.f), onRagdoll(false),
+    : newtonX(40.f), newtonY(10.f), restitution(0.f),
+      friction(1.f), density(1.f), linearDamping(4.f), onRagdoll(false),
       hp(10.f) {
         characterDirection = rightDir;
-        scale = 0.75f;
-
-        //--------------------------------------------------------------
+        scale = 1.f;
 
         leftArm.setSize(32 * scale, 32 * scale);
-        leftArm.name = "left arm";
 
         rightArm.setSize(32 * scale, 32 * scale);
         rightArm.name = "right arm";
@@ -45,11 +42,13 @@ GameCharacter::GameCharacter()
         legs.setOrigin(32 * scale, 0 * scale); // origine sur les hanche
         legs.name = "legs";
 
+        ItemFactory::loadAllItems();
+        const auto gunPtr = dynamic_cast<Gun*>(ItemFactory::getItem("scar"));
+        gun = std::make_unique<Gun>(*gunPtr);
         gun->setSize(64 * scale, 32 * scale);
 
-        //--------------------------------------------------------------
-
         createTextureCache("assets/personnages/soldier/");
+
 }
 
 void GameCharacter::createTextureCache(const string &path) {
@@ -352,7 +351,7 @@ void GameCharacter::setHp(const float _hp) { this->hp = _hp; }
 
 // ENTITY
 void GameCharacter::computePhysic(b2World *world) {
-        setSize(20.f, 50.f);
+        setSize(25.f, 70.f);
         setOrigin(getSize().x / 2, getSize().y / 2);
         entityBody = addDynamicBox(world, this, restitution, density, friction,
                                    linearDamping, true);
