@@ -30,7 +30,8 @@ private:
   Player mainPlayer;
   Map map;
   std::vector<Trooper*> npc;
-  std::vector<DynamicSprite*> dynamics; // liste des enititées
+  std::vector<std::unique_ptr<DynamicSprite>> dynamics; // liste des sprites dynamics
+  std::vector<std::unique_ptr<Item>> items;
 
   //gestion physique
   b2World physicalWorld;

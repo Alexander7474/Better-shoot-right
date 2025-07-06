@@ -8,7 +8,7 @@
 class DynamicSprite : public Entity, public Sprite
 {
 public: 
-  DynamicSprite(Texture texture);
+  explicit DynamicSprite(const Texture& texture);
 
   void computePhysic(b2World *world) override;
   void updatePhysic() override;

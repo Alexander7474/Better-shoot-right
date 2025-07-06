@@ -60,6 +60,27 @@ class AnimationComponent final : public IAnimationComponent {
         [[nodiscard]] bool isReverse() const;
 
         void setReverse(bool reverse);
+
+        /**
+         * @brief Renvoi un pointeur vers owner
+         * @return
+         */
+        Sprite * getOwner() const;
+
+        /**
+         * @brief Changer le possèsseur du composant
+         * @param owner
+         * @details Utile dans les constructeur par copie pour transférer le composant
+         */
+        void setOwner(Sprite *owner);
+
+        AnimationComponent(const AnimationComponent &other);
+
+        AnimationComponent(AnimationComponent &&other) noexcept;
+
+        AnimationComponent<AnimationEnum> &operator=(const AnimationComponent &other);
+
+        AnimationComponent<AnimationEnum> &operator=(AnimationComponent &&other) noexcept;
 };
 
 #endif  // ANIMATIONCOMPONENT_H

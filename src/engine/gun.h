@@ -42,10 +42,11 @@ class Gun : public Item {
 
        public:
         Gun();
+        Gun(const std::string& path);
 
         void update() override;
 
-        void setAttachPoint(Vector2f ap);
+        void setAttachPoint(const Vector2f& ap);
         void setAttachPoint(float x, float y);
 
         /**
@@ -92,4 +93,10 @@ class Gun : public Item {
         void setBulletVector(const std::vector<Bullet> &bulletVector);
 
         Gun(const Gun &other);
+
+        Gun(Gun &&other) noexcept;
+
+        Gun &operator=(const Gun &other);
+
+        Gun &operator=(Gun &&other) noexcept;
 };

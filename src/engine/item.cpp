@@ -6,6 +6,8 @@
 
 #include "gun.h"
 
+#include "physic.h"
+
 Item::Item()
         : Sprite(Texture("assets/default.png"))
 {}
@@ -57,14 +59,36 @@ const std::string &Item::getName() const { return name; }
 
 void Item::setName(const std::string &name) { this->name = name; }
 
+void Item::computePhysic(b2World *world) {
+        setOrigin(getSize().x / 2, getSize().y / 2);
+        // une fois ajouter a umonde box2d c'est la galère pour récupérer la taille
+        // donc faut faire attention
+        entityBody = addDynamicBox(world, &getCollisionBox(), 0.f, 1.f, 1.f, 1.f, false);
+}
+
+void Item::updatePhysic() {
+        setPosition(entityBody->GetPosition().x * PIXEL_PER_METER,
+                    entityBody->GetPosition().y * PIXEL_PER_METER);
+        setRotation(entityBody->GetAngle());
+}
+
 std::unordered_map<std::string, std::unique_ptr<Item>> ItemFactory::allItems;
+bool ItemFactory::initialized = false;
 
 void ItemFactory::loadAllItems() {
-        const std::string t = "scar";
-        allItems[t] = std::make_unique<Gun>();
+        allItems["scar"] = std::make_unique<Gun>("assets/guns/scar/");
+        allItems["ak47"] = std::make_unique<Gun>("assets/guns/ak47/");
+        allItems["sniper"] = std::make_unique<Gun>("assets/guns/sniper/");
+        allItems["default"] = std::make_unique<Item>();
+        allItems["default"]->setSize(64,32);
+        initialized = true;
 }
 
 Item *ItemFactory::getItem(const std::string &name) {
+        if (!initialized) {
+                LOGS.push_back("ItemFactory uninitialized !");
+                return nullptr;
+        }
         Item *it = allItems[name].get();
         return it;
 }

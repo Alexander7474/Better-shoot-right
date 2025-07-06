@@ -1,7 +1,6 @@
 #include "gun.h"
 
 #include <GLFW/glfw3.h>
-
 #include <cmath>
 #include <memory>
 #include <nlohmann/json.hpp>
@@ -12,32 +11,32 @@
 #include "../game/game.h"
 #include "bullet.h"
 
-Gun::Gun() : Item(Texture("assets/guns/scar/scar.png")) {
+Gun::Gun() : Item(Texture("assets/default.png")) {
         // arme par default
-        setName("scar");
-        armed = true;
-        rearmTime = 0.1;
-        magazineSize = 20;
-        ammo = 20;
+        setName("default-gun");
+        armed = false;
+        rearmTime = 0;
+        magazineSize = 0;
+        ammo = 0;
         lastShotTime = glfwGetTime() - rearmTime;
-        damage = 0.5f;
+        damage = 0.f;
         gunMouth = Vector2f(20.f, 5.f);
-        bulletSpeed = 1.f;
+        bulletSpeed = 0.f;
         gunDirection = rightDir;
 
         // texture par default des balles
         bulletTexture = std::make_unique<Texture>("assets/guns/bullets/default.png");
+}
 
+Gun::Gun(const std::string& path) : Gun() {
         state = GunState::idle;
         animation = std::make_unique<AnimationComponent<GunState>>(
             this);
 
-        loadJsonFile("assets/guns/scar/");
+        loadJsonFile(path);
 }
 
 void Gun::loadJsonFile(const string& path) {
-
-        // cast std::unique_ptr<IAnimationComponent> de Item vers AnimationComponent<GunState>* pour charger les anims
         if (auto specificPtr = dynamic_cast<AnimationComponent<GunState>*>(animation.get())) {
                 for (int i = 0; i < static_cast<int>(GunState::reload); ++i) {
                         const auto state = static_cast<GunState>(i);
@@ -86,7 +85,6 @@ void Gun::loadJsonFile(const string& path) {
                 float y = jsonData.at("mouth_y");
                 gunMouth.x = x;
                 gunMouth.y = y;
-
         } catch (const nlohmann::json::exception &e) {
                 LOGS.push_back("Erreur getting JSON info for " + getName());
                 return;
@@ -116,7 +114,7 @@ void Gun::update() {
         }
 }
 
-void Gun::setAttachPoint(Vector2f ap) {
+void Gun::setAttachPoint(const Vector2f& ap) {
         attachPoint = ap;
         setPosition(ap);
 }
@@ -221,8 +219,83 @@ Gun::Gun(const Gun &other)
           rearmTime(other.rearmTime),
           bulletVector(other.bulletVector),
           bulletSpeed(other.bulletSpeed),
-          gunMouth(other.gunMouth) {
+          gunMouth(other.gunMouth)
+{
+
         // copy du unique_ptr Texture
         if (other.bulletTexture)
                 bulletTexture = std::make_unique<Texture>(*other.bulletTexture);
+
+        // Changement de possèsseur du composant copier.
+        // On cast en premier l'autre composant pour voir
+        // si il correspond bien.
+        // Puis on copie et change l'ownership.
+        if (const auto specificPtr = dynamic_cast<AnimationComponent<GunState>*>(other.animation.get())) {
+                animation = std::make_unique<AnimationComponent<GunState>>(*specificPtr); // copie
+                dynamic_cast<AnimationComponent<GunState>*>(animation.get())->setOwner(this);
+        }
+}
+
+Gun::Gun(Gun &&other) noexcept
+        : Item(std::move(other)),
+          state(other.state),
+          attachPoint(other.attachPoint),
+          gunDirection(other.gunDirection),
+          bulletTexture(std::move(other.bulletTexture)),
+          damage(other.damage),
+          armed(other.armed),
+          magazineSize(other.magazineSize),
+          ammo(other.ammo),
+          lastShotTime(other.lastShotTime),
+          rearmTime(other.rearmTime),
+          bulletVector(std::move(other.bulletVector)),
+          bulletSpeed(other.bulletSpeed),
+          gunMouth(other.gunMouth)
+{
+}
+
+Gun & Gun::operator=(const Gun &other) {
+        if (this == &other)
+                return *this;
+        Item::operator =(other);
+        state = other.state;
+        attachPoint = other.attachPoint;
+        gunDirection = other.gunDirection;
+        damage = other.damage;
+        armed = other.armed;
+        magazineSize = other.magazineSize;
+        ammo = other.ammo;
+        lastShotTime = other.lastShotTime;
+        rearmTime = other.rearmTime;
+        bulletVector = other.bulletVector;
+        bulletSpeed = other.bulletSpeed;
+        gunMouth = other.gunMouth;
+        // copy du unique_ptr Texture
+        if (other.bulletTexture)
+                bulletTexture = std::make_unique<Texture>(*other.bulletTexture);
+        // changement de possèsseur du composant copier
+        if (auto specificPtr = dynamic_cast<AnimationComponent<GunState>*>(animation.get())) {
+                specificPtr->setOwner(this);
+        }
+        return *this;
+}
+
+Gun & Gun::operator=(Gun &&other) noexcept {
+        if (this == &other)
+                return *this;
+        Item::operator =(std::move(other));
+        state = other.state;
+        attachPoint = other.attachPoint;
+        gunDirection = other.gunDirection;
+        bulletTexture = std::move(other.bulletTexture);
+        damage = other.damage;
+        armed = other.armed;
+        magazineSize = other.magazineSize;
+        ammo = other.ammo;
+        lastShotTime = other.lastShotTime;
+        rearmTime = other.rearmTime;
+        bulletVector = std::move(other.bulletVector);
+        bulletSpeed = other.bulletSpeed;
+        gunMouth = other.gunMouth;
+        return *this;
 }

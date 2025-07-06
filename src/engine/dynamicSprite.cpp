@@ -2,7 +2,7 @@
 #include "physic.h"
 #include <box2d/b2_world.h>
 
-DynamicSprite::DynamicSprite(Texture texture) : Sprite(texture) {}
+DynamicSprite::DynamicSprite(const Texture& texture) : Sprite(texture) {}
 
 void DynamicSprite::computePhysic(b2World *world) {
   setOrigin(getSize().x / 2, getSize().y / 2);

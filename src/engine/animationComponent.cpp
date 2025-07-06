@@ -135,5 +135,57 @@ void AnimationComponent<AnimationEnum>::setReverse(bool reverse) {
         this->reverse = reverse;
 }
 
+template<typename AnimationEnum>
+Sprite * AnimationComponent<AnimationEnum>::getOwner() const {
+        return owner;
+}
+
+template<typename AnimationEnum>
+void AnimationComponent<AnimationEnum>::setOwner(Sprite *owner) {
+        this->owner = owner;
+}
+
+template <typename AnimationEnum>
+AnimationComponent<AnimationEnum>::AnimationComponent(const AnimationComponent &other)
+               : IAnimationComponent(other),
+                 owner(other.owner),
+                 animations(other.animations),
+                 reverse(other.reverse),
+                 animCnt(other.animCnt) {
+}
+
+template <typename AnimationEnum>
+AnimationComponent<AnimationEnum>::AnimationComponent(AnimationComponent &&other) noexcept
+        : IAnimationComponent(std::move(other)),
+          owner(other.owner),
+          animations(std::move(other.animations)),
+          reverse(other.reverse),
+          animCnt(other.animCnt) {
+}
+
+template <typename AnimationEnum>
+AnimationComponent<AnimationEnum> & AnimationComponent<AnimationEnum>::operator=(const AnimationComponent &other) {
+        if (this == &other)
+                return *this;
+        IAnimationComponent::operator =(other);
+        owner = other.owner;
+        animations = other.animations;
+        reverse = other.reverse;
+        animCnt = other.animCnt;
+        return *this;
+}
+
+template <typename AnimationEnum>
+AnimationComponent<AnimationEnum> & AnimationComponent<AnimationEnum>::operator=(AnimationComponent &&other) noexcept {
+        if (this == &other)
+                return *this;
+        IAnimationComponent::operator =(std::move(other));
+        owner = other.owner;
+        animations = std::move(other.animations);
+        reverse = other.reverse;
+        animCnt = other.animCnt;
+        return *this;
+}
+
 template class AnimationComponent<MemberState>;  // force la génération pour MemberState
 template class AnimationComponent<GunState>;  // force la génération pour GunState

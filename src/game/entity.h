@@ -12,8 +12,9 @@
 class Entity
 {
 protected:
-  b2Body *entityBody; //<! pointeur vers le body Box2d pour l'update
+  b2Body *entityBody = nullptr; //<! pointeur vers le body Box2d pour l'update
 public:
+  virtual ~Entity() = default;
 
   /**
   * @brief créé l'objet physique dans le monde box2D

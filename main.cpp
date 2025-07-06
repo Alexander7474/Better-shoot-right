@@ -1,15 +1,16 @@
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-#include <iostream>
-
 #ifdef IMGUI_DEBUG
 #include "src/backends/imgui_impl_glfw.h"
 #include "src/backends/imgui_impl_opengl3.h"
 #include "src/imgui/imgui.h"
 #endif
 
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+#include <iostream>
+
 #include "Bbop-2D/include/BBOP/Graphics/bbopFunc.h"
 #include "src/game/game.h"
+#include "src/engine/item.h"
 
 using namespace std;
 
@@ -37,6 +38,7 @@ int main() {
         ImGui_ImplOpenGL3_Init();
 #endif
 
+        ItemFactory::loadAllItems();
         Game game;
 
         glfwSwapInterval(1);

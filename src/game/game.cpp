@@ -3,11 +3,9 @@
 #include "entity.h"
 #include "../engine/dynamicSprite.h"
 
-#include <box2d/b2_body.h>
+#include <memory>
 #include <box2d/box2d.h>
 #include <string>
-
-using namespace std;
 
 GLFWwindow* gameWindow = nullptr;
 
@@ -19,7 +17,7 @@ float GRAVITY = 9.8f;
 default_random_engine RANDOM_ENGINE;
 
 Game::Game()
-  :  map("assets/map/map1/"), physicalWorld(b2Vec2(0.0f,GRAVITY)) // création du monde physique avec un vecteur de gravité
+  :  map("assets/map/default/"), physicalWorld(b2Vec2(0.0f,GRAVITY)) // création du monde physique avec un vecteur de gravité
 {
   auto* listener = new CustomContactListener();
   physicalWorld.SetContactListener(listener);
@@ -72,9 +70,18 @@ void Game::update()
   mainPlayerCam.setPosition(middlePos);
   mainPlayer.update(&mainPlayerCam, &map);
 
-  const int state = glfwGetKey(gameWindow, GLFW_KEY_G);
+  int state = glfwGetKey(gameWindow, GLFW_KEY_G);
   if (state == GLFW_PRESS) {
     mainPlayer.getCharacter().toggleRagdollMod(&physicalWorld);
+  }
+
+  state = glfwGetKey(gameWindow, GLFW_KEY_I);
+  if (state == GLFW_PRESS) {
+    const auto itPtr = ItemFactory::getItem("default");
+    items.push_back(std::make_unique<Item>(*itPtr));
+    items.back()->setPosition(mainPlayer.getCrossair().getPosition());
+    items.back()->computePhysic(&physicalWorld);
+    entities.push_back(items.back().get());
   }
 
   //Gestion de la physique-------------------------------------------------------------------------
@@ -100,6 +107,11 @@ void Game::Draw()
   for(auto& d: dynamics){
     scene.Draw(*d);
     bbopDebugCollisionBox(d->getCollisionBox(), scene);
+  }
+
+  for(auto& i: items){
+    scene.Draw(*i);
+    bbopDebugCollisionBox(i->getCollisionBox(), scene);
   }
 
   bbopDebugCollisionBox(mainPlayer.getCharacter().getHead().getCollisionBox(), scene);

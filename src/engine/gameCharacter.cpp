@@ -42,8 +42,7 @@ GameCharacter::GameCharacter()
         legs.setOrigin(32 * scale, 0 * scale); // origine sur les hanche
         legs.name = "legs";
 
-        ItemFactory::loadAllItems();
-        const auto gunPtr = dynamic_cast<Gun*>(ItemFactory::getItem("scar"));
+        const auto gunPtr = dynamic_cast<Gun*>(ItemFactory::getItem("sniper"));
         gun = std::make_unique<Gun>(*gunPtr);
         gun->setSize(64 * scale, 32 * scale);
 
