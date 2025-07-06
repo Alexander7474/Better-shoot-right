@@ -1,0 +1,13 @@
+{
+  "guns": {
+    "scar" : "assets/items/guns/scar/",
+    "ak47" : "assets/items/guns/ak47/",
+    "sniper" : "assets/items/guns/sniper/"
+  },
+  "utilities" : {
+
+  },
+  "items" : {
+    "heal" : "assets/items/utilities/heal/default.png"
+  }
+}

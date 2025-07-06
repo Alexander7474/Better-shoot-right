@@ -8,6 +8,8 @@
 
 #include "physic.h"
 
+#include <nlohmann/json.hpp>
+
 Item::Item()
         : Sprite(Texture("assets/default.png")) {
         setSize(10,10);
@@ -77,11 +79,36 @@ std::unordered_map<std::string, std::unique_ptr<Item>> ItemFactory::allItems;
 bool ItemFactory::initialized = false;
 
 void ItemFactory::loadAllItems() {
-        allItems["scar"] = std::make_unique<Gun>("assets/items/guns/scar/");
-        allItems["ak47"] = std::make_unique<Gun>("assets/items/guns/ak47/");
-        allItems["sniper"] = std::make_unique<Gun>("assets/items/guns/sniper/");
-        allItems["heal"] = std::make_unique<Item>("assets/items/utilities/heal/default.png");
+        std::string jsonPath = "assets/items/items.json";
+        std::ifstream jsonFile(jsonPath);
+        if (!jsonFile.is_open()) {
+                LOGS.push_back("Impossible d'ouvrir les items " +
+                               jsonPath);
+                return;
+        }
+
+        // loading with json
+        nlohmann::json jsonData;
+        try {
+                jsonFile >> jsonData;
+        } catch (const std::exception &e) {
+                LOGS.push_back("Erreur parsing json pour " + jsonPath);
+                return;
+        }
+
+        // Chargement des Guns
+        for (auto& [name, path] : jsonData["guns"].items()) {
+                allItems[name] = std::make_unique<Gun>(path);
+        }
+
+        // Chargement des Items
+        for (auto& [name, path] : jsonData["items"].items()) {
+                allItems[name] = std::make_unique<Item>(Texture(path.get<std::string>().c_str()));
+        }
+
+        // Item par default
         allItems["default"] = std::make_unique<Item>();
+
         initialized = true;
 }
 
