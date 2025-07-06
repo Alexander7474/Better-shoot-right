@@ -9,8 +9,9 @@
 #include "physic.h"
 
 Item::Item()
-        : Sprite(Texture("assets/default.png"))
-{}
+        : Sprite(Texture("assets/default.png")) {
+        setSize(10,10);
+}
 
 Item::Item(const Texture& texture)
         : Sprite(texture)
@@ -76,11 +77,11 @@ std::unordered_map<std::string, std::unique_ptr<Item>> ItemFactory::allItems;
 bool ItemFactory::initialized = false;
 
 void ItemFactory::loadAllItems() {
-        allItems["scar"] = std::make_unique<Gun>("assets/guns/scar/");
-        allItems["ak47"] = std::make_unique<Gun>("assets/guns/ak47/");
-        allItems["sniper"] = std::make_unique<Gun>("assets/guns/sniper/");
+        allItems["scar"] = std::make_unique<Gun>("assets/items/guns/scar/");
+        allItems["ak47"] = std::make_unique<Gun>("assets/items/guns/ak47/");
+        allItems["sniper"] = std::make_unique<Gun>("assets/items/guns/sniper/");
+        allItems["heal"] = std::make_unique<Item>("assets/items/utilities/heal/default.png");
         allItems["default"] = std::make_unique<Item>();
-        allItems["default"]->setSize(64,32);
         initialized = true;
 }
 

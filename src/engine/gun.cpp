@@ -13,6 +13,7 @@
 
 Gun::Gun() : Item(Texture("assets/default.png")) {
         // arme par default
+        setSize(64,32);
         setName("default-gun");
         armed = false;
         rearmTime = 0;
@@ -25,7 +26,7 @@ Gun::Gun() : Item(Texture("assets/default.png")) {
         gunDirection = rightDir;
 
         // texture par default des balles
-        bulletTexture = std::make_unique<Texture>("assets/guns/bullets/default.png");
+        bulletTexture = std::make_unique<Texture>("assets/items/guns/bullets/default.png");
 }
 
 Gun::Gun(const std::string& path) : Gun() {

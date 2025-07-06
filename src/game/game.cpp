@@ -77,7 +77,7 @@ void Game::update()
 
   state = glfwGetKey(gameWindow, GLFW_KEY_I);
   if (state == GLFW_PRESS) {
-    const auto itPtr = ItemFactory::getItem("default");
+    const auto itPtr = ItemFactory::getItem("heal");
     items.push_back(std::make_unique<Item>(*itPtr));
     items.back()->setPosition(mainPlayer.getCrossair().getPosition());
     items.back()->computePhysic(&physicalWorld);

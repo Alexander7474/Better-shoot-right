@@ -5,9 +5,9 @@
   "magazine_size" : 25,
   "shot_sound" : "assets/audio/short-drill-gunshot-fx.wav",
   "ream_time" : 0.25,
-  "bullet_texture" : "assets/guns/bullets/default.png",
+  "bullet_texture" : "assets/items/guns/bullets/5-56x45mm.png",
   "bullet_speed" : 1000.0,
-  "mouth_x" : 43.0,
-  "mouth_y" : -2.0
+  "mouth_x" : 38.0,
+  "mouth_y" : 1
 }
 

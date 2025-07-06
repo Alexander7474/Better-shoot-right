@@ -11,8 +11,9 @@
 #include "gun.h"
 
 template <typename AnimationEnum>
-AnimationComponent<AnimationEnum>::AnimationComponent(Sprite *owner)
-    : owner(owner) {}
+AnimationComponent<AnimationEnum>::AnimationComponent(Sprite *owner): IAnimationComponent() {
+        this->owner = owner;
+}
 
 template <typename AnimationEnum>
 void AnimationComponent<AnimationEnum>::loadTextureCache(AnimationEnum state,
@@ -125,42 +126,32 @@ bool AnimationComponent<AnimationEnum>::play(AnimationEnum state) {
         return overflow;
 }
 
-template <typename AnimationEnum>
-bool AnimationComponent<AnimationEnum>::isReverse() const {
+bool IAnimationComponent::isReverse() const {
         return reverse;
 }
 
-template <typename AnimationEnum>
-void AnimationComponent<AnimationEnum>::setReverse(bool reverse) {
+void IAnimationComponent::setReverse(bool reverse) {
         this->reverse = reverse;
 }
 
-template<typename AnimationEnum>
-Sprite * AnimationComponent<AnimationEnum>::getOwner() const {
+Sprite * IAnimationComponent::getOwner() const {
         return owner;
 }
 
-template<typename AnimationEnum>
-void AnimationComponent<AnimationEnum>::setOwner(Sprite *owner) {
+void IAnimationComponent::setOwner(Sprite *owner) {
         this->owner = owner;
 }
 
 template <typename AnimationEnum>
 AnimationComponent<AnimationEnum>::AnimationComponent(const AnimationComponent &other)
-               : IAnimationComponent(other),
-                 owner(other.owner),
-                 animations(other.animations),
-                 reverse(other.reverse),
-                 animCnt(other.animCnt) {
+        : IAnimationComponent(other),
+          animations(other.animations){
 }
 
 template <typename AnimationEnum>
 AnimationComponent<AnimationEnum>::AnimationComponent(AnimationComponent &&other) noexcept
         : IAnimationComponent(std::move(other)),
-          owner(other.owner),
-          animations(std::move(other.animations)),
-          reverse(other.reverse),
-          animCnt(other.animCnt) {
+          animations(std::move(other.animations)){
 }
 
 template <typename AnimationEnum>
@@ -168,10 +159,7 @@ AnimationComponent<AnimationEnum> & AnimationComponent<AnimationEnum>::operator=
         if (this == &other)
                 return *this;
         IAnimationComponent::operator =(other);
-        owner = other.owner;
         animations = other.animations;
-        reverse = other.reverse;
-        animCnt = other.animCnt;
         return *this;
 }
 
@@ -180,10 +168,7 @@ AnimationComponent<AnimationEnum> & AnimationComponent<AnimationEnum>::operator=
         if (this == &other)
                 return *this;
         IAnimationComponent::operator =(std::move(other));
-        owner = other.owner;
         animations = std::move(other.animations);
-        reverse = other.reverse;
-        animCnt = other.animCnt;
         return *this;
 }
 

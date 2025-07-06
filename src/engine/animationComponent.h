@@ -22,18 +22,45 @@ struct Animation {
 };
 
 class IAnimationComponent {
+protected:
+        Sprite *owner = nullptr;  //<! class fille
+        bool reverse{};  //<! joue l'animation à l'envers
+        int animCnt{};   //<! compteur de frame de l'animation
 public:
+        IAnimationComponent() = default;
         virtual ~IAnimationComponent() = default;
+
+        [[nodiscard]] bool isReverse() const;
+
+        void setReverse(bool reverse);
+
+        /**
+         * @brief Renvoi un pointeur vers owner
+         * @return
+         */
+        Sprite * getOwner() const;
+
+        /**
+         * @brief Changer le possèsseur du composant
+         * @param owner
+         * @details Utile dans les constructeur par copie pour transférer le composant
+         */
+        void setOwner(Sprite *owner);
+
+        IAnimationComponent(const IAnimationComponent &other) = default;
+
+        IAnimationComponent(IAnimationComponent &&other) = default;
+
+        IAnimationComponent &operator=(const IAnimationComponent &other) = default;
+
+        IAnimationComponent &operator=(IAnimationComponent &&other) = default;
 };
 
 template <typename AnimationEnum>
 class AnimationComponent final : public IAnimationComponent {
        private:
-        Sprite *owner;  //<! class fille
         std::unordered_map<AnimationEnum, Animation>
             animations;  //<! map de toute les animations possible
-        bool reverse{};  //<! joue l'animation à l'envers
-        int animCnt{};   //<! compteur de frame de l'animation
        public:
         /**
          * @brief
@@ -56,23 +83,6 @@ class AnimationComponent final : public IAnimationComponent {
          * @return renvoie true si l'animation déborde
          */
         bool play(AnimationEnum state);
-
-        [[nodiscard]] bool isReverse() const;
-
-        void setReverse(bool reverse);
-
-        /**
-         * @brief Renvoi un pointeur vers owner
-         * @return
-         */
-        Sprite * getOwner() const;
-
-        /**
-         * @brief Changer le possèsseur du composant
-         * @param owner
-         * @details Utile dans les constructeur par copie pour transférer le composant
-         */
-        void setOwner(Sprite *owner);
 
         AnimationComponent(const AnimationComponent &other);
 
