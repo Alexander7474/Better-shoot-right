@@ -10,6 +10,7 @@
 
 #include "../game/game.h"
 #include "bullet.h"
+#include "macro.h"
 
 Gun::Gun() : Item(Texture("assets/default.png")) {
         // arme par default
@@ -53,7 +54,7 @@ void Gun::loadJsonFile(const string& path) {
         string jsonPath = path + "gun.json";
         std::ifstream jsonFile(jsonPath);
         if (!jsonFile.is_open()) {
-                LOGS.push_back("Erreur loading json file for " + getName());
+                ERROR_MESSAGE("Chargement fichier json " + path);
                 return;
         }
 
@@ -62,7 +63,7 @@ void Gun::loadJsonFile(const string& path) {
         try {
                 jsonFile >> jsonData;
         } catch (const std::exception &e) {
-                LOGS.push_back("Erreur parsing json for " + getName());
+                ERROR_MESSAGE("Découpage json " + path);
                 return;
         }
 
@@ -87,7 +88,7 @@ void Gun::loadJsonFile(const string& path) {
                 gunMouth.x = x;
                 gunMouth.y = y;
         } catch (const nlohmann::json::exception &e) {
-                LOGS.push_back("Erreur getting JSON info for " + getName());
+                ERROR_MESSAGE("Recupération " + path);
                 return;
         }
 }

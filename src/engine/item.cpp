@@ -8,6 +8,8 @@
 
 #include "physic.h"
 
+#include "macro.h"
+
 #include <nlohmann/json.hpp>
 
 Item::Item()
@@ -79,11 +81,11 @@ std::unordered_map<std::string, std::unique_ptr<Item>> ItemFactory::allItems;
 bool ItemFactory::initialized = false;
 
 void ItemFactory::loadAllItems() {
+        DEBUG_MESSAGE("Appelle ItemFactory::loadAllItems");
         std::string jsonPath = "assets/items/items.json";
         std::ifstream jsonFile(jsonPath);
         if (!jsonFile.is_open()) {
-                LOGS.push_back("Impossible d'ouvrir les items " +
-                               jsonPath);
+                ERROR_MESSAGE("Impossible d'ouvrir les items " + jsonPath);
                 return;
         }
 
@@ -92,7 +94,7 @@ void ItemFactory::loadAllItems() {
         try {
                 jsonFile >> jsonData;
         } catch (const std::exception &e) {
-                LOGS.push_back("Erreur parsing json pour " + jsonPath);
+                ERROR_MESSAGE("Erreur parsing json pour " + jsonPath);
                 return;
         }
 
@@ -113,8 +115,9 @@ void ItemFactory::loadAllItems() {
 }
 
 Item *ItemFactory::getItem(const std::string &name) {
+        DEBUG_MESSAGE("Appelle ItemFactory::getItem");
         if (!initialized) {
-                LOGS.push_back("ItemFactory uninitialized !");
+                ERROR_MESSAGE("ItemFactory::getItem appelé mais ItemFActory non initializé");
                 return nullptr;
         }
         Item *it = allItems[name].get();

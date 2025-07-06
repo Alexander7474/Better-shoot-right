@@ -10,6 +10,8 @@
 
 #include "gun.h"
 
+#include "macro.h"
+
 template <typename AnimationEnum>
 AnimationComponent<AnimationEnum>::AnimationComponent(Sprite *owner): IAnimationComponent() {
         this->owner = owner;
@@ -36,8 +38,8 @@ void AnimationComponent<AnimationEnum>::loadTextureCache(AnimationEnum state,
         std::string jsonPath = path + "animations.json";
         std::ifstream jsonFile(jsonPath);
         if (!jsonFile.is_open()) {
-                LOGS.push_back("Impossible d'ouvrir les animations " +
-                               jsonPath);
+                ERROR_MESSAGE("Impossible d'ouvrir les animations " +
+                               jsonPath + " | state " + std::to_string(static_cast<int>(state)));
                 return;
         }
 
@@ -46,7 +48,7 @@ void AnimationComponent<AnimationEnum>::loadTextureCache(AnimationEnum state,
         try {
                 jsonFile >> jsonData;
         } catch (const std::exception &e) {
-                LOGS.push_back("Erreur parsing json pour " + jsonPath);
+                ERROR_MESSAGE("Découpage json " + jsonPath + " | state " + std::to_string(static_cast<int>(state)));
                 return;
         }
 
@@ -80,15 +82,15 @@ void AnimationComponent<AnimationEnum>::loadTextureCache(AnimationEnum state,
                         animations[state].frameTime = duration / nFrame;
 
                 } else {
-                        LOGS.push_back("Erreur loading " +
-                                       std::to_string(static_cast<int>(state)) +
-                                       " pour " + jsonPath);
+                        ERROR_MESSAGE("Chargement " + jsonPath + " | state " + std::to_string(static_cast<int>(state)));
                 }
         } catch (const nlohmann::json::exception &e) {
-                LOGS.push_back("Erreur getting JSON state animation for " +
+                ERROR_MESSAGE("Recupération " +
                                jsonPath + " | " + e.what());
                 return;
         }
+
+        DEBUG_MESSAGE("Chargement terminé: " + jsonPath + " | state " + std::to_string(static_cast<int>(state)));
 }
 
 template <typename AnimationEnum>

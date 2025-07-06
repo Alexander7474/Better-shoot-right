@@ -2,6 +2,7 @@
 #include "../engine/physic.h"
 #include "entity.h"
 #include "../engine/dynamicSprite.h"
+#include "../engine/macro.h"
 
 #include <memory>
 #include <box2d/box2d.h>
@@ -40,7 +41,7 @@ Game::Game()
     cptEnt++;
   }
   const string log = to_string(cptEnt) + " entitées initialisées dans le monde box2d pas Game";
-  LOGS.push_back(log);
+  DEBUG_MESSAGE(log);
   //------------------------------------------------------------------------------------
 }
 

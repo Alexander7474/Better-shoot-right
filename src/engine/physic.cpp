@@ -1,4 +1,5 @@
 #include "physic.h"
+#include "macro.h"
 #include <box2d/b2_body.h>
 #include <string>
 
@@ -27,9 +28,9 @@ b2Body *addStaticBox(b2World *world, const Geometric *box) {
             " h:" + std::to_string(box->getSize().y) +
             " x:" + std::to_string(box->getPosition().x) +
             " y:" + std::to_string(box->getPosition().y);
-        log += "\nBOX2D COORD x:" + std::to_string(body->GetPosition().x) +
+        log += " | BOX2D COORD x:" + std::to_string(body->GetPosition().x) +
                " y:" + std::to_string(body->GetPosition().y);
-        LOGS.push_back(log);
+        DEBUG_MESSAGE(log);
 
         // 3. Ajouter la fixture au corps
         body->CreateFixture(&fixtureDef); // densité = 0 pour statique
@@ -83,9 +84,9 @@ b2Body *addDynamicBox(b2World *world, Geometric *box,
             " h:" + std::to_string(box->getSize().y) +
             " x:" + std::to_string(box->getPosition().x) +
             " y:" + std::to_string(box->getPosition().y);
-        log += "\nBOX2D COORD x:" + std::to_string(body->GetPosition().x) +
+        log += " | BOX2D COORD x:" + std::to_string(body->GetPosition().x) +
                " y:" + std::to_string(body->GetPosition().y);
-        LOGS.push_back(log);
+        DEBUG_MESSAGE(log);
 
         // 3. Ajouter la fixture au corps
         body->CreateFixture(&fixtureDef);
