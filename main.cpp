@@ -7,45 +7,59 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
 
 #include "Bbop-2D/include/BBOP/Graphics/bbopFunc.h"
 #include "src/game/game.h"
 #include "src/engine/item.h"
+#include "src/engine/macro.h"
 
 using namespace std;
 
 int main() {
-        // initialisation de la lib
+        // Initialisation BBOP
         bbopInit(1920, 1080, "window name", gameWindow);
         bbopChangeWindowResolution(640, 360);
-        cout << "Version prototype" << endl;
+        glfwSwapInterval(1);
+        // affichage des logs bbop
+        for (string &s : LOGS) {
+                cout << s << endl;
+        }
+
+        // Initialisation SDL Mixer (audio)
+        if (SDL_Init(SDL_INIT_AUDIO) < 0) {
+                ERROR_MESSAGE("Impossible d'initialiser SDL_AUDIO");
+                DEBUG_MESSAGE(SDL_GetError());
+                exit(1);
+        }
+        if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
+                ERROR_MESSAGE("Impossible d'initialiser Miw Open Audio");
+                DEBUG_MESSAGE(Mix_GetError());
+                SDL_Quit();
+                exit(1);
+        }
 
 #ifdef IMGUI_DEBUG
+        // Initialisation de IMGUI pour debug
         // ImGui context
         IMGUI_CHECKVERSION();
         ImGui::CreateContext();
         ImGuiIO &io = ImGui::GetIO();
         (void)io;
-
         // Setup ImGui style
         ImGui::StyleColorsDark();
         ImGui::GetStyle().ScaleAllSizes(
             1.5f); // agrandit tous les espacements, bordures, etc.
         io.FontGlobalScale = 1.5f; // agrandit tout le texte
-
         // Backend ImGui + GLFW + OpenGL
         ImGui_ImplGlfw_InitForOpenGL(gameWindow, true);
         ImGui_ImplOpenGL3_Init();
 #endif
 
+        // Initialisation du jeu
         ItemFactory::loadAllItems();
         Game game;
-
-        glfwSwapInterval(1);
-
-        for (string &s : LOGS) {
-                cout << s << endl;
-        }
 
         // main while loop
         while (!glfwWindowShouldClose(gameWindow)) {
@@ -98,6 +112,7 @@ int main() {
 #endif
         glfwDestroyWindow(gameWindow);
         glfwTerminate();
-
+        Mix_CloseAudio();
+        SDL_Quit();
         return 0;
 }

@@ -24,7 +24,7 @@ LINUX_GL_LIBS = -lGL
 
 CXXFLAGS = -I$(SRC_DIR)/imgui -I$(SRC_DIR)/backends
 CXXFLAGS += -g -Wall -Wno-delete-non-virtual-dtor -Wformat -I/usr/include/freetype2 -g -DIMGUI_DEBUG
-LIBS = -L./Bbop-2D -lbbop -lglfw -lGLEW -lGL -lfreetype -lLDtkLoader -lbox2d
+LIBS = -L./Bbop-2D -lbbop -lglfw -lGLEW -lGL -lfreetype -lLDtkLoader -lbox2d -lSDL2 -lSDL2_mixer
 
 ##---------------------------------------------------------------------
 ## BUILD FLAGS PER PLATFORM

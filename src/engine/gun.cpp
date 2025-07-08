@@ -7,6 +7,8 @@
 #include <random>
 #include <string>
 #include <vector>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
 
 #include "../game/game.h"
 #include "bullet.h"
@@ -169,6 +171,18 @@ void Gun::shoot() {
                 if (gunDirection == leftDir) b.flipVertically();
 
                 bulletVector.push_back(b);
+
+                // Chargement du fichier audio (wav, mp3, ogg, etc.)
+                Mix_Chunk* sound = Mix_LoadWAV("assets/audio/gun-shot-fx_77.wav");
+                if (!sound) {
+                        std::cerr << "Erreur Mix_LoadWAV : " << Mix_GetError() << std::endl;
+                        Mix_CloseAudio();
+                        SDL_Quit();
+                        return;
+                }
+
+                // Jouer le son une fois (-1 pour boucle infinie)
+                Mix_PlayChannel(0, sound, 0);
         }
 }
 
