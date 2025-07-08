@@ -13,13 +13,14 @@
 #include "macro.h"
 
 template <typename AnimationEnum>
-AnimationComponent<AnimationEnum>::AnimationComponent(Sprite *owner): IAnimationComponent() {
+AnimationComponent<AnimationEnum>::AnimationComponent(Sprite *owner)
+    : IAnimationComponent() {
         this->owner = owner;
 }
 
 template <typename AnimationEnum>
 void AnimationComponent<AnimationEnum>::loadTexture(AnimationEnum state,
-                                                         std::string path) {
+                                                    std::string path) {
         // on charge pour chaque anim la texture par default
         std::string defaultSheetPath = path + "default.png";
 
@@ -38,8 +39,9 @@ void AnimationComponent<AnimationEnum>::loadTexture(AnimationEnum state,
         std::string jsonPath = path + "animations.json";
         std::ifstream jsonFile(jsonPath);
         if (!jsonFile.is_open()) {
-                ERROR_MESSAGE("Impossible d'ouvrir les animations " +
-                               jsonPath + " | state " + std::to_string(static_cast<int>(state)));
+                ERROR_MESSAGE("Impossible d'ouvrir les animations " + jsonPath +
+                              " | state " +
+                              std::to_string(static_cast<int>(state)));
                 return;
         }
 
@@ -48,7 +50,8 @@ void AnimationComponent<AnimationEnum>::loadTexture(AnimationEnum state,
         try {
                 jsonFile >> jsonData;
         } catch (const std::exception &e) {
-                ERROR_MESSAGE("Découpage json " + jsonPath + " | state " + std::to_string(static_cast<int>(state)));
+                ERROR_MESSAGE("Découpage json " + jsonPath + " | state " +
+                              std::to_string(static_cast<int>(state)));
                 return;
         }
 
@@ -82,15 +85,17 @@ void AnimationComponent<AnimationEnum>::loadTexture(AnimationEnum state,
                         animations[state].frameTime = duration / nFrame;
 
                 } else {
-                        ERROR_MESSAGE("Chargement " + jsonPath + " | state " + std::to_string(static_cast<int>(state)));
+                        ERROR_MESSAGE("Chargement " + jsonPath + " | state " +
+                                      std::to_string(static_cast<int>(state)));
                 }
         } catch (const nlohmann::json::exception &e) {
-                ERROR_MESSAGE("Recupération animation " +
-                               jsonPath + " | " + e.what());
+                ERROR_MESSAGE("Recupération animation " + jsonPath + " | " +
+                              e.what());
                 return;
         }
 
-        DEBUG_MESSAGE("Chargement terminé: " + jsonPath + " | state " + std::to_string(static_cast<int>(state)));
+        DEBUG_MESSAGE("Chargement terminé: " + jsonPath + " | state " +
+                      std::to_string(static_cast<int>(state)));
 }
 
 template <typename AnimationEnum>
@@ -128,51 +133,46 @@ bool AnimationComponent<AnimationEnum>::play(AnimationEnum state) {
         return overflow;
 }
 
-bool IAnimationComponent::isReverse() const {
-        return reverse;
-}
+bool IAnimationComponent::isReverse() const { return reverse; }
 
-void IAnimationComponent::setReverse(bool reverse) {
-        this->reverse = reverse;
-}
+void IAnimationComponent::setReverse(bool reverse) { this->reverse = reverse; }
 
-Sprite * IAnimationComponent::getOwner() const {
-        return owner;
-}
+Sprite *IAnimationComponent::getOwner() const { return owner; }
 
-void IAnimationComponent::setOwner(Sprite *owner) {
-        this->owner = owner;
-}
+void IAnimationComponent::setOwner(Sprite *owner) { this->owner = owner; }
 
 template <typename AnimationEnum>
-AnimationComponent<AnimationEnum>::AnimationComponent(const AnimationComponent &other)
-        : IAnimationComponent(other),
-          animations(other.animations){
-}
+AnimationComponent<AnimationEnum>::AnimationComponent(
+    const AnimationComponent &other)
+    : IAnimationComponent(other), animations(other.animations) {}
 
 template <typename AnimationEnum>
-AnimationComponent<AnimationEnum>::AnimationComponent(AnimationComponent &&other) noexcept
-        : IAnimationComponent(std::move(other)),
-          animations(std::move(other.animations)){
-}
+AnimationComponent<AnimationEnum>::AnimationComponent(
+    AnimationComponent &&other) noexcept
+    : IAnimationComponent(std::move(other)),
+      animations(std::move(other.animations)) {}
 
 template <typename AnimationEnum>
-AnimationComponent<AnimationEnum> & AnimationComponent<AnimationEnum>::operator=(const AnimationComponent &other) {
+AnimationComponent<AnimationEnum> &
+AnimationComponent<AnimationEnum>::operator=(const AnimationComponent &other) {
         if (this == &other)
                 return *this;
-        IAnimationComponent::operator =(other);
+        IAnimationComponent::operator=(other);
         animations = other.animations;
         return *this;
 }
 
 template <typename AnimationEnum>
-AnimationComponent<AnimationEnum> & AnimationComponent<AnimationEnum>::operator=(AnimationComponent &&other) noexcept {
+AnimationComponent<AnimationEnum> &AnimationComponent<AnimationEnum>::operator=(
+    AnimationComponent &&other) noexcept {
         if (this == &other)
                 return *this;
-        IAnimationComponent::operator =(std::move(other));
+        IAnimationComponent::operator=(std::move(other));
         animations = std::move(other.animations);
         return *this;
 }
 
-template class AnimationComponent<MemberState>;  // force la génération pour MemberState
-template class AnimationComponent<GunState>;  // force la génération pour GunState
+template class AnimationComponent<MemberState>; // force la génération pour
+                                                // MemberState
+template class AnimationComponent<GunState>;    // force la génération pour
+                                                // GunState

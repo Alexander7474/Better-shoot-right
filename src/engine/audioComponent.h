@@ -5,9 +5,9 @@
 #ifndef AUDIOCOMPONENT_H
 #define AUDIOCOMPONENT_H
 
-#include <unordered_map>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
+#include <unordered_map>
 
 #include "../../Bbop-2D/include/BBOP/Graphics.h"
 
@@ -17,9 +17,9 @@
  * sans connaitre l'enumération qui sera utilisé comme template
  */
 class IAudioComponent {
-protected:
-        Sprite *owner = nullptr;  //<! class fille
-public:
+      protected:
+        Sprite *owner = nullptr; //<! class fille
+      public:
         IAudioComponent() = default;
         virtual ~IAudioComponent() = default;
 
@@ -27,12 +27,13 @@ public:
          * @brief Renvoi un pointeur vers owner
          * @return
          */
-        [[nodiscard]] Sprite * getOwner() const;
+        [[nodiscard]] Sprite *getOwner() const;
 
         /**
          * @brief Changer le possèsseur du composant
          * @param owner
-         * @details Utile dans les constructeur par copie pour transférer le composant
+         * @details Utile dans les constructeur par copie pour transférer le
+         * composant
          */
         void setOwner(Sprite *owner);
 
@@ -51,11 +52,11 @@ public:
  */
 template <typename AudioEnum>
 class AudioComponent final : public IAudioComponent {
-       private:
+      private:
         // TODO-- vérifier que les pointeurs Mix_chunk ne leak pas
-        std::unordered_map<AudioEnum, Mix_Chunk*>
-            sounds;  //<! map de toute les animations possible
-       public:
+        std::unordered_map<AudioEnum, Mix_Chunk *>
+            sounds; //<! map de toute les animations possible
+      public:
         /**
          * @brief
          * @param owner pointeur vers la class fille héritante du composant
@@ -69,7 +70,7 @@ class AudioComponent final : public IAudioComponent {
          * @param path chemin d'accès vers les sons et le fichier
          * audio.json
          */
-        void loadSound(AudioEnum state, const std::string& path);
+        void loadSound(AudioEnum state, const std::string &path);
 
         /**
          * @brief joue l'animation
@@ -86,6 +87,4 @@ class AudioComponent final : public IAudioComponent {
         AudioComponent<AudioEnum> &operator=(AudioComponent &&other) noexcept;
 };
 
-
-
-#endif //AUDIOCOMPONENT_H
+#endif // AUDIOCOMPONENT_H

@@ -10,7 +10,7 @@
 enum class MemberState { idle, run, ragdoll, dead };
 
 class Member : public Sprite {
-       private:
+      private:
         // physique
         Vector2f attachPoint;
         float force;
@@ -24,7 +24,7 @@ class Member : public Sprite {
 
         friend class GameCharacter;
 
-       public:
+      public:
         Member();
 
         void update();
@@ -33,7 +33,7 @@ class Member : public Sprite {
          * @brief
          * @param _attachPoint point ou le membre se fixe
          */
-        void setAttachPoint(const Vector2f& _attachPoint);
+        void setAttachPoint(const Vector2f &_attachPoint);
         void setAttachPoint(float x, float y);
 
         Vector2f getAttachPoint() const;
@@ -42,7 +42,7 @@ class Member : public Sprite {
          * @brief charge les animations dans le composant animation
          * @param path chemin d'accès au animations
          */
-        void createTextureCache(const std::string& path);
+        void createTextureCache(const std::string &path);
 
         void setetat(int k);
         int getetat();

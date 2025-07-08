@@ -15,11 +15,11 @@
 // structure de stockage d'un animation, respecte la structure des fichier json
 struct Animation {
         std::vector<Texture>
-            textures;      //<! ensemble de texture qui form l'animation
-        double duration;   // temps de l'animation
-        int nFrame;        // nombre de frame
-        double startTime;  // depart de l'anim
-        double lastFrameStartTime;  // depart de la dernière frame
+            textures;              //<! ensemble de texture qui form l'animation
+        double duration;           // temps de l'animation
+        int nFrame;                // nombre de frame
+        double startTime;          // depart de l'anim
+        double lastFrameStartTime; // depart de la dernière frame
         double frameTime;
 };
 
@@ -29,11 +29,11 @@ struct Animation {
  * sans connaitre l'enumération qui sera utilisé comme template
  */
 class IAnimationComponent {
-protected:
-        Sprite *owner = nullptr;  //<! class fille
-        bool reverse{};  //<! joue l'animation à l'envers
-        int animCnt{};   //<! compteur de frame de l'animation
-public:
+      protected:
+        Sprite *owner = nullptr; //<! class fille
+        bool reverse{};          //<! joue l'animation à l'envers
+        int animCnt{};           //<! compteur de frame de l'animation
+      public:
         IAnimationComponent() = default;
         virtual ~IAnimationComponent() = default;
 
@@ -45,12 +45,13 @@ public:
          * @brief Renvoi un pointeur vers owner
          * @return
          */
-        [[nodiscard]] Sprite * getOwner() const;
+        [[nodiscard]] Sprite *getOwner() const;
 
         /**
          * @brief Changer le possèsseur du composant
          * @param owner
-         * @details Utile dans les constructeur par copie pour transférer le composant
+         * @details Utile dans les constructeur par copie pour transférer le
+         * composant
          */
         void setOwner(Sprite *owner);
 
@@ -58,7 +59,8 @@ public:
 
         IAnimationComponent(IAnimationComponent &&other) = default;
 
-        IAnimationComponent &operator=(const IAnimationComponent &other) = default;
+        IAnimationComponent &
+        operator=(const IAnimationComponent &other) = default;
 
         IAnimationComponent &operator=(IAnimationComponent &&other) = default;
 };
@@ -69,10 +71,10 @@ public:
  */
 template <typename AnimationEnum>
 class AnimationComponent final : public IAnimationComponent {
-       private:
+      private:
         std::unordered_map<AnimationEnum, Animation>
-            animations;  //<! map de toute les animations possible
-       public:
+            animations; //<! map de toute les animations possible
+      public:
         /**
          * @brief
          * @param owner pointeur vers la class fille héritante du composant
@@ -99,9 +101,11 @@ class AnimationComponent final : public IAnimationComponent {
 
         AnimationComponent(AnimationComponent &&other) noexcept;
 
-        AnimationComponent<AnimationEnum> &operator=(const AnimationComponent &other);
+        AnimationComponent<AnimationEnum> &
+        operator=(const AnimationComponent &other);
 
-        AnimationComponent<AnimationEnum> &operator=(AnimationComponent &&other) noexcept;
+        AnimationComponent<AnimationEnum> &
+        operator=(AnimationComponent &&other) noexcept;
 };
 
-#endif  // ANIMATIONCOMPONENT_H
+#endif // ANIMATIONCOMPONENT_H

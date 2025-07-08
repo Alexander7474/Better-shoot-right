@@ -2,23 +2,21 @@
 
 #include "../../Bbop-2D/include/BBOP/Graphics.h"
 
-enum class BulletType
-{
-  _5x56mm,
-  apfsds // lol
+enum class BulletType {
+        _5x56mm,
+        apfsds // lol
 };
 
-class Bullet : public Sprite
-{
-private:
-  Vector2f inertie;
-  bool used;
-  friend class Gun;
+class Bullet : public Sprite {
+      private:
+        Vector2f inertie;
+        bool used;
+        friend class Gun;
 
-public:
-  Bullet(Texture *texture, Vector2f _inertie);
+      public:
+        Bullet(Texture *texture, Vector2f _inertie);
 
-  void update();
-  bool hit();
-  void setused();
+        void update();
+        bool hit();
+        void setused();
 };

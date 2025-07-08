@@ -12,54 +12,43 @@
 
 #include <nlohmann/json.hpp>
 
-Item::Item()
-        : Sprite(Texture("assets/default.png")) {
-        setSize(10,10);
-}
+Item::Item() : Sprite(Texture("assets/default.png")) { setSize(10, 10); }
 
-Item::Item(const Texture& texture)
-        : Sprite(texture)
-{}
+Item::Item(const Texture &texture) : Sprite(texture) {}
 
-void Item::update() {
+void Item::update() {}
 
-}
-
-Item::Item(const Item &other)
-                : Sprite{other},
-                  name{other.name}
-{
+Item::Item(const Item &other) : Sprite{other}, name{other.name} {
         // copy des composants
         if (other.animation)
-                animation = std::make_unique<IAnimationComponent>(*other.animation);
+                animation =
+                    std::make_unique<IAnimationComponent>(*other.animation);
         if (other.audio)
                 audio = std::make_unique<IAudioComponent>(*other.audio);
 }
 
 Item::Item(Item &&other) noexcept
-        : Sprite{std::move(other)},
-          name{std::move(other.name)},
-          animation{std::move(other.animation)},
-          audio{std::move(other.audio)}
-{}
+    : Sprite{std::move(other)}, name{std::move(other.name)},
+      animation{std::move(other.animation)}, audio{std::move(other.audio)} {}
 
-Item & Item::operator=(const Item &other) {
+Item &Item::operator=(const Item &other) {
         if (this == &other)
                 return *this;
-        Sprite::operator =(other);
+        Sprite::operator=(other);
         name = other.name;
         // copy du unique_ptr vers IAnimationComponent
         if (other.animation)
-                animation = std::make_unique<IAnimationComponent>(*other.animation);
+                animation =
+                    std::make_unique<IAnimationComponent>(*other.animation);
         if (other.audio)
                 audio = std::make_unique<IAudioComponent>(*other.audio);
         return *this;
 }
 
-Item & Item::operator=(Item &&other) noexcept {
+Item &Item::operator=(Item &&other) noexcept {
         if (this == &other)
                 return *this;
-        Sprite::operator =(std::move(other));
+        Sprite::operator=(std::move(other));
         name = std::move(other.name);
         animation = std::move(other.animation);
         audio = std::move(other.audio);
@@ -72,9 +61,10 @@ void Item::setName(const std::string &name) { this->name = name; }
 
 void Item::computePhysic(b2World *world) {
         setOrigin(getSize().x / 2, getSize().y / 2);
-        // une fois ajouter a umonde box2d c'est la galère pour récupérer la taille
-        // donc faut faire attention
-        entityBody = addDynamicBox(world, &getCollisionBox(), 0.f, 1.f, 1.f, 1.f, false);
+        // une fois ajouter a umonde box2d c'est la galère pour récupérer la
+        // taille donc faut faire attention
+        entityBody =
+            addDynamicBox(world, &getCollisionBox(), 0.f, 1.f, 1.f, 1.f, false);
 }
 
 void Item::updatePhysic() {
@@ -105,13 +95,14 @@ void ItemFactory::loadAllItems() {
         }
 
         // Chargement des Guns
-        for (auto& [name, path] : jsonData["guns"].items()) {
+        for (auto &[name, path] : jsonData["guns"].items()) {
                 allItems[name] = std::make_unique<Gun>(path);
         }
 
         // Chargement des Items
-        for (auto& [name, path] : jsonData["items"].items()) {
-                allItems[name] = std::make_unique<Item>(Texture(path.get<std::string>().c_str()));
+        for (auto &[name, path] : jsonData["items"].items()) {
+                allItems[name] = std::make_unique<Item>(
+                    Texture(path.get<std::string>().c_str()));
         }
 
         // Item par default
@@ -123,7 +114,8 @@ void ItemFactory::loadAllItems() {
 Item *ItemFactory::getItem(const std::string &name) {
         DEBUG_MESSAGE("Appelle ItemFactory::getItem");
         if (!initialized) {
-                ERROR_MESSAGE("ItemFactory::getItem appelé mais ItemFActory non initializé");
+                ERROR_MESSAGE("ItemFactory::getItem appelé mais ItemFActory "
+                              "non initializé");
                 return nullptr;
         }
         Item *it = allItems[name].get();

@@ -11,4 +11,4 @@
 #define DEBUG_MESSAGE(x) std::cout << "[DEBUG] " << x << '\n';
 #define ERROR_MESSAGE(x) std::cerr << "[ERROR] " << x << '\n';
 
-#endif //MACRO_H
+#endif // MACRO_H

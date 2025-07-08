@@ -132,7 +132,7 @@ class GameCharacter : public BbopDrawable, public Geometric, public Entity {
         Member &getHead();
         Member &getLegs();
         [[nodiscard]] float getHp() const;
-        [[nodiscard]] Gun& getGun() const;
+        [[nodiscard]] Gun &getGun() const;
 
         // SETTER
         //

@@ -23,7 +23,8 @@ b2Body *addStaticBox(b2World *world, const Geometric *box);
 /**
  * @brief Créé une boite de collision Dynamic dans un monde box2d à partir d'une
  * collision box BBOP
- * @warning Cette fonction modifie l'origine de la geometric passé en pointeur pour correspodre à l'origine box2D
+ * @warning Cette fonction modifie l'origine de la geometric passé en pointeur
+ * pour correspodre à l'origine box2D
  *
  * @param world Pointeur vers le monde
  * @param box pointeur vers la boite à rajouter
@@ -32,16 +33,18 @@ b2Body *addStaticBox(b2World *world, const Geometric *box);
  * @param friction
  * @param linearDamping
  * @param rotationLock Si le corp a sa rotation blocké
- * @param offsetX Permet de prendre en compte un offsetX si la Geometric est une boite de collision
- * @param offsetY Permet de prendre en compte un offsetY si la Geometric est une boite de collision
+ * @param offsetX Permet de prendre en compte un offsetX si la Geometric est une
+ * boite de collision
+ * @param offsetY Permet de prendre en compte un offsetY si la Geometric est une
+ * boite de collision
  *
  * @return body Corps box2d de la boite
  */
-b2Body *addDynamicBox(b2World *world, Geometric *box,
-                      const float restitution, const float density,
-                      const float friction, const float linearDamping,
-                      const bool rotationLock, const Vector2f& offsetX = Vector2f(0,0),
-                      const Vector2f& offsetY = Vector2f(0,0));
+b2Body *addDynamicBox(b2World *world, Geometric *box, const float restitution,
+                      const float density, const float friction,
+                      const float linearDamping, const bool rotationLock,
+                      const Vector2f &offsetX = Vector2f(0, 0),
+                      const Vector2f &offsetY = Vector2f(0, 0));
 
 /**
  * @brief Données rattachées à chaque body box2D

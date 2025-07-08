@@ -38,30 +38,28 @@ b2Body *addStaticBox(b2World *world, const Geometric *box) {
         return body;
 }
 
-b2Body *addDynamicBox(b2World *world, Geometric *box,
-                      const float restitution, const float density,
-                      const float friction, const float linearDamping,
-                      const bool rotationLock, const Vector2f& offsetX,
-                      const Vector2f& offsetY) {
+b2Body *addDynamicBox(b2World *world, Geometric *box, const float restitution,
+                      const float density, const float friction,
+                      const float linearDamping, const bool rotationLock,
+                      const Vector2f &offsetX, const Vector2f &offsetY) {
 
-        //Définir les mesures de la boite de BBOP vers Box2D
+        // Définir les mesures de la boite de BBOP vers Box2D
         const Vector2f sizeNoOffset(
-                (box->getSize().x - offsetX.x - offsetX.y)/2.f,
-                (box->getSize().y - offsetY.x - offsetY.y)/2.f);
+            (box->getSize().x - offsetX.x - offsetX.y) / 2.f,
+            (box->getSize().y - offsetY.x - offsetY.y) / 2.f);
 
         const Vector2f posNoOffset(
-                box->getPosition().x + box->getSize().x / 2.f + offsetX.x / 2.f,
-                box->getPosition().y + box->getSize().y / 2.f + offsetY.x / 2.f);
+            box->getPosition().x + box->getSize().x / 2.f + offsetX.x / 2.f,
+            box->getPosition().y + box->getSize().y / 2.f + offsetY.x / 2.f);
 
         box->setOrigin(
-                box->getSize().x / 2.f + offsetX.x /2.f - offsetX.y /2.f,
-                box->getSize().y / 2.f + offsetY.x /2.f - offsetY.y /2.f);
+            box->getSize().x / 2.f + offsetX.x / 2.f - offsetX.y / 2.f,
+            box->getSize().y / 2.f + offsetY.x / 2.f - offsetY.y / 2.f);
 
         // 1. Définir le corps statique
         b2BodyDef bodyDef;
-        bodyDef.position.Set(
-            posNoOffset.x / PIXEL_PER_METER,
-            posNoOffset.y / PIXEL_PER_METER);
+        bodyDef.position.Set(posNoOffset.x / PIXEL_PER_METER,
+                             posNoOffset.y / PIXEL_PER_METER);
         bodyDef.type = b2_dynamicBody;
         bodyDef.fixedRotation = rotationLock;
         bodyDef.linearDamping = linearDamping; // Très utile !
@@ -104,7 +102,7 @@ void CustomContactListener::EndContact(b2Contact *contact) {
 
 void CustomContactListener::handleContact(b2Contact *contact,
                                           const bool begin) {
-        //DEBUG_MESSAGE("Appelle CustomContactListener::handleContact");
+        // DEBUG_MESSAGE("Appelle CustomContactListener::handleContact");
         b2Fixture *fixtureA = contact->GetFixtureA();
         b2Fixture *fixtureB = contact->GetFixtureB();
         b2Body *bodyA = fixtureA->GetBody();
@@ -115,13 +113,15 @@ void CustomContactListener::handleContact(b2Contact *contact,
         const b2Vec2 normal = manifold.normal;
 
         if (bodyB->GetUserData().pointer) {
-                const auto data = reinterpret_cast<BodyData *>(bodyB->GetUserData().pointer);
+                const auto data =
+                    reinterpret_cast<BodyData *>(bodyB->GetUserData().pointer);
                 if (normal.y < -0.2f) {
                         data->isTouchingDown = begin;
                 }
         }
         if (bodyA->GetUserData().pointer) {
-                const auto data = reinterpret_cast<BodyData *>(bodyA->GetUserData().pointer);
+                const auto data =
+                    reinterpret_cast<BodyData *>(bodyA->GetUserData().pointer);
                 if (normal.y > 0.2f) {
                         data->isTouchingDown = begin;
                 }

@@ -18,36 +18,38 @@ enum Direction { rightDir, leftDir };
 #endif
 
 // TODO -- Ajouter un état de réarmement
-// TODO -- gérer les collision des balle (passage de Bullet en class Fille de Item)
+// TODO -- gérer les collision des balle (passage de Bullet en class Fille de
+// Item)
 class Gun : public Item {
-       private:
+      private:
         GunState state;
 
         Vector2f attachPoint;
         Direction gunDirection;
 
         // ressource
-        std::unique_ptr<Texture> bulletTexture;  // Pointeur vers la texture des balles pour la
-                                                 // charger une seule fois
+        std::unique_ptr<Texture>
+            bulletTexture; // Pointeur vers la texture des balles pour la
+                           // charger une seule fois
         // gestion des tirs
-        float damage;         // degat de l'arme
-        bool armed;           // l'arme est armé ?
-        int magazineSize;     // taille du chargeur
-        int ammo;             // nombre de mun dans le chargeur
-        double lastShotTime;  // moment du dernier tire
-        double rearmTime;     // temps pour réarmer l'arme
+        float damage;        // degat de l'arme
+        bool armed;          // l'arme est armé ?
+        int magazineSize;    // taille du chargeur
+        int ammo;            // nombre de mun dans le chargeur
+        double lastShotTime; // moment du dernier tire
+        double rearmTime;    // temps pour réarmer l'arme
         std::vector<Bullet>
-            bulletVector;   // stock le balle de l'arme en cours "d'utilisation"
-        float bulletSpeed;  // vitesse des balles
-        Vector2f gunMouth;  // sortie des balles
+            bulletVector;  // stock le balle de l'arme en cours "d'utilisation"
+        float bulletSpeed; // vitesse des balles
+        Vector2f gunMouth; // sortie des balles
 
-       public:
+      public:
         Gun();
-        Gun(const std::string& path);
+        Gun(const std::string &path);
 
         void update() override;
 
-        void setAttachPoint(const Vector2f& ap);
+        void setAttachPoint(const Vector2f &ap);
         void setAttachPoint(float x, float y);
 
         /**

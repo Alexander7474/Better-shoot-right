@@ -19,9 +19,8 @@
 const char *gameCharacterStateString[4] = {"idle", "run", "ragdoll", "dead"};
 
 GameCharacter::GameCharacter()
-    : newtonX(8.f), newtonY(6.f), restitution(0.f),
-      friction(1.f), density(1.f), linearDamping(1.f), onRagdoll(false),
-      hp(10.f) {
+    : newtonX(8.f), newtonY(6.f), restitution(0.f), friction(1.f), density(1.f),
+      linearDamping(1.f), onRagdoll(false), hp(10.f) {
         characterDirection = rightDir;
         scale = 0.65f;
 
@@ -42,12 +41,11 @@ GameCharacter::GameCharacter()
         legs.setOrigin(32 * scale, 0 * scale); // origine sur les hanche
         legs.name = "legs";
 
-        const auto gunPtr = dynamic_cast<Gun*>(ItemFactory::getItem("sniper"));
+        const auto gunPtr = dynamic_cast<Gun *>(ItemFactory::getItem("sniper"));
         gun = std::make_unique<Gun>(*gunPtr);
         gun->setSize(64 * scale, 32 * scale);
 
         createTextureCache("assets/personnages/soldier/");
-
 }
 
 void GameCharacter::createTextureCache(const string &path) {
@@ -117,13 +115,16 @@ void GameCharacter::update(Map *map) {
         ImGui::Text("Member angle: (head: %f, right arm: %f, left arm: %f)",
                     head.getRotation(), rightArm.getRotation(),
                     leftArm.getRotation());
-        ImGui::Text("Legs state: %s", gameCharacterStateString[static_cast<int>(legs.state)]);
-        ImGui::Text("Body state: %s", gameCharacterStateString[static_cast<int>(body.state)]);
+        ImGui::Text("Legs state: %s",
+                    gameCharacterStateString[static_cast<int>(legs.state)]);
+        ImGui::Text("Body state: %s",
+                    gameCharacterStateString[static_cast<int>(body.state)]);
         ImGui::Text("Right Arm state: %s",
                     gameCharacterStateString[static_cast<int>(rightArm.state)]);
         ImGui::Text("Left Arm state: %s",
                     gameCharacterStateString[static_cast<int>(leftArm.state)]);
-        ImGui::Text("Head state: %s", gameCharacterStateString[static_cast<int>(head.state)]);
+        ImGui::Text("Head state: %s",
+                    gameCharacterStateString[static_cast<int>(head.state)]);
         ImGui::End();
 #endif
 }
@@ -358,14 +359,14 @@ Member &GameCharacter::getBody() { return body; }
 Member &GameCharacter::getHead() { return head; }
 Member &GameCharacter::getLegs() { return legs; }
 float GameCharacter::getHp() const { return hp; }
-Gun& GameCharacter::getGun() const { return *gun; }
+Gun &GameCharacter::getGun() const { return *gun; }
 
 // SETTER
 void GameCharacter::setHp(const float _hp) { this->hp = _hp; }
 
 // ENTITY
 void GameCharacter::computePhysic(b2World *world) {
-        setSize(20.f * scale , 63.f * scale );
+        setSize(20.f * scale, 63.f * scale);
         setOrigin(getSize().x / 2, getSize().y / 2);
         entityBody = addDynamicBox(world, this, restitution, density, friction,
                                    linearDamping, true);

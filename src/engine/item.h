@@ -20,13 +20,17 @@
  *
  */
 class Item : public Sprite, public Entity {
-private:
+      private:
         std::string name;
-protected:
-        std::unique_ptr<IAnimationComponent> animation; //<! permet de stocker un AnimationComponent<EnumState> pour certain item
-        std::unique_ptr<IAudioComponent> audio; //<! permet de stocker un AudioComponent<EnumState>
-public:
-        explicit Item(const Texture& texture);
+
+      protected:
+        std::unique_ptr<IAnimationComponent>
+            animation; //<! permet de stocker un AnimationComponent<EnumState>
+                       // pour certain item
+        std::unique_ptr<IAudioComponent>
+            audio; //<! permet de stocker un AudioComponent<EnumState>
+      public:
+        explicit Item(const Texture &texture);
         explicit Item();
 
         virtual void update();
@@ -37,7 +41,7 @@ public:
          */
         Item(const Item &other);
         Item(Item &&other) noexcept;
-        Item & operator=(const Item &other);
+        Item &operator=(const Item &other);
         Item &operator=(Item &&other) noexcept;
 
         [[nodiscard]] const std::string &getName() const;
@@ -57,14 +61,18 @@ public:
 };
 
 /**
- * @brief Gère la création d'item pour éviter de surcharger les appelles au disque dur
- * @details Charge tous les items du jeu dans leurs états par défault et génére des copies
+ * @brief Gère la création d'item pour éviter de surcharger les appelles au
+ * disque dur
+ * @details Charge tous les items du jeu dans leurs états par défault et génére
+ * des copies
  */
 class ItemFactory final {
-private:
-        static std::unordered_map<std::string, std::unique_ptr<Item>> allItems; //<! map de tous les items du jeu liés à leur nom
+      private:
+        static std::unordered_map<std::string, std::unique_ptr<Item>>
+            allItems; //<! map de tous les items du jeu liés à leur nom
         static bool initialized;
-public:
+
+      public:
         /**
          * @brief Charge tous les items du jeu
          */
@@ -87,4 +95,4 @@ public:
         static Item *getItem(const std::string &name);
 };
 
-#endif //ITEM_H
+#endif // ITEM_H
