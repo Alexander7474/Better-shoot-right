@@ -104,6 +104,7 @@ void CustomContactListener::EndContact(b2Contact *contact) {
 
 void CustomContactListener::handleContact(b2Contact *contact,
                                           const bool begin) {
+        //DEBUG_MESSAGE("Appelle CustomContactListener::handleContact");
         b2Fixture *fixtureA = contact->GetFixtureA();
         b2Fixture *fixtureB = contact->GetFixtureB();
         b2Body *bodyA = fixtureA->GetBody();
@@ -114,25 +115,15 @@ void CustomContactListener::handleContact(b2Contact *contact,
         const b2Vec2 normal = manifold.normal;
 
         if (bodyB->GetUserData().pointer) {
-                if (normal.y < -0.02f) {
-                        reinterpret_cast<BodyData *>(
-                            bodyB->GetUserData().pointer)
-                            ->isTouchingDown = begin;
-                } else {
-                        reinterpret_cast<BodyData *>(
-                            bodyB->GetUserData().pointer)
-                            ->isTouchingDown = false;
+                auto data = reinterpret_cast<BodyData *>(bodyB->GetUserData().pointer);
+                if (normal.y < -0.2f) {
+                        data->isTouchingDown = begin;
                 }
         }
         if (bodyA->GetUserData().pointer) {
-                if (normal.y > 0.02f) {
-                        reinterpret_cast<BodyData *>(
-                            bodyA->GetUserData().pointer)
-                            ->isTouchingDown = begin;
-                } else {
-                        reinterpret_cast<BodyData *>(
-                            bodyA->GetUserData().pointer)
-                            ->isTouchingDown = false;
+                auto data = reinterpret_cast<BodyData *>(bodyB->GetUserData().pointer);
+                if (normal.y > 0.2f) {
+                        data->isTouchingDown = begin;
                 }
         }
 }

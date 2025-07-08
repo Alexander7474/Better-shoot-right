@@ -19,8 +19,8 @@
 const char *gameCharacterStateString[4] = {"idle", "run", "ragdoll", "dead"};
 
 GameCharacter::GameCharacter()
-    : newtonX(40.f), newtonY(10.f), restitution(0.f),
-      friction(1.f), density(1.f), linearDamping(4.f), onRagdoll(false),
+    : newtonX(60.f), newtonY(10.f), restitution(0.f),
+      friction(2.5f), density(1.f), linearDamping(4.f), onRagdoll(false),
       hp(10.f) {
         characterDirection = rightDir;
         scale = 1.f;
@@ -333,7 +333,7 @@ void GameCharacter::jump() {
         const b2Vec2 impulsion(0.0f, -entityBody->GetMass() *
                                          newtonY); // vers le haut
         entityBody->ApplyLinearImpulseToCenter(impulsion, true);
-        data->jumpCpt++;
+        data->isTouchingDown = false;
 }
 
 // GETTER

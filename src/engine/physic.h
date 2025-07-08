@@ -54,7 +54,7 @@ struct BodyData {
         bool isTouchingLeft = false;
         bool isTouchingRight = false;
         // limitation
-        short unsigned jumpCpt;
+        int footContacts = 0;
 };
 
 /**
