@@ -10,6 +10,8 @@
 
 #include "../../Bbop-2D/include/BBOP/Graphics.h"
 
+// TODO-- Faire une class commune pour AudioComponent et AnimationComponent
+
 // structure de stockage d'un animation, respecte la structure des fichier json
 struct Animation {
         std::vector<Texture>

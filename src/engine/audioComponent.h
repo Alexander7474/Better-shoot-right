@@ -52,8 +52,9 @@ public:
 template <typename AudioEnum>
 class AudioComponent final : public IAudioComponent {
        private:
+        // TODO-- vérifier que les pointeurs Mix_chunk ne leak pas
         std::unordered_map<AudioEnum, Mix_Chunk*>
-            audios;  //<! map de toute les animations possible
+            sounds;  //<! map de toute les animations possible
        public:
         /**
          * @brief
@@ -68,14 +69,13 @@ class AudioComponent final : public IAudioComponent {
          * @param path chemin d'accès vers les sons et le fichier
          * audio.json
          */
-        void loadAudio(AudioEnum state, std::string path);
+        void loadSound(AudioEnum state, const std::string& path);
 
         /**
          * @brief joue l'animation
          * @param state etat actuelle de la class fille
-         * @return renvoie true si l'animation déborde
          */
-        bool play(AudioEnum state);
+        void play(AudioEnum state);
 
         AudioComponent(const AudioComponent &other);
 

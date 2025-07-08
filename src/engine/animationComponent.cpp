@@ -85,7 +85,7 @@ void AnimationComponent<AnimationEnum>::loadTexture(AnimationEnum state,
                         ERROR_MESSAGE("Chargement " + jsonPath + " | state " + std::to_string(static_cast<int>(state)));
                 }
         } catch (const nlohmann::json::exception &e) {
-                ERROR_MESSAGE("Recupération " +
+                ERROR_MESSAGE("Recupération animation " +
                                jsonPath + " | " + e.what());
                 return;
         }
