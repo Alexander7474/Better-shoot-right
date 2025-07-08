@@ -18,7 +18,7 @@ AnimationComponent<AnimationEnum>::AnimationComponent(Sprite *owner): IAnimation
 }
 
 template <typename AnimationEnum>
-void AnimationComponent<AnimationEnum>::loadTextureCache(AnimationEnum state,
+void AnimationComponent<AnimationEnum>::loadTexture(AnimationEnum state,
                                                          std::string path) {
         // on charge pour chaque anim la texture par default
         std::string defaultSheetPath = path + "default.png";

@@ -44,7 +44,7 @@ void Gun::loadJsonFile(const string& path) {
         if (auto specificPtr = dynamic_cast<AnimationComponent<GunState>*>(animation.get())) {
                 for (int i = 0; i < static_cast<int>(GunState::reload); ++i) {
                         const auto state = static_cast<GunState>(i);
-                        specificPtr->loadTextureCache(state, path);
+                        specificPtr->loadTexture(state, path);
                 }
         }
 

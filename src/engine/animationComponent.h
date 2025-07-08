@@ -21,6 +21,11 @@ struct Animation {
         double frameTime;
 };
 
+/**
+ * @brief Class mère de AnimationComponent
+ * @details permet de prévoir l'implémentation du composant animations
+ * sans connaitre l'enumération qui sera utilisé comme template
+ */
 class IAnimationComponent {
 protected:
         Sprite *owner = nullptr;  //<! class fille
@@ -38,7 +43,7 @@ public:
          * @brief Renvoi un pointeur vers owner
          * @return
          */
-        Sprite * getOwner() const;
+        [[nodiscard]] Sprite * getOwner() const;
 
         /**
          * @brief Changer le possèsseur du composant
@@ -56,6 +61,10 @@ public:
         IAnimationComponent &operator=(IAnimationComponent &&other) = default;
 };
 
+/**
+ * @brief Gère les animations qu'un sprite peut jouer
+ * @tparam AnimationEnum
+ */
 template <typename AnimationEnum>
 class AnimationComponent final : public IAnimationComponent {
        private:
@@ -75,7 +84,7 @@ class AnimationComponent final : public IAnimationComponent {
          * @param path chamin d'accès vers les anims et le fichier
          * animations.json
          */
-        void loadTextureCache(AnimationEnum state, std::string path);
+        void loadTexture(AnimationEnum state, std::string path);
 
         /**
          * @brief joue l'animation

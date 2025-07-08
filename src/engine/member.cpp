@@ -45,7 +45,7 @@ void Member::createTextureCache(const std::string& path) {
         if (animation) {
                 for (int i = 0; i < static_cast<int>(MemberState::dead); ++i) {
                         const auto state = static_cast<MemberState>(i);
-                        animation->loadTextureCache(state, path);
+                        animation->loadTexture(state, path);
                 }
         }
 }
