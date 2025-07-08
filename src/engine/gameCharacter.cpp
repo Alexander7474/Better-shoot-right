@@ -19,11 +19,11 @@
 const char *gameCharacterStateString[4] = {"idle", "run", "ragdoll", "dead"};
 
 GameCharacter::GameCharacter()
-    : newtonX(25.f), newtonY(10.f), restitution(0.f),
-      friction(1.f), density(1.f), linearDamping(3.f), onRagdoll(false),
+    : newtonX(8.f), newtonY(6.f), restitution(0.f),
+      friction(1.f), density(1.f), linearDamping(1.f), onRagdoll(false),
       hp(10.f) {
         characterDirection = rightDir;
-        scale = 0.85f;
+        scale = 0.65f;
 
         leftArm.setSize(32 * scale, 32 * scale);
 
@@ -82,6 +82,21 @@ void GameCharacter::update(Map *map) {
                     legs.state == MemberState::run) {
                         legs.state = MemberState::idle;
                 }
+
+                // Valeur maximale absolue de vitesse horizontale
+                float maxVelocityX = 5.0f;
+
+                // Récupère la vélocité actuelle
+                b2Vec2 velocity = entityBody->GetLinearVelocity();
+
+                // Limite la composante x
+                if (velocity.x > maxVelocityX)
+                        velocity.x = maxVelocityX;
+                else if (velocity.x < -maxVelocityX)
+                        velocity.x = -maxVelocityX;
+
+                // Réapplique la vélocité limitée
+                entityBody->SetLinearVelocity(velocity);
         }
 
         // mise à jour des membres
@@ -350,7 +365,7 @@ void GameCharacter::setHp(const float _hp) { this->hp = _hp; }
 
 // ENTITY
 void GameCharacter::computePhysic(b2World *world) {
-        setSize(25.f * scale , 70.f * scale );
+        setSize(20.f * scale , 63.f * scale );
         setOrigin(getSize().x / 2, getSize().y / 2);
         entityBody = addDynamicBox(world, this, restitution, density, friction,
                                    linearDamping, true);

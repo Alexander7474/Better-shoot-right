@@ -67,7 +67,7 @@ void Game::update()
     middlePos.y = (mainPlayer.getCharacter().getPosition().y + scale * dy);
   }
 
-  mainPlayerCam.setScale(1.f);
+  mainPlayerCam.setScale(0.5f);
   mainPlayerCam.setPosition(middlePos);
   mainPlayer.update(&mainPlayerCam, &map);
 
