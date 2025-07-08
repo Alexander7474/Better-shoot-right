@@ -3,7 +3,6 @@
   "bullet_type" : "_5x56mm",
   "damage" : 50,
   "magazine_size" : 5,
-  "shot_sound" : "assets/audio/short-drill-gunshot-fx.wav",
   "ream_time" : 1.2,
   "bullet_texture" : "assets/items/guns/bullets/308ap.png",
   "bullet_speed" : 1500.0,

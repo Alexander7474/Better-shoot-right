@@ -10,6 +10,7 @@
 #include <unordered_map>
 
 #include "animationComponent.h"
+#include "audioComponent.h"
 
 #include "../game/entity.h"
 
@@ -23,6 +24,7 @@ private:
         std::string name;
 protected:
         std::unique_ptr<IAnimationComponent> animation; //<! permet de stocker un AnimationComponent<EnumState> pour certain item
+        std::unique_ptr<IAudioComponent> audio; //<! permet de stocker un AudioComponent<EnumState>
 public:
         explicit Item(const Texture& texture);
         explicit Item();
@@ -38,7 +40,7 @@ public:
         Item & operator=(const Item &other);
         Item &operator=(Item &&other) noexcept;
 
-        const std::string &getName() const;
+        [[nodiscard]] const std::string &getName() const;
 
         void setName(const std::string &name);
 

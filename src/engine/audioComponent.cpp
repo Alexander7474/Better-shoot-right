@@ -18,13 +18,63 @@ AudioComponent<AudioEnum>::AudioComponent(Sprite *owner): IAudioComponent() {
 }
 
 template <typename AudioEnum>
-void AudioComponent<AudioEnum>::loadAudio(AudioEnum state, std::string path) {
-        ERROR_MESSAGE("Fonction loadAudio non ipmplémenté");
+void AudioComponent<AudioEnum>::loadSound(AudioEnum state, const std::string& path) {
+        // Ici on ne charge pas d'audio par défault
+        // Pas d'audio trouvé = pas de son !
+        std::string jsonPath = path + "sounds.json";
+        std::ifstream jsonFile(jsonPath);
+        if (!jsonFile.is_open()) {
+                ERROR_MESSAGE("Impossible d'ouvrir les sons " +
+                               jsonPath + " | state " + std::to_string(static_cast<int>(state)));
+                return;
+        }
+
+        // loading with json
+        nlohmann::json jsonData;
+        try {
+                jsonFile >> jsonData;
+        } catch (const std::exception &e) {
+                ERROR_MESSAGE("Découpage json " + jsonPath + " | state " + std::to_string(static_cast<int>(state)));
+                return;
+        }
+
+        try {
+                if (!jsonData.contains(std::to_string(static_cast<int>(state)))) {
+                        ERROR_MESSAGE("Chargement " + jsonPath + " | state " + std::to_string(static_cast<int>(state)) + " non trouvé");
+                        return;
+                }
+
+                std::string soundFile = jsonData.at(std::to_string(static_cast<int>(state)));
+
+                //chargement du son
+                std::string soundPath = path + soundFile;
+                Mix_Chunk* sound = Mix_LoadWAV(soundPath.c_str());
+
+                if (!sound) {
+                        ERROR_MESSAGE("Chargement " + jsonPath + " | fichier son state "
+                                + std::to_string(static_cast<int>(state)) + "/" + soundPath
+                                + " non trouvé");
+                        return;
+                }
+
+                // Ajouter le mix chunk dans la unordered_map
+                sounds[state] = sound;
+        } catch (const nlohmann::json::exception &e) {
+                ERROR_MESSAGE("Recupération audio " +
+                               jsonPath + " | " + e.what());
+                return;
+        }
+
+        DEBUG_MESSAGE("Chargement terminé: " + jsonPath + " | state " + std::to_string(static_cast<int>(state)));
 }
 
 template <typename AudioEnum>
-bool AudioComponent<AudioEnum>::play(AudioEnum state) {
-        ERROR_MESSAGE("Fonction play de Audio non ipmplémenté");
+void AudioComponent<AudioEnum>::play(AudioEnum state) {
+        if (sounds[state] != nullptr) {
+                Mix_PlayChannel(0, sounds[state], 0);
+        }else {
+                ERROR_MESSAGE("Pas de sons pour l'état " + std::to_string(static_cast<int>(state)));
+        }
 }
 
 Sprite * IAudioComponent::getOwner() const {
@@ -38,13 +88,13 @@ void IAudioComponent::setOwner(Sprite *owner) {
 template <typename AudioEnum>
 AudioComponent<AudioEnum>::AudioComponent(const AudioComponent &other)
         : IAudioComponent(other),
-          audios(other.audios){
+          sounds(other.sounds){
 }
 
 template <typename AudioEnum>
 AudioComponent<AudioEnum>::AudioComponent(AudioComponent &&other) noexcept
         : IAudioComponent(std::move(other)),
-          audios(std::move(other.audios)){
+          sounds(std::move(other.sounds)){
 }
 
 template <typename AudioEnum>
@@ -52,7 +102,7 @@ AudioComponent<AudioEnum> & AudioComponent<AudioEnum>::operator=(const AudioComp
         if (this == &other)
                 return *this;
         IAudioComponent::operator =(other);
-        audios = other.audios;
+        sounds = other.sounds;
         return *this;
 }
 
@@ -61,6 +111,8 @@ AudioComponent<AudioEnum> & AudioComponent<AudioEnum>::operator=(AudioComponent 
         if (this == &other)
                 return *this;
         IAudioComponent::operator =(std::move(other));
-        audios = std::move(other.audios);
+        sounds = std::move(other.sounds);
         return *this;
 }
+
+template class AudioComponent<GunState>; // force la génération pour GunState

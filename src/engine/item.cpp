@@ -29,16 +29,19 @@ Item::Item(const Item &other)
                 : Sprite{other},
                   name{other.name}
 {
-        // copy du unique_ptr vers IAnimationComponent
+        // copy des composants
         if (other.animation)
                 animation = std::make_unique<IAnimationComponent>(*other.animation);
+        if (other.audio)
+                audio = std::make_unique<IAudioComponent>(*other.audio);
 }
 
 Item::Item(Item &&other) noexcept
         : Sprite{std::move(other)},
           name{std::move(other.name)},
-          animation{std::move(other.animation)} {
-}
+          animation{std::move(other.animation)},
+          audio{std::move(other.audio)}
+{}
 
 Item & Item::operator=(const Item &other) {
         if (this == &other)
@@ -48,6 +51,8 @@ Item & Item::operator=(const Item &other) {
         // copy du unique_ptr vers IAnimationComponent
         if (other.animation)
                 animation = std::make_unique<IAnimationComponent>(*other.animation);
+        if (other.audio)
+                audio = std::make_unique<IAudioComponent>(*other.audio);
         return *this;
 }
 
@@ -57,6 +62,7 @@ Item & Item::operator=(Item &&other) noexcept {
         Sprite::operator =(std::move(other));
         name = std::move(other.name);
         animation = std::move(other.animation);
+        audio = std::move(other.audio);
         return *this;
 }
 
