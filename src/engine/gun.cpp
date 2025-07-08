@@ -173,7 +173,7 @@ void Gun::shoot() {
                 bulletVector.push_back(b);
 
                 // Chargement du fichier audio (wav, mp3, ogg, etc.)
-                Mix_Chunk* sound = Mix_LoadWAV("assets/audio/gun-shot-fx_77.wav");
+                Mix_Chunk* sound = Mix_LoadWAV("assets/audio/short-drill-gunshot-fx.wav");
                 if (!sound) {
                         std::cerr << "Erreur Mix_LoadWAV : " << Mix_GetError() << std::endl;
                         Mix_CloseAudio();

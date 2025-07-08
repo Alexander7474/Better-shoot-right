@@ -6,7 +6,7 @@
   "shot_sound" : "assets/audio/short-drill-gunshot-fx.wav",
   "ream_time" : 0.12,
   "bullet_texture" : "assets/items/guns/bullets/7-62x39mm.png",
-  "bullet_speed" : 1000.0,
+  "bullet_speed" : 2000.0,
   "mouth_x" : 38.0,
   "mouth_y" : 1
 }

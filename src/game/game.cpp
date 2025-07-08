@@ -18,7 +18,7 @@ float GRAVITY = 9.8f;
 default_random_engine RANDOM_ENGINE;
 
 Game::Game()
-  :  map("assets/map/default/"), physicalWorld(b2Vec2(0.0f,GRAVITY)) // création du monde physique avec un vecteur de gravité
+  :  map("assets/map/map2/"), physicalWorld(b2Vec2(0.0f,GRAVITY)) // création du monde physique avec un vecteur de gravité
 {
   auto* listener = new CustomContactListener();
   physicalWorld.SetContactListener(listener);
