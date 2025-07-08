@@ -59,10 +59,10 @@ void Game::update()
   float distance = bbopGetDistance(middlePos, mainPlayer.getCharacter().getPosition());
 
   // limite la distance à la quelle la caméra peut aller
-  if (distance > 50.f) {
+  if (distance > 150.f) {
     const double dx = middlePos.x - mainPlayer.getCharacter().getPosition().x;
     const double dy = middlePos.y - mainPlayer.getCharacter().getPosition().y;
-    const double scale = 50 / distance;
+    const double scale = 150 / distance;
     middlePos.x = (mainPlayer.getCharacter().getPosition().x + scale * dx);
     middlePos.y = (mainPlayer.getCharacter().getPosition().y + scale * dy);
   }
@@ -87,8 +87,8 @@ void Game::update()
 
   //Gestion de la physique-------------------------------------------------------------------------
   constexpr float timeStep = 1.0f / 60.f;
-  int velocityIterations = 6;
-  int positionIterations = 2;
+  constexpr int velocityIterations = 6;
+  constexpr int positionIterations = 2;
 
   //mis a jour du monde box2d
   physicalWorld.Step(timeStep, velocityIterations, positionIterations);
@@ -107,14 +107,19 @@ void Game::Draw()
 
   for(auto& d: dynamics){
     scene.Draw(*d);
+#ifdef DEBUG_COLLISION
     bbopDebugCollisionBox(d->getCollisionBox(), scene);
+#endif
   }
 
   for(auto& i: items){
     scene.Draw(*i);
+#ifdef DEBUG_COLLISION
     bbopDebugCollisionBox(i->getCollisionBox(), scene);
+#endif
   }
 
+#ifdef DEBUG_COLLISION
   bbopDebugCollisionBox(mainPlayer.getCharacter().getHead().getCollisionBox(), scene);
   bbopDebugCollisionBox(mainPlayer.getCharacter().getLegs().getCollisionBox(), scene);
   bbopDebugCollisionBox(mainPlayer.getCharacter().getBody().getCollisionBox(), scene);
@@ -124,6 +129,7 @@ void Game::Draw()
   for (CollisionBox& box : map.getCollision()) {
     bbopDebugCollisionBox(box, scene);
   }
+#endif
 
   scene.render();
 }

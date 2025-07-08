@@ -115,13 +115,13 @@ void CustomContactListener::handleContact(b2Contact *contact,
         const b2Vec2 normal = manifold.normal;
 
         if (bodyB->GetUserData().pointer) {
-                auto data = reinterpret_cast<BodyData *>(bodyB->GetUserData().pointer);
+                const auto data = reinterpret_cast<BodyData *>(bodyB->GetUserData().pointer);
                 if (normal.y < -0.2f) {
                         data->isTouchingDown = begin;
                 }
         }
         if (bodyA->GetUserData().pointer) {
-                auto data = reinterpret_cast<BodyData *>(bodyB->GetUserData().pointer);
+                const auto data = reinterpret_cast<BodyData *>(bodyA->GetUserData().pointer);
                 if (normal.y > 0.2f) {
                         data->isTouchingDown = begin;
                 }
