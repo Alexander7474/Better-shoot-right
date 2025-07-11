@@ -6,7 +6,7 @@
 using namespace std;
 
 Bullet::Bullet() : Item(Texture("assets/default.png")) {
-        setSize(3,1);
+        setSize(2,1);
         inertie = Vector2f(0,0);
         state = BulletState::idle;
 }

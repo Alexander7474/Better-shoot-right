@@ -8,11 +8,11 @@
   },
 
   "1": {
-    "sprite_sheet": "default.png",
-    "columns": 1,
+    "sprite_sheet": "shoot-sheet.png",
+    "columns": 4,
     "rows": 1,
-    "n_frame" : 1,
-    "duration" : 0
+    "n_frame" : 4,
+    "duration" : 0.08
   },
 
   "2": {
