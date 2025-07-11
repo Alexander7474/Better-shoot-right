@@ -1,0 +1,25 @@
+{
+  "0": {
+    "sprite_sheet": "default.png",
+    "columns": 1,
+    "rows": 1,
+    "n_frame" : 1,
+    "duration" : 0
+  },
+
+  "1": {
+    "sprite_sheet": "shoot-sheet.png",
+    "columns": 6,
+    "rows": 1,
+    "n_frame" : 6,
+    "duration" : 0.001
+  },
+
+  "2": {
+    "sprite_sheet": "default.png",
+    "columns": 1,
+    "rows": 1,
+    "n_frame" : 1,
+    "duration" : 0
+  }
+}

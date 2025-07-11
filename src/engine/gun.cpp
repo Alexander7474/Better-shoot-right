@@ -114,10 +114,6 @@ void Gun::update() {
                         state = GunState::idle;
                 }
         }
-
-        for (Bullet *b : bulletVector) {
-                b->update();
-        }
 }
 
 void Gun::setAttachPoint(const Vector2f &ap) {
@@ -233,18 +229,12 @@ int Gun::getAmmo() const { return ammo; }
 
 void Gun::setAmmo(const int ammo) { this->ammo = ammo; }
 
-const std::vector<Bullet*> &Gun::getBulletVector() const { return bulletVector; }
-
-void Gun::setBulletVector(const std::vector<Bullet*> &bulletVector) {
-        this->bulletVector = bulletVector;
-}
-
 Gun::Gun(const Gun &other)
     : Item(other), state(other.state), attachPoint(other.attachPoint),
       gunDirection(other.gunDirection), damage(other.damage),
       armed(other.armed), magazineSize(other.magazineSize), ammo(other.ammo),
       lastShotTime(other.lastShotTime), rearmTime(other.rearmTime),
-      bulletVector(other.bulletVector), bulletSpeed(other.bulletSpeed),
+      bulletSpeed(other.bulletSpeed),
       gunMouth(other.gunMouth), bulletType(other.bulletType) {
 
         // Changement de possèsseur du composant copier.
@@ -274,7 +264,6 @@ Gun::Gun(Gun &&other) noexcept
       attachPoint(other.attachPoint), gunDirection(other.gunDirection),damage(other.damage),
       armed(other.armed), magazineSize(other.magazineSize), ammo(other.ammo),
       lastShotTime(other.lastShotTime), rearmTime(other.rearmTime),
-      bulletVector(std::move(other.bulletVector)),
       bulletSpeed(other.bulletSpeed), gunMouth(other.gunMouth), bulletType(other.bulletType) {}
 
 Gun &Gun::operator=(const Gun &other) {
@@ -290,7 +279,6 @@ Gun &Gun::operator=(const Gun &other) {
         ammo = other.ammo;
         lastShotTime = other.lastShotTime;
         rearmTime = other.rearmTime;
-        bulletVector = other.bulletVector;
         bulletSpeed = other.bulletSpeed;
         gunMouth = other.gunMouth;
         bulletType = other.bulletType;
@@ -331,7 +319,6 @@ Gun &Gun::operator=(Gun &&other) noexcept {
         ammo = other.ammo;
         lastShotTime = other.lastShotTime;
         rearmTime = other.rearmTime;
-        bulletVector = std::move(other.bulletVector);
         bulletSpeed = other.bulletSpeed;
         gunMouth = other.gunMouth;
         bulletType = other.bulletType;

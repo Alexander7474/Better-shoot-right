@@ -5,7 +5,8 @@
   "guns": {
     "scar" : "assets/items/guns/scar/",
     "ak47" : "assets/items/guns/ak47/",
-    "sniper" : "assets/items/guns/sniper/"
+    "sniper" : "assets/items/guns/sniper/",
+    "machine_gun" : "assets/items/guns/machine_gun/"
   },
   "utilities" : {
 

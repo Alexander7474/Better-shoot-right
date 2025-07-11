@@ -1,10 +1,9 @@
 {
   "name" : "scar",
-  "bullet_type" : "_5x56mm",
+  "bullet_type" : "5-56x45mm",
   "damage" : 50,
   "magazine_size" : 5,
   "ream_time" : 1.2,
-  "bullet_texture" : "assets/items/guns/bullets/308ap.png",
   "bullet_speed" : 1500.0,
   "mouth_x" : 43.0,
   "mouth_y" : 0

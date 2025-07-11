@@ -1,9 +1,9 @@
 {
-  "name" : "ak47",
+  "name" : "machine_gun",
   "bullet_type" : "5-56x45mm",
   "damage" : 5.3,
-  "magazine_size" : 25,
-  "ream_time" : 0.08,
+  "magazine_size" : 200,
+  "ream_time" : 0.01,
   "bullet_speed" : 200.0,
   "mouth_x" : 30.0,
   "mouth_y" : -2

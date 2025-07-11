@@ -35,8 +35,6 @@ class Gun final : public Item {
         int ammo;            // nombre de mun dans le chargeur
         double lastShotTime; // moment du dernier tire
         double rearmTime;    // temps pour réarmer l'arme
-        std::vector<Bullet*>
-            bulletVector;  // stock le balle de l'arme en cours "d'utilisation"
         float bulletSpeed; // vitesse des balles
         Vector2f gunMouth; // sortie des balles
         std::string bulletType;
@@ -88,10 +86,6 @@ class Gun final : public Item {
         int getAmmo() const;
 
         void setAmmo(int ammo);
-
-        const std::vector<Bullet*> &getBulletVector() const;
-
-        void setBulletVector(const std::vector<Bullet*> &bulletVector);
 
         Gun(const Gun &other);
 
