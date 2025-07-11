@@ -40,4 +40,6 @@ class Bullet final: public Item {
         Bullet(Bullet &&other) noexcept;
         Bullet &operator=(const Bullet &other);
         Bullet &operator=(Bullet &&other) noexcept;
+
+        b2Body *getBody() const;
 };

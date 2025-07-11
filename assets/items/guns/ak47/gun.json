@@ -1,11 +1,11 @@
 {
   "name" : "ak47",
-  "bullet_type" : "_5x56mm",
+  "bullet_type" : "5-56x45mm",
   "damage" : 5.3,
   "magazine_size" : 25,
   "ream_time" : 0.08,
   "bullet_texture" : "assets/items/guns/bullets/7-62x39mm.png",
-  "bullet_speed" : 2000.0,
+  "bullet_speed" : 2.0,
   "mouth_x" : 38.0,
   "mouth_y" : 1
 }

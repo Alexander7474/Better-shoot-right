@@ -157,8 +157,9 @@ void Game::Draw() {
 }
 
 void Game::addItem(Item *item) {
-        item->computePhysic(&physicalWorld);
         item->update();
         items.push_back(std::unique_ptr<Item>(item));
         entities.push_back(items.back().get());
 }
+
+b2World *Game::getPhysicalWorld() { return &physicalWorld; }

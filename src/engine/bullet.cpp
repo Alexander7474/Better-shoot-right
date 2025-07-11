@@ -6,7 +6,7 @@
 using namespace std;
 
 Bullet::Bullet() : Item(Texture("assets/default.png")) {
-        setSize(8,2);
+        setSize(3,1);
         inertie = Vector2f(0,0);
         state = BulletState::idle;
 }
@@ -184,3 +184,5 @@ Bullet & Bullet::operator=(Bullet &&other) noexcept {
 
         return *this;
 }
+
+b2Body *Bullet::getBody() const { return entityBody; }

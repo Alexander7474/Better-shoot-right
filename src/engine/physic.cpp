@@ -63,6 +63,7 @@ b2Body *addDynamicBox(b2World *world, Geometric *box, const float restitution,
         bodyDef.type = b2_dynamicBody;
         bodyDef.fixedRotation = rotationLock;
         bodyDef.linearDamping = linearDamping; // Très utile !
+        bodyDef.angle = box->getRotation();
 
         b2Body *body = world->CreateBody(&bodyDef);
 

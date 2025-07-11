@@ -64,4 +64,6 @@ class Game {
          * @warning Ne pas donner une entité déjà initialisé avec computePhysic()
          */
         void addItem(Item *item);
+
+        b2World *getPhysicalWorld();
 };
