@@ -20,8 +20,7 @@ enum Direction { rightDir, leftDir };
 class Game;
 
 // TODO -- Ajouter un état de réarmement
-// TODO -- gérer les collision des balle (passage de Bullet en class Fille de
-// Item)
+// TODO -- Ajouter une chute de douille au arme
 class Gun final : public Item {
       private:
         GunState state;

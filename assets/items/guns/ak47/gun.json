@@ -5,8 +5,8 @@
   "magazine_size" : 25,
   "ream_time" : 0.08,
   "bullet_texture" : "assets/items/guns/bullets/7-62x39mm.png",
-  "bullet_speed" : 2.0,
-  "mouth_x" : 38.0,
-  "mouth_y" : 1
+  "bullet_speed" : 200.0,
+  "mouth_x" : 30.0,
+  "mouth_y" : -2
 }
 
