@@ -12,6 +12,7 @@ enum class BulletState {
 };
 
 // TODO -- Ajouter un ficher de configuration json pour les balles pour configurer les caractéristiques physiques de celle ci
+// TODO -- Ajouter un ttl au balle
 class Bullet final: public Item {
       private:
         Vector2f inertie;

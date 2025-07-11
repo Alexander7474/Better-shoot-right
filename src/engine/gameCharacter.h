@@ -20,6 +20,7 @@ enum Direction { rightDir, leftDir };
 
 #endif
 
+// TODO -- Gérer la vie et la collision avec le balle
 class GameCharacter : public BbopDrawable, public Geometric, public Entity {
       private:
         // membres
