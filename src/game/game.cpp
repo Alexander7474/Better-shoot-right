@@ -2,7 +2,6 @@
 #include "../engine/dynamicSprite.h"
 #include "../engine/macro.h"
 #include "../engine/physic.h"
-#include "entity.h"
 
 #include <box2d/box2d.h>
 #include <memory>
@@ -18,7 +17,8 @@ float GRAVITY = 9.8f;
 default_random_engine RANDOM_ENGINE;
 
 Game::Game()
-    : map("assets/map/map2/"),
+    : mainPlayer(this),
+      map("assets/map/map2/"),
       physicalWorld(b2Vec2(
           0.0f,
           GRAVITY)) // création du monde physique avec un vecteur de gravité
@@ -91,11 +91,14 @@ void Game::update() {
 
         state = glfwGetKey(gameWindow, GLFW_KEY_I);
         if (state == GLFW_PRESS) {
-                const auto itPtr = ItemFactory::getItem("heal");
-                items.push_back(std::make_unique<Item>(*itPtr));
+                const auto itPtr = dynamic_cast<Bullet*>(ItemFactory::getItem("5-56x45mm"));
+                auto* b = new Bullet(*itPtr);
+                b->fire(Vector2f(0,0));
+                items.push_back(std::unique_ptr<Item>(b));
                 items.back()->setPosition(
                     mainPlayer.getCrossair().getPosition());
                 items.back()->computePhysic(&physicalWorld);
+                items.back()->update();
                 entities.push_back(items.back().get());
         }
 
@@ -151,4 +154,11 @@ void Game::Draw() {
 #endif
 
         scene.render();
+}
+
+void Game::addItem(Item *item) {
+        item->computePhysic(&physicalWorld);
+        item->update();
+        items.push_back(std::unique_ptr<Item>(item));
+        entities.push_back(items.back().get());
 }

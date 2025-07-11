@@ -120,3 +120,5 @@ AudioComponent<AudioEnum>::operator=(AudioComponent &&other) noexcept {
 }
 
 template class AudioComponent<GunState>; // force la génération pour GunState
+template class AudioComponent<BulletState>; // force la génération pour
+                                                // BulletState

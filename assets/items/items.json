@@ -1,4 +1,7 @@
 {
+  "bullets": {
+    "5-56x45mm" : "assets/items/bullets/5-56x45mm/"
+  },
   "guns": {
     "scar" : "assets/items/guns/scar/",
     "ak47" : "assets/items/guns/ak47/",

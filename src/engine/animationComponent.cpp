@@ -176,3 +176,5 @@ template class AnimationComponent<MemberState>; // force la génération pour
                                                 // MemberState
 template class AnimationComponent<GunState>;    // force la génération pour
                                                 // GunState
+template class AnimationComponent<BulletState>; // force la génération pour
+                                                // BulletState

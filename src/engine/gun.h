@@ -17,20 +17,18 @@ enum Direction { rightDir, leftDir };
 
 #endif
 
+class Game;
+
 // TODO -- Ajouter un état de réarmement
 // TODO -- gérer les collision des balle (passage de Bullet en class Fille de
 // Item)
-class Gun : public Item {
+class Gun final : public Item {
       private:
         GunState state;
 
         Vector2f attachPoint;
         Direction gunDirection;
 
-        // ressource
-        std::unique_ptr<Texture>
-            bulletTexture; // Pointeur vers la texture des balles pour la
-                           // charger une seule fois
         // gestion des tirs
         float damage;        // degat de l'arme
         bool armed;          // l'arme est armé ?
@@ -38,10 +36,11 @@ class Gun : public Item {
         int ammo;            // nombre de mun dans le chargeur
         double lastShotTime; // moment du dernier tire
         double rearmTime;    // temps pour réarmer l'arme
-        std::vector<Bullet>
+        std::vector<Bullet*>
             bulletVector;  // stock le balle de l'arme en cours "d'utilisation"
         float bulletSpeed; // vitesse des balles
         Vector2f gunMouth; // sortie des balles
+        std::string bulletType;
 
       public:
         Gun();
@@ -55,7 +54,7 @@ class Gun : public Item {
         /**
          * @brief fais tirer l'arme
          */
-        void shoot();
+        void shoot(Game *game);
 
         /**
          * remplie le nombre de munition dans le chargeur
@@ -91,9 +90,9 @@ class Gun : public Item {
 
         void setAmmo(int ammo);
 
-        const std::vector<Bullet> &getBulletVector() const;
+        const std::vector<Bullet*> &getBulletVector() const;
 
-        void setBulletVector(const std::vector<Bullet> &bulletVector);
+        void setBulletVector(const std::vector<Bullet*> &bulletVector);
 
         Gun(const Gun &other);
 

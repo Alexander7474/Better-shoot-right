@@ -1,14 +1,18 @@
+#include "game.h"
 #include "player.h"
 #include "../../Bbop-2D/include/BBOP/Graphics/bbopMathClass.h"
 #include "../../Bbop-2D/include/BBOP/Graphics/cameraClass.h"
 #include "../engine/gameCharacter.h"
-#include "game.h"
 
 #include <GLFW/glfw3.h>
 
+#include "../engine/macro.h"
+
 using namespace std;
 
-Player::Player() {}
+Player::Player(Game* game) : Player() {
+        this->game = game;
+}
 
 void Player::Draw(GLint *renderUniforms) const {
         character.Draw(renderUniforms);
@@ -45,7 +49,11 @@ void Player::update(Camera *playerCam, Map *map) {
         }
         if (glfwGetMouseButton(gameWindow, GLFW_MOUSE_BUTTON_LEFT) ==
             GLFW_PRESS) {
-                character.getGun().shoot();
+                if (game == nullptr) {
+                        ERROR_MESSAGE("Game pointer est nullptr dans player, impossible de tirer");
+                }else {
+                        character.getGun().shoot(game);
+                }
         }
         character.update(map);
 }

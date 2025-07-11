@@ -94,6 +94,11 @@ void ItemFactory::loadAllItems() {
                 return;
         }
 
+        // Chargement des munitions (! avant les guns plz)
+        for (auto &[name, path] : jsonData["bullets"].items()) {
+                allItems[name] = std::make_unique<Bullet>(path);
+        }
+
         // Chargement des Guns
         for (auto &[name, path] : jsonData["guns"].items()) {
                 allItems[name] = std::make_unique<Gun>(path);
@@ -112,7 +117,7 @@ void ItemFactory::loadAllItems() {
 }
 
 Item *ItemFactory::getItem(const std::string &name) {
-        DEBUG_MESSAGE("Appelle ItemFactory::getItem");
+        DEBUG_MESSAGE("Appelle ItemFactory::getItem " + name);
         if (!initialized) {
                 ERROR_MESSAGE("ItemFactory::getItem appelé mais ItemFActory "
                               "non initializé");

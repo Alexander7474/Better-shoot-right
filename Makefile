@@ -15,7 +15,7 @@ CXX = clang++
 
 EXE = final.exe
 SRC_DIR = src/
-SOURCES = main.cpp $(SRC_DIR)engine/audioComponent.cpp $(SRC_DIR)engine/item.cpp $(SRC_DIR)engine/animationComponent.cpp $(SRC_DIR)game/neutre.cpp $(SRC_DIR)game/trooper.cpp $(SRC_DIR)engine/gameCharacter.cpp $(SRC_DIR)game/bot.cpp $(SRC_DIR)game/player.cpp $(SRC_DIR)game/game.cpp $(SRC_DIR)engine/member.cpp $(SRC_DIR)engine/gun.cpp $(SRC_DIR)engine/bullet.cpp $(SRC_DIR)engine/crossair.cpp $(SRC_DIR)engine/physic.cpp $(SRC_DIR)engine/dynamicSprite.cpp
+SOURCES = main.cpp $(SRC_DIR)engine/audioComponent.cpp $(SRC_DIR)engine/item.cpp $(SRC_DIR)engine/animationComponent.cpp $(SRC_DIR)engine/gameCharacter.cpp $(SRC_DIR)game/player.cpp $(SRC_DIR)game/game.cpp $(SRC_DIR)engine/member.cpp $(SRC_DIR)engine/gun.cpp $(SRC_DIR)engine/bullet.cpp $(SRC_DIR)engine/crossair.cpp $(SRC_DIR)engine/physic.cpp $(SRC_DIR)engine/dynamicSprite.cpp
 SOURCES += $(SRC_DIR)imgui/imgui.cpp $(SRC_DIR)imgui/imgui_demo.cpp $(SRC_DIR)imgui/imgui_draw.cpp $(SRC_DIR)imgui/imgui_tables.cpp $(SRC_DIR)imgui/imgui_widgets.cpp
 SOURCES += $(SRC_DIR)backends/imgui_impl_glfw.cpp $(SRC_DIR)backends/imgui_impl_opengl3.cpp
 OBJS = $(SOURCES:.cpp=.o)

@@ -2,21 +2,42 @@
 
 #include "../../Bbop-2D/include/BBOP/Graphics.h"
 
-enum class BulletType {
-        _5x56mm,
-        apfsds // lol
+#include "item.h"
+
+#include <string>
+
+enum class BulletState {
+        idle,
+        fired
 };
 
-class Bullet : public Sprite {
+class Bullet final: public Item {
       private:
         Vector2f inertie;
-        bool used;
-        friend class Gun;
-
+        BulletState state;
       public:
-        Bullet(Texture *texture, Vector2f _inertie);
+        Bullet();
+        Bullet(const std::string& path);
 
-        void update();
-        bool hit();
-        void setused();
+        void update() override;
+
+        /**
+         * @brief Détonne la munition
+         * @param inertie Force de la balle
+         */
+        void fire(const Vector2f& inertie);
+
+        /**
+        * @brief charge une arme depuis un fichier json
+        */
+        void loadJsonFile(const std::string &path);
+
+        /**
+         * @brief Mem
+         * @param other
+         */
+        Bullet(const Bullet &other);
+        Bullet(Bullet &&other) noexcept;
+        Bullet &operator=(const Bullet &other);
+        Bullet &operator=(Bullet &&other) noexcept;
 };

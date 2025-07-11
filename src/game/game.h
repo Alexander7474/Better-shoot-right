@@ -26,7 +26,7 @@ class Game {
       private:
         Scene scene;
         Camera mainPlayerCam;
-        Player mainPlayer;
+        Player mainPlayer{};
         Map map;
         std::vector<Trooper *> npc;
         std::vector<std::unique_ptr<DynamicSprite>>
@@ -48,4 +48,20 @@ class Game {
          * @brief Dessine la game avec la scene
          */
         void Draw();
+
+        /**
+         * @brief Rajoute un item dans la game
+         * @param item pointeur vers l'item
+         *
+         * @details Un unique_ptr<Item> du vector items va prendre possession
+         * de l'objet pointer par *item.
+         * @details La méthode se charge de mettre en place la class Entity
+         * avec computePhysic()
+         *
+         * @warning L'item dois être parfaitement construit et près à être
+         * utilisé en tant que telle, C'EST A DIRE UN ITEMS (pas un gun, pas
+         * un bullets, UN ITEM).
+         * @warning Ne pas donner une entité déjà initialisé avec computePhysic()
+         */
+        void addItem(Item *item);
 };

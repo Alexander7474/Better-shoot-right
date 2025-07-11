@@ -41,7 +41,7 @@ GameCharacter::GameCharacter()
         legs.setOrigin(32 * scale, 0 * scale); // origine sur les hanche
         legs.name = "legs";
 
-        const auto gunPtr = dynamic_cast<Gun *>(ItemFactory::getItem("sniper"));
+        const auto gunPtr = dynamic_cast<Gun *>(ItemFactory::getItem("scar"));
         gun = std::make_unique<Gun>(*gunPtr);
         gun->setSize(64 * scale, 32 * scale);
 
@@ -179,8 +179,8 @@ void GameCharacter::Draw(GLint *renderUniforms) const {
         gun->Draw(renderUniforms);
         rightArm.Draw(renderUniforms);
 
-        for (Bullet b : gun->getBulletVector()) {
-                b.Draw(renderUniforms);
+        for (Bullet* b : gun->getBulletVector()) {
+                b->Draw(renderUniforms);
         }
 }
 

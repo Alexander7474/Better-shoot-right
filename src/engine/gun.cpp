@@ -28,14 +28,11 @@ Gun::Gun() : Item(Texture("assets/default.png")) {
         gunMouth = Vector2f(20.f, 5.f);
         bulletSpeed = 0.f;
         gunDirection = rightDir;
-
-        // texture par default des balles
-        bulletTexture =
-            std::make_unique<Texture>("assets/items/guns/bullets/default.png");
+        state = GunState::idle;
+        bulletType = "5-56x45mm";
 }
 
 Gun::Gun(const std::string &path) : Gun() {
-        state = GunState::idle;
         animation = std::make_unique<AnimationComponent<GunState>>(this);
         audio = std::make_unique<AudioComponent<GunState>>(this);
 
@@ -87,9 +84,7 @@ void Gun::loadJsonFile(const string &path) {
                 ammo = magazineSize;
                 rearmTime = jsonData.at("ream_time");
                 bulletSpeed = jsonData.at("bullet_speed");
-
-                string bullet = jsonData.at("bullet_texture");
-                bulletTexture = std::make_unique<Texture>(bullet.c_str());
+                bulletType = jsonData.at("bullet_type");
 
                 float x = jsonData.at("mouth_x");
                 float y = jsonData.at("mouth_y");
@@ -106,7 +101,7 @@ void Gun::update() {
         // Cast std::unique_ptr<IAnimationComponent> de Item
         // vers AnimationComponent<GunState>* pour jouer les
         // anims
-        if (auto specificPtr =
+        if (const auto specificPtr =
                 dynamic_cast<AnimationComponent<GunState> *>(animation.get())) {
                 if (specificPtr->play(state)) {
                         state = GunState::idle;
@@ -120,8 +115,8 @@ void Gun::update() {
                 }
         }
 
-        for (Bullet &b : bulletVector) {
-                b.update();
+        for (Bullet *b : bulletVector) {
+                b->update();
         }
 }
 
@@ -132,7 +127,7 @@ void Gun::setAttachPoint(const Vector2f &ap) {
 
 void Gun::setAttachPoint(float x, float y) { setAttachPoint(Vector2f(x, y)); }
 
-void Gun::shoot() {
+void Gun::shoot(Game *game) {
         if (armed) {
                 lastShotTime = glfwGetTime();
                 ammo--;
@@ -171,15 +166,19 @@ void Gun::shoot() {
                     (mouth.x - getPosition().x) * sin(getRotation()) +
                     (mouth.y - getPosition().y) * cos(getRotation());
 
-                Bullet b(bulletTexture.get(), inertie);
-                b.setPosition(outX, outY);
-                b.setRotation(getRotation());
+                const auto specPtr = dynamic_cast<Bullet*>(ItemFactory::getItem(bulletType));
+                const auto b = new Bullet(*specPtr);
+
+                // utilisr la ItemFActory ici avec bullet
+                b->setPosition(outX, outY);
+                b->setRotation(getRotation());
 
                 if (gunDirection == leftDir)
-                        b.flipVertically();
+                        b->flipVertically();
 
-                // Ajoute le bullet dans le monde
-                bulletVector.push_back(b);
+                b->fire(Vector2f(0,0));
+
+                game->addItem(b);
 
                 // Joue le sound du tir
                 if (const auto specificPtr =
@@ -231,9 +230,9 @@ int Gun::getAmmo() const { return ammo; }
 
 void Gun::setAmmo(const int ammo) { this->ammo = ammo; }
 
-const std::vector<Bullet> &Gun::getBulletVector() const { return bulletVector; }
+const std::vector<Bullet*> &Gun::getBulletVector() const { return bulletVector; }
 
-void Gun::setBulletVector(const std::vector<Bullet> &bulletVector) {
+void Gun::setBulletVector(const std::vector<Bullet*> &bulletVector) {
         this->bulletVector = bulletVector;
 }
 
@@ -243,10 +242,7 @@ Gun::Gun(const Gun &other)
       armed(other.armed), magazineSize(other.magazineSize), ammo(other.ammo),
       lastShotTime(other.lastShotTime), rearmTime(other.rearmTime),
       bulletVector(other.bulletVector), bulletSpeed(other.bulletSpeed),
-      gunMouth(other.gunMouth) {
-        // copy du unique_ptr Texture
-        if (other.bulletTexture)
-                bulletTexture = std::make_unique<Texture>(*other.bulletTexture);
+      gunMouth(other.gunMouth), bulletType(other.bulletType) {
 
         // Changement de possèsseur du composant copier.
         // On cast en premier l'autre composant pour voir
@@ -272,12 +268,11 @@ Gun::Gun(const Gun &other)
 
 Gun::Gun(Gun &&other) noexcept
     : Item(std::move(other)), state(other.state),
-      attachPoint(other.attachPoint), gunDirection(other.gunDirection),
-      bulletTexture(std::move(other.bulletTexture)), damage(other.damage),
+      attachPoint(other.attachPoint), gunDirection(other.gunDirection),damage(other.damage),
       armed(other.armed), magazineSize(other.magazineSize), ammo(other.ammo),
       lastShotTime(other.lastShotTime), rearmTime(other.rearmTime),
       bulletVector(std::move(other.bulletVector)),
-      bulletSpeed(other.bulletSpeed), gunMouth(other.gunMouth) {}
+      bulletSpeed(other.bulletSpeed), gunMouth(other.gunMouth), bulletType(other.bulletType) {}
 
 Gun &Gun::operator=(const Gun &other) {
         if (this == &other)
@@ -295,10 +290,7 @@ Gun &Gun::operator=(const Gun &other) {
         bulletVector = other.bulletVector;
         bulletSpeed = other.bulletSpeed;
         gunMouth = other.gunMouth;
-
-        // copy du unique_ptr Texture
-        if (other.bulletTexture)
-                bulletTexture = std::make_unique<Texture>(*other.bulletTexture);
+        bulletType = other.bulletType;
 
         // Changement de possèsseur du composant copier.
         // On cast en premier l'autre composant pour voir
@@ -330,7 +322,6 @@ Gun &Gun::operator=(Gun &&other) noexcept {
         state = other.state;
         attachPoint = other.attachPoint;
         gunDirection = other.gunDirection;
-        bulletTexture = std::move(other.bulletTexture);
         damage = other.damage;
         armed = other.armed;
         magazineSize = other.magazineSize;
@@ -340,5 +331,6 @@ Gun &Gun::operator=(Gun &&other) noexcept {
         bulletVector = std::move(other.bulletVector);
         bulletSpeed = other.bulletSpeed;
         gunMouth = other.gunMouth;
+        bulletType = other.bulletType;
         return *this;
 }
