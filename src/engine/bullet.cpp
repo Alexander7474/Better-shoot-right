@@ -1,6 +1,6 @@
 #include "bullet.h"
-
 #include "macro.h"
+#include "physic.h"
 #include "../game/game.h"
 
 using namespace std;
@@ -186,3 +186,13 @@ Bullet & Bullet::operator=(Bullet &&other) noexcept {
 }
 
 b2Body *Bullet::getBody() const { return entityBody; }
+
+void Bullet::computePhysic(b2World *world) {
+        Item::computePhysic(world);
+
+        // Ajout du pointeur userData
+        auto *data = new BodyData;
+        data->type = BodyType::Bullet;
+        data->ptr = reinterpret_cast<uintptr_t>(this);
+        entityBody->GetUserData().pointer = reinterpret_cast<uintptr_t>(data);
+}

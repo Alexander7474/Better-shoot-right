@@ -49,15 +49,15 @@ class Item : public Sprite, public Entity {
         void setName(const std::string &name);
 
         /**
-         * @brief Héritage entity
+         * @brief Héritage entity, compute le b2Body
          * @param world
          */
-        void computePhysic(b2World *world) override;
+        virtual void computePhysic(b2World *world) override;
 
         /**
          * @brief Héritage entity
          */
-        void updatePhysic() override;
+        virtual void updatePhysic() override;
 };
 
 /**

@@ -47,17 +47,24 @@ b2Body *addDynamicBox(b2World *world, Geometric *box, const float restitution,
                       const Vector2f &offsetY = Vector2f(0, 0));
 
 /**
+ * @brief Enumeration des class possible pour le gestionaire de collision
+ */
+enum class BodyType {
+	Undefined,
+	Static,
+	Utilitie,
+	Item,
+        Bullet,
+        GameCharacter
+};
+
+/**
  * @brief Données rattachées à chaque body box2D
  * @details isTouching sert pour le listenner de gestion de collision
  */
 struct BodyData {
-        // detection de collision
-        bool isTouchingDown = false;
-        bool isTouchingUp = false;
-        bool isTouchingLeft = false;
-        bool isTouchingRight = false;
-        // limitation
-        int footContacts = 0;
+        BodyType type = BodyType::Undefined; //<! typre de la class
+        uintptr_t ptr = 0; //<! pointeur vers la class
 };
 
 /**

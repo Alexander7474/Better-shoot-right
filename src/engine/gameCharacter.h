@@ -47,15 +47,15 @@ class GameCharacter : public BbopDrawable, public Geometric, public Entity {
         float scale;
 
         // attributs de la physique
-        float maxVelocityX{};
-        float maxVelocityY{};
+        float maxVelocityX;
+        float maxVelocityY;
         float newtonX;
         float newtonY;
         float restitution;
         float friction;
         float density;
         float linearDamping;
-        bool onRagdoll;
+        bool onRagdoll,touchingDown = false;
 
         // attributs du jeu
         float hp;
@@ -125,8 +125,7 @@ class GameCharacter : public BbopDrawable, public Geometric, public Entity {
          */
         void flipY();
 
-        // GETTER
-        //
+
         Member &getLeftArm();
         Member &getRightArm();
         Member &getBody();
@@ -134,10 +133,10 @@ class GameCharacter : public BbopDrawable, public Geometric, public Entity {
         Member &getLegs();
         [[nodiscard]] float getHp() const;
         [[nodiscard]] Gun &getGun() const;
+        [[nodiscard]] bool isTouchingDown() const;
 
-        // SETTER
-        //
         void setHp(float _hp);
+        void setTouchingDown(bool touchingDown);
 
         // ENTITY HERITAGE gestion de la physique
         void computePhysic(b2World *world) override;

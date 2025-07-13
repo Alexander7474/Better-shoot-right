@@ -4133,7 +4133,7 @@
 			"__smartColor": "#9B9B9B",
 			"__bgPos": { "topLeftPx": [0,0], "scale": [2.79,2.79], "cropRect": [0,345.8781362007169,1800,308.2437275985663] },
 			"externalRelPath": null,
-			"fieldInstances": [{ "__identifier": "Global_illumination", "__type": "Float", "__value": 0.5, "__tile": null, "defUid": 322, "realEditorValues": [{ "id": "V_Float", "params": [0.5] }] }],
+			"fieldInstances": [{ "__identifier": "Global_illumination", "__type": "Float", "__value": 0.1, "__tile": null, "defUid": 322, "realEditorValues": [{ "id": "V_Float", "params": [0.1] }] }],
 			"layerInstances": [
 				{
 					"__identifier": "Lights",

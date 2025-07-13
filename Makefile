@@ -22,8 +22,13 @@ OBJS = $(SOURCES:.cpp=.o)
 UNAME_S := $(shell uname -s)
 LINUX_GL_LIBS = -lGL
 
-CXXFLAGS = -I$(SRC_DIR)/imgui -I$(SRC_DIR)/backends
-CXXFLAGS += -g -Wall -Wno-delete-non-virtual-dtor -Wformat -I/usr/include/freetype2 -g -DIMGUI_DEBUG
+## INCLUDE FLAGS
+CXXFLAGS = -I$(SRC_DIR)/imgui -I$(SRC_DIR)/backends -I/usr/include/freetype2
+## COMPILER FLAGS
+CXXFLAGS += -g -Wall -Wno-delete-non-virtual-dtor -Wformat -fdiagnostics-color=always 
+## DEBUG FLAGS
+CXXFLAGS += -DIMGUI_DEBUG
+
 LIBS = -L./Bbop-2D -lbbop -lglfw -lGLEW -lGL -lfreetype -lLDtkLoader -lbox2d -lSDL2 -lSDL2_mixer
 
 ##---------------------------------------------------------------------

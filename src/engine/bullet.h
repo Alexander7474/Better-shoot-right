@@ -44,4 +44,13 @@ class Bullet final: public Item {
         Bullet &operator=(Bullet &&other) noexcept;
 
         b2Body *getBody() const;
+
+        /**
+        * @brief Héritage entity, compute le b2Body
+        * @param world
+        *
+        * @details Rajoute dans userData un pointer vers this pour gérer
+        * de potentiel collision
+        */
+        void computePhysic(b2World *world) override;
 };

@@ -3,6 +3,8 @@
 #include <box2d/b2_body.h>
 #include <string>
 
+#include "gameCharacter.h"
+
 b2Body *addStaticBox(b2World *world, const Geometric *box) {
         // 1. Définir le corps statique
         b2BodyDef bodyDef;
@@ -23,6 +25,7 @@ b2Body *addStaticBox(b2World *world, const Geometric *box) {
         fixtureDef.density = 0.f;
         fixtureDef.friction = 1.f;
 
+#ifdef PHYSIC_DEBUG
         std::string log =
             "Box static ajouter l:" + std::to_string(box->getSize().x) +
             " h:" + std::to_string(box->getSize().y) +
@@ -31,11 +34,19 @@ b2Body *addStaticBox(b2World *world, const Geometric *box) {
         log += " | BOX2D COORD x:" + std::to_string(body->GetPosition().x) +
                " y:" + std::to_string(body->GetPosition().y);
         DEBUG_MESSAGE(log);
+#endif
 
         // 3. Ajouter la fixture au corps
         body->CreateFixture(&fixtureDef); // densité = 0 pour statique
 
-        return body;
+	// Ajout d'un pointer vers BodyData Undefined 
+	// pour eviter les erreurs dans handleContact
+	auto *data = new BodyData;
+        data->type = BodyType::Static;
+
+	body->GetUserData().pointer = reinterpret_cast<uintptr_t>(data);
+        
+	return body;
 }
 
 b2Body *addDynamicBox(b2World *world, Geometric *box, const float restitution,
@@ -78,6 +89,7 @@ b2Body *addDynamicBox(b2World *world, Geometric *box, const float restitution,
         fixtureDef.density = density;
         fixtureDef.friction = friction;
 
+#ifdef PHYSIC_DEBUG
         std::string log =
             "Box dynamic ajouter l:" + std::to_string(box->getSize().x) +
             " h:" + std::to_string(box->getSize().y) +
@@ -86,11 +98,19 @@ b2Body *addDynamicBox(b2World *world, Geometric *box, const float restitution,
         log += " | BOX2D COORD x:" + std::to_string(body->GetPosition().x) +
                " y:" + std::to_string(body->GetPosition().y);
         DEBUG_MESSAGE(log);
+#endif
 
         // 3. Ajouter la fixture au corps
         body->CreateFixture(&fixtureDef);
 
-        return body;
+	// Ajout d'un pointer vers BodyData Undefined 
+	// pour eviter les erreurs dans handleContact
+	auto *data = new BodyData;
+        data->type = BodyType::Undefined;
+        
+	body->GetUserData().pointer = reinterpret_cast<uintptr_t>(data);
+	
+	return body;
 }
 
 void CustomContactListener::BeginContact(b2Contact *contact) {
@@ -103,8 +123,11 @@ void CustomContactListener::EndContact(b2Contact *contact) {
 
 void CustomContactListener::handleContact(b2Contact *contact,
                                           const bool begin) {
-        // DEBUG_MESSAGE("Appelle CustomContactListener::handleContact");
-        b2Fixture *fixtureA = contact->GetFixtureA();
+#ifdef CONTACT_DEBUG
+        DEBUG_MESSAGE("Appelle CustomContactListener::handleContact");
+#endif
+
+	b2Fixture *fixtureA = contact->GetFixtureA();
         b2Fixture *fixtureB = contact->GetFixtureB();
         b2Body *bodyA = fixtureA->GetBody();
         b2Body *bodyB = fixtureB->GetBody();
@@ -113,18 +136,55 @@ void CustomContactListener::handleContact(b2Contact *contact,
         contact->GetWorldManifold(&manifold);
         const b2Vec2 normal = manifold.normal;
 
+	if(!bodyB->GetUserData().pointer || !bodyA->GetUserData().pointer){
+		ERROR_MESSAGE("Impossible de gérer un contact sans pointer dans UserData");
+		return;
+	}
+
+	// Lambda de detection du type de collision 
+	auto hasTypes = [](b2Body *a, b2Body *b, BodyType tA, BodyType tB){
+		auto typeA = reinterpret_cast<BodyData *>(a->GetUserData().pointer)->type;
+		auto typeB = reinterpret_cast<BodyData *>(b->GetUserData().pointer)->type;
+		return (typeA == tA && typeB == tB);
+	};
+
+	if (hasTypes(bodyA, bodyB, BodyType::Static, BodyType::GameCharacter)){
+		ERROR_MESSAGE("collision static character");
+	}
+	if (hasTypes(bodyA, bodyB, BodyType::GameCharacter, BodyType::Static)){
+		ERROR_MESSAGE("collision static character");
+	}
+
         if (bodyB->GetUserData().pointer) {
-                const auto data =
-                    reinterpret_cast<BodyData *>(bodyB->GetUserData().pointer);
-                if (normal.y < -0.2f) {
-                        data->isTouchingDown = begin;
+                switch (const auto data = reinterpret_cast<BodyData *>(bodyB->GetUserData().pointer); data->type) {
+                        case BodyType::GameCharacter: {
+                                auto* character = reinterpret_cast<GameCharacter *>(data->ptr);
+                                if (normal.y < -0.2f) {
+                                        character->setTouchingDown(begin);
+                                }
+                                break;
+                        }
+                        case BodyType::Bullet: {
+                                auto* bullet = reinterpret_cast<Bullet *>(data->ptr);
+                        }
+                        default: break;
                 }
         }
+
         if (bodyA->GetUserData().pointer) {
-                const auto data =
-                    reinterpret_cast<BodyData *>(bodyA->GetUserData().pointer);
-                if (normal.y > 0.2f) {
-                        data->isTouchingDown = begin;
+                switch (const auto data = reinterpret_cast<BodyData *>(bodyA->GetUserData().pointer); data->type) {
+                        case BodyType::GameCharacter: {
+                                auto* character = reinterpret_cast<GameCharacter *>(data->ptr);
+                                if (normal.y > 0.2f) {
+                                        character->setTouchingDown(begin);
+                                }
+                                break;
+                        }
+                        case BodyType::Bullet: {
+                                auto* bullet = reinterpret_cast<Bullet *>(data->ptr);
+                        }
+                        default: break;
                 }
+
         }
 }

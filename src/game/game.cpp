@@ -18,7 +18,7 @@ default_random_engine RANDOM_ENGINE;
 
 Game::Game()
     : mainPlayer(this),
-      map("assets/map/map2/"),
+      map("assets/map/default/"),
       physicalWorld(b2Vec2(
           0.0f,
           GRAVITY)) // création du monde physique avec un vecteur de gravité
@@ -104,12 +104,11 @@ void Game::update() {
 
         // Gestion de la
         // physique-------------------------------------------------------------------------
-        constexpr float timeStep = 1.0f / 60.f;
         constexpr int velocityIterations = 6;
         constexpr int positionIterations = 2;
 
         // mis a jour du monde box2d
-        physicalWorld.Step(timeStep, velocityIterations, positionIterations);
+        physicalWorld.Step(DELTA_TIME, velocityIterations, positionIterations);
 
         // mise a jour des entitées après la mise a jour du monde box2d
         for (auto &ent : entities) {

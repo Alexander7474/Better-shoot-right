@@ -19,8 +19,8 @@
 const char *gameCharacterStateString[4] = {"idle", "run", "ragdoll", "dead"};
 
 GameCharacter::GameCharacter()
-    : newtonX(8.f), newtonY(6.f), restitution(0.f), friction(1.f), density(1.f),
-      linearDamping(1.f), onRagdoll(false), hp(10.f) {
+    : maxVelocityX(3.f), maxVelocityY(10.f), newtonX(8.f), newtonY(6.f), restitution(0.f), friction(1.f), density(1.f),
+      linearDamping(1.f), hp(10.f) {
         characterDirection = rightDir;
         scale = 0.65f;
 
@@ -74,15 +74,10 @@ void GameCharacter::update(Map *map) {
                         legs.state = MemberState::idle;
                 }
 
-                if (!reinterpret_cast<BodyData *>(
-                         entityBody->GetUserData().pointer)
-                         ->isTouchingDown &&
+                if (!touchingDown &&
                     legs.state == MemberState::run) {
                         legs.state = MemberState::idle;
                 }
-
-                // Valeur maximale absolue de vitesse horizontale
-                float maxVelocityX = 5.0f;
 
                 // Récupère la vélocité actuelle
                 b2Vec2 velocity = entityBody->GetLinearVelocity();
@@ -337,15 +332,13 @@ void GameCharacter::jump() {
         if (onRagdoll)
                 return;
 
-        auto *data =
-            reinterpret_cast<BodyData *>(entityBody->GetUserData().pointer);
-        if (!data->isTouchingDown)
+        if (!touchingDown)
                 return;
 
         const b2Vec2 impulsion(0.0f, -entityBody->GetMass() *
                                          newtonY); // vers le haut
         entityBody->ApplyLinearImpulseToCenter(impulsion, true);
-        data->isTouchingDown = false;
+        touchingDown = false;
 }
 
 // GETTER
@@ -356,9 +349,11 @@ Member &GameCharacter::getHead() { return head; }
 Member &GameCharacter::getLegs() { return legs; }
 float GameCharacter::getHp() const { return hp; }
 Gun &GameCharacter::getGun() const { return *gun; }
+bool GameCharacter::isTouchingDown() const { return touchingDown; }
 
 // SETTER
 void GameCharacter::setHp(const float _hp) { this->hp = _hp; }
+void GameCharacter::setTouchingDown(const bool touchingDown) { this->touchingDown = touchingDown; };
 
 // ENTITY
 void GameCharacter::computePhysic(b2World *world) {
@@ -368,6 +363,8 @@ void GameCharacter::computePhysic(b2World *world) {
                                    linearDamping, true);
 
         auto *data = new BodyData;
+        data->type = BodyType::GameCharacter;
+        data->ptr = reinterpret_cast<uintptr_t>(this);
         entityBody->GetUserData().pointer = reinterpret_cast<uintptr_t>(data);
 }
 
