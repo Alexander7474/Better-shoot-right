@@ -76,6 +76,16 @@ class CustomContactListener final : public b2ContactListener {
         void EndContact(b2Contact *contact) override;
 
       private:
+	static void* game; //<! Pointe vers la partie qui utilise le listener
+
+	/**
+	 * @brief Init le pointer game
+	 * @details Obligatiore pour utiliser des méthodes de
+	 * game lors de certain contact
+	 * @param g pointer vers la game
+	 */
+	static void setGameOwner(void* g);
+
         /**
          * @brief Gère les contacts
          * @details Modifie isTouching de BodyData

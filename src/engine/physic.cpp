@@ -1,10 +1,11 @@
-#include "physic.h"
-#include "macro.h"
 #include <box2d/b2_body.h>
 #include <string>
 #include <utility>
 
 #include "gameCharacter.h"
+#include "macro.h"
+#include "../game/game.h"
+#include "physic.h"
 
 b2Body *addStaticBox(b2World *world, const Geometric *box) {
         // 1. Définir le corps statique
@@ -112,6 +113,11 @@ b2Body *addDynamicBox(b2World *world, Geometric *box, const float restitution,
 	body->GetUserData().pointer = reinterpret_cast<uintptr_t>(data);
 	
 	return body;
+}
+
+void* CustomContactListener::game = nullptr;
+void CustomContactListener::setGameOwner(void* g) {
+	game = g;
 }
 
 void CustomContactListener::BeginContact(b2Contact *contact) {
