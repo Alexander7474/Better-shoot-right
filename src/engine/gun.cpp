@@ -19,14 +19,8 @@ Gun::Gun() : Item(Texture("assets/default.png")) {
         // arme par default
         setSize(64, 32);
         setName("default-gun");
-        armed = false;
-        rearmTime = 0;
-        magazineSize = 0;
-        ammo = 0;
         lastShotTime = glfwGetTime() - rearmTime;
-        damage = 0.f;
         gunMouth = Vector2f(20.f, 5.f);
-        bulletSpeed = 0.f;
         gunDirection = rightDir;
         state = GunState::idle;
         bulletType = "5-56x45mm";
@@ -85,13 +79,15 @@ void Gun::loadJsonFile(const string &path) {
                 rearmTime = jsonData.at("ream_time");
                 bulletSpeed = jsonData.at("bullet_speed");
                 bulletType = jsonData.at("bullet_type");
+		semiAuto = jsonData.at("is_semi_automatic");
+		DEBUG_VALUE(semiAuto);
 
                 float x = jsonData.at("mouth_x");
                 float y = jsonData.at("mouth_y");
                 gunMouth.x = x;
                 gunMouth.y = y;
         } catch (const nlohmann::json::exception &e) {
-                ERROR_MESSAGE("Recupération caractèristique " + path);
+                ERROR_MESSAGE("Recupération caractéristique " + jsonPath);
                 return;
         }
 }
@@ -103,15 +99,14 @@ void Gun::update() {
         // anims
         if (const auto specificPtr =
                 dynamic_cast<AnimationComponent<GunState> *>(animation.get())) {
-                if (specificPtr->play(state)) {
+                if (specificPtr->play(state)) { // dès qu'une anim est fini on retourne sur idle
                         state = GunState::idle;
                 }
         }
 
         if (!armed) {
-                if (glfwGetTime() - lastShotTime >= rearmTime && ammo > 0) {
+                if (glfwGetTime() - lastShotTime >= rearmTime && ammo > 0 && state == GunState::idle) {
                         armed = true;
-                        state = GunState::idle;
                 }
         }
 }
@@ -123,68 +118,67 @@ void Gun::setAttachPoint(const Vector2f &ap) {
 
 void Gun::setAttachPoint(float x, float y) { setAttachPoint(Vector2f(x, y)); }
 
-void Gun::shoot(Game *game) {
-        if (armed) {
-                lastShotTime = glfwGetTime();
-                ammo--;
-                armed = false;
-                state = GunState::shoot;
+void Gun::shoot(Game *game, bool mouseHolded) {
+        if (!armed || (semiAuto && mouseHolded)) 
+		return;
 
-                // creation de la balle
-                Vector2f mouth(getPosition().x + gunMouth.x,
-                               getPosition().y +
-                                   gunMouth.y); // position bouche du canon
+	lastShotTime = glfwGetTime();
+	ammo--;
+	armed = false;
+	state = GunState::shoot;
 
-                // ajout d'un peu d'aléatoire dans la direction
-                uniform_real_distribution<float> distribution(-0.1f, 0.1f);
-                const float r = distribution(RANDOM_ENGINE);
-                const float rotation = getRotation() + r; // rotation de l'arme
+	// creation de la balle
+	Vector2f mouth(getPosition().x + gunMouth.x,
+		       getPosition().y +
+			   gunMouth.y); // position bouche du canon
 
-                Vector2f inertie(
-                    cos(rotation) * bulletSpeed,
-                    sin(rotation) *
-                        bulletSpeed); // vecteur d'inertie en fonction de la
-                                      // rotaion du canon
+	// ajout d'un peu d'aléatoire dans la direction
+	uniform_real_distribution<float> distribution(-0.1f, 0.1f);
+	const float r = distribution(RANDOM_ENGINE);
+	const float rotation = getRotation() + r; // rotation de l'arme
 
-                if (gunDirection == leftDir) {
-                        inertie = Vector2f(cos(rotation) * -bulletSpeed,
-                                           sin(rotation) * -bulletSpeed);
-                        mouth = Vector2f(getPosition().x - gunMouth.x, mouth.y);
-                }
+	Vector2f inertie(
+	    cos(rotation) * bulletSpeed,
+	    sin(rotation) *
+		bulletSpeed); // vecteur d'inertie en fonction de la
+			      // rotaion du canon
 
-                // calcule position de sortie de la balle
-                const float outX =
-                    getPosition().x +
-                    (mouth.x - getPosition().x) * cos(getRotation()) -
-                    (mouth.y - getPosition().y) * sin(getRotation());
-                const float outY =
-                    getPosition().y +
-                    (mouth.x - getPosition().x) * sin(getRotation()) +
-                    (mouth.y - getPosition().y) * cos(getRotation());
+	if (gunDirection == leftDir) {
+		inertie = Vector2f(cos(rotation) * -bulletSpeed,
+				   sin(rotation) * -bulletSpeed);
+		mouth = Vector2f(getPosition().x - gunMouth.x, mouth.y);
+	}
 
-                const auto specPtr = dynamic_cast<Bullet*>(ItemFactory::getItem(bulletType));
-                const auto b = new Bullet(*specPtr);
+	// calcule position de sortie de la balle
+	const float outX =
+	    getPosition().x +
+	    (mouth.x - getPosition().x) * cos(getRotation()) -
+	    (mouth.y - getPosition().y) * sin(getRotation());
+	const float outY =
+	    getPosition().y +
+	    (mouth.x - getPosition().x) * sin(getRotation()) +
+	    (mouth.y - getPosition().y) * cos(getRotation());
 
-                // utilisr la ItemFActory ici avec bullet
-                b->setPosition(outX, outY);
-                b->setRotation(getRotation());
+	const auto specPtr = dynamic_cast<Bullet*>(ItemFactory::getItem(bulletType));
+	const auto b = new Bullet(*specPtr);
 
-                if (gunDirection == leftDir)
-                        b->flipVertically();
+	// utilisr la ItemFActory ici avec bullet
+	b->setPosition(outX, outY);
+	b->setRotation(getRotation());
 
-                b->fire();
-                b->computePhysic(game->getPhysicalWorld());
+	if (gunDirection == leftDir)
+		b->flipVertically();
 
-                b->getBody()->ApplyForceToCenter(b2Vec2(inertie.x,inertie.y), true);
+	b->fire();
+	b->computePhysic(game->getPhysicalWorld());
 
-                game->addItem(b);
+	b->getBody()->ApplyForceToCenter(b2Vec2(inertie.x,inertie.y), true);
 
-                // Joue le sound du tir
-                if (const auto specificPtr =
-                        dynamic_cast<AudioComponent<GunState> *>(audio.get())) {
-                        specificPtr->play(state);
-                }
-        }
+	game->addItem(b);
+
+	// Joue le sound du tir
+	if (const auto specificPtr = dynamic_cast<AudioComponent<GunState> *>(audio.get())) 
+		specificPtr->play(state);
 }
 
 void Gun::reload() {
@@ -235,7 +229,8 @@ Gun::Gun(const Gun &other)
       armed(other.armed), magazineSize(other.magazineSize), ammo(other.ammo),
       lastShotTime(other.lastShotTime), rearmTime(other.rearmTime),
       bulletSpeed(other.bulletSpeed),
-      gunMouth(other.gunMouth), bulletType(other.bulletType) {
+      gunMouth(other.gunMouth), bulletType(other.bulletType),
+      semiAuto(other.semiAuto) {
 
         // Changement de possèsseur du composant copier.
         // On cast en premier l'autre composant pour voir
@@ -264,7 +259,8 @@ Gun::Gun(Gun &&other) noexcept
       attachPoint(other.attachPoint), gunDirection(other.gunDirection),damage(other.damage),
       armed(other.armed), magazineSize(other.magazineSize), ammo(other.ammo),
       lastShotTime(other.lastShotTime), rearmTime(other.rearmTime),
-      bulletSpeed(other.bulletSpeed), gunMouth(other.gunMouth), bulletType(other.bulletType) {}
+      bulletSpeed(other.bulletSpeed), gunMouth(other.gunMouth), bulletType(other.bulletType),
+      semiAuto(other.semiAuto) {}
 
 Gun &Gun::operator=(const Gun &other) {
         if (this == &other)
@@ -282,6 +278,7 @@ Gun &Gun::operator=(const Gun &other) {
         bulletSpeed = other.bulletSpeed;
         gunMouth = other.gunMouth;
         bulletType = other.bulletType;
+	semiAuto = other.semiAuto;
 
         // Changement de possèsseur du composant copier.
         // On cast en premier l'autre composant pour voir
@@ -322,5 +319,6 @@ Gun &Gun::operator=(Gun &&other) noexcept {
         bulletSpeed = other.bulletSpeed;
         gunMouth = other.gunMouth;
         bulletType = other.bulletType;
+	semiAuto = other.semiAuto;
         return *this;
 }

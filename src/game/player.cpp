@@ -52,9 +52,12 @@ void Player::update(Camera *playerCam, Map *map) {
                 if (game == nullptr) {
                         ERROR_MESSAGE("Game pointer est nullptr dans player, impossible de tirer");
                 }else {
-                        character.getGun().shoot(game);
+                        character.getGun().shoot(game, mouseHold);
+			mouseHold = true;
                 }
-        }
+        }else{
+		mouseHold = false;
+	}
         character.update(map);
 }
 

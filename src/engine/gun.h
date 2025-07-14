@@ -29,15 +29,16 @@ class Gun final : public Item {
         Direction gunDirection;
 
         // gestion des tirs
-        float damage;        // degat de l'arme
-        bool armed;          // l'arme est armé ?
-        int magazineSize;    // taille du chargeur
-        int ammo;            // nombre de mun dans le chargeur
-        double lastShotTime; // moment du dernier tire
-        double rearmTime;    // temps pour réarmer l'arme
-        float bulletSpeed; // vitesse des balles
+        float damage{};        // degat de l'arme
+        bool armed{};          // l'arme est armé ?
+        int magazineSize{};    // taille du chargeur
+        int ammo{};            // nombre de mun dans le chargeur
+        double lastShotTime{}; // moment du dernier tire
+        double rearmTime{};    // temps pour réarmer l'arme
+        float bulletSpeed{}; // vitesse des balles
         Vector2f gunMouth; // sortie des balles
-        std::string bulletType;
+        std::string bulletType; // nom du type de balle (Item de ItemFactory)
+	bool semiAuto{};
 
       public:
         Gun();
@@ -50,8 +51,11 @@ class Gun final : public Item {
 
         /**
          * @brief fais tirer l'arme
+	 *
+	 * @param game pointer vers la game 
+	 * @param mouseHold La souris vien d'être clické ?
          */
-        void shoot(Game *game);
+        void shoot(Game *game, bool mouseHolded);
 
         /**
          * remplie le nombre de munition dans le chargeur
