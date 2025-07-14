@@ -4,8 +4,8 @@
   "damage" : 50,
   "magazine_size" : 5,
   "ream_time" : 1.2,
-  "bullet_speed" : 1500.0,
-  "mouth_x" : 43.0,
-  "mouth_y" : 0
+  "bullet_speed" : 0.5,
+  "mouth_x" : 32.0,
+  "mouth_y" : -2
 }
 

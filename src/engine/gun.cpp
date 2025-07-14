@@ -172,7 +172,7 @@ void Gun::shoot(Game *game) {
                 if (gunDirection == leftDir)
                         b->flipVertically();
 
-                b->fire(Vector2f(0,0));
+                b->fire();
                 b->computePhysic(game->getPhysicalWorld());
 
                 b->getBody()->ApplyForceToCenter(b2Vec2(inertie.x,inertie.y), true);

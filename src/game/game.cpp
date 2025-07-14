@@ -52,9 +52,13 @@ Game::Game()
 }
 
 void Game::update() {
-        // simple gestion de animations
+        // update des éléments des la game 
         map.update();
 
+	for(const auto &item : items)
+		item->update();
+
+	// Gestion de la caméra ------------------------------------------------------------
         // déterminer la position du milieu entre le joueur et son crossair
         Vector2f middlePos;
         middlePos.x = (mainPlayer.getCharacter().getPosition().x +
@@ -84,24 +88,6 @@ void Game::update() {
         mainPlayerCam.setPosition(middlePos);
         mainPlayer.update(&mainPlayerCam, &map);
 
-        int state = glfwGetKey(gameWindow, GLFW_KEY_G);
-        if (state == GLFW_PRESS) {
-                mainPlayer.getCharacter().toggleRagdollMod(&physicalWorld);
-        }
-
-        state = glfwGetKey(gameWindow, GLFW_KEY_I);
-        if (state == GLFW_PRESS) {
-                const auto itPtr = dynamic_cast<Bullet*>(ItemFactory::getItem("5-56x45mm"));
-                auto* b = new Bullet(*itPtr);
-                b->fire(Vector2f(0,0));
-                items.push_back(std::unique_ptr<Item>(b));
-                items.back()->setPosition(
-                    mainPlayer.getCrossair().getPosition());
-                items.back()->computePhysic(&physicalWorld);
-                items.back()->update();
-                entities.push_back(items.back().get());
-        }
-
         // Gestion de la
         // physique-------------------------------------------------------------------------
         constexpr int velocityIterations = 6;
@@ -114,7 +100,7 @@ void Game::update() {
         for (auto &ent : entities) {
                 ent->updatePhysic();
         }
-        //-----------------------------------------------------------------------------------------------
+        //----------------------------------------------------------------------------------
 }
 
 void Game::Draw() {

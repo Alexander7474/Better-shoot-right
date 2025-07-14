@@ -2,6 +2,7 @@
 #include "macro.h"
 #include <box2d/b2_body.h>
 #include <string>
+#include <utility>
 
 #include "gameCharacter.h"
 
@@ -134,57 +135,55 @@ void CustomContactListener::handleContact(b2Contact *contact,
 
         b2WorldManifold manifold;
         contact->GetWorldManifold(&manifold);
-        const b2Vec2 normal = manifold.normal;
+        b2Vec2 normal = manifold.normal;
 
 	if(!bodyB->GetUserData().pointer || !bodyA->GetUserData().pointer){
 		ERROR_MESSAGE("Impossible de gérer un contact sans pointer dans UserData");
 		return;
 	}
 
+	auto *dataA = reinterpret_cast<BodyData *>(bodyA->GetUserData().pointer);
+	auto *dataB = reinterpret_cast<BodyData *>(bodyB->GetUserData().pointer);
+
 	// Lambda de detection du type de collision 
-	auto hasTypes = [](b2Body *a, b2Body *b, BodyType tA, BodyType tB){
-		auto typeA = reinterpret_cast<BodyData *>(a->GetUserData().pointer)->type;
-		auto typeB = reinterpret_cast<BodyData *>(b->GetUserData().pointer)->type;
-		return (typeA == tA && typeB == tB);
+	auto hasTypes = [](BodyData *a, BodyData *b, BodyType tA, BodyType tB){
+		return (a->type == tA && b->type == tB);
 	};
 
-	if (hasTypes(bodyA, bodyB, BodyType::Static, BodyType::GameCharacter)){
-		ERROR_MESSAGE("collision static character");
+	// La gestion du contact peut-être fais
+	// avec bodyA = GameCharacter et bodyB
+	// = Static.
+	// Si ces l'inverse, on échange bodyA et B.
+	//
+	// (On ne peut pas prédire dans quelle 
+	// ordre box2D va renvoyer la collision)
+	//
+	
+	// Gestion GameCharacter Static
+	if (hasTypes(dataA, dataB, BodyType::Static, BodyType::GameCharacter)){
+		std::swap(dataA, dataB);
+		normal.y = -normal.y;
 	}
-	if (hasTypes(bodyA, bodyB, BodyType::GameCharacter, BodyType::Static)){
-		ERROR_MESSAGE("collision static character");
+	if (hasTypes(dataA, dataB, BodyType::GameCharacter, BodyType::Static)){
+		if (normal.y > 0.2f) {
+			auto* character = reinterpret_cast<GameCharacter*>(dataA->ptr);
+			character->setTouchingDown(begin);
+		}
+		return;
 	}
 
-        if (bodyB->GetUserData().pointer) {
-                switch (const auto data = reinterpret_cast<BodyData *>(bodyB->GetUserData().pointer); data->type) {
-                        case BodyType::GameCharacter: {
-                                auto* character = reinterpret_cast<GameCharacter *>(data->ptr);
-                                if (normal.y < -0.2f) {
-                                        character->setTouchingDown(begin);
-                                }
-                                break;
-                        }
-                        case BodyType::Bullet: {
-                                auto* bullet = reinterpret_cast<Bullet *>(data->ptr);
-                        }
-                        default: break;
-                }
-        }
+	// Gestion GameCharacter Bullet
+	// TODO -- Ajouter la gestion
+	
+	// Gestion Bullet Static
+	if(hasTypes(dataA, dataB, BodyType::Static, BodyType::Bullet)){
+		std::swap(dataA, dataB);
+	}
+	if(hasTypes(dataA, dataB, BodyType::Bullet, BodyType::Static)){
+		auto *bullet = reinterpret_cast<Bullet*>(dataA->ptr);
 
-        if (bodyA->GetUserData().pointer) {
-                switch (const auto data = reinterpret_cast<BodyData *>(bodyA->GetUserData().pointer); data->type) {
-                        case BodyType::GameCharacter: {
-                                auto* character = reinterpret_cast<GameCharacter *>(data->ptr);
-                                if (normal.y > 0.2f) {
-                                        character->setTouchingDown(begin);
-                                }
-                                break;
-                        }
-                        case BodyType::Bullet: {
-                                auto* bullet = reinterpret_cast<Bullet *>(data->ptr);
-                        }
-                        default: break;
-                }
-
-        }
+		if(bullet->getState() != BulletState::broken){
+			bullet->broke();
+		}
+	}
 }

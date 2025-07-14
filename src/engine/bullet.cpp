@@ -7,7 +7,6 @@ using namespace std;
 
 Bullet::Bullet() : Item(Texture("assets/default.png")) {
         setSize(2,1);
-        inertie = Vector2f(0,0);
         state = BulletState::idle;
 }
 
@@ -19,11 +18,6 @@ Bullet::Bullet(const std::string &path) : Bullet() {
 
 
 void Bullet::update() {
-
-        if (state == BulletState::fired) {
-                move(inertie.x * DELTA_TIME, inertie.y * DELTA_TIME);
-        }
-
         // Play animation
         // Cast std::unique_ptr<IAnimationComponent> de Item
         // vers AnimationComponent<BulletState>* pour jouer les
@@ -33,18 +27,19 @@ void Bullet::update() {
         }
 }
 
-void Bullet::fire(const Vector2f& inertie) {
-        if (state != BulletState::fired) {
-                this->inertie = inertie;
-                state = BulletState::fired;
-        }
+void Bullet::fire() {
+	state = BulletState::fired;
+}
+
+void Bullet::broke() {
+	state = BulletState::broken;
 
 }
 
 void Bullet::loadJsonFile(const std::string &path) {
         // Chargement des sons dans AudioComponent
         if (const auto specificPtr = dynamic_cast<AudioComponent<BulletState> *>(audio.get())) {
-                for (int i = 0; i <= static_cast<int>(BulletState::fired); ++i) {
+                for (int i = 0; i <= static_cast<int>(BulletState::broken); ++i) {
                         const auto state = static_cast<BulletState>(i);
                         specificPtr->loadSound(state, path);
                 }
@@ -52,7 +47,7 @@ void Bullet::loadJsonFile(const std::string &path) {
 
         // Chargement des textures dans AnimationComponent
         if (const auto specificPtr = dynamic_cast<AnimationComponent<BulletState> *>(animation.get())) {
-                for (int i = 0; i <= static_cast<int>(BulletState::fired); ++i) {
+                for (int i = 0; i <= static_cast<int>(BulletState::broken); ++i) {
                         const auto state = static_cast<BulletState>(i);
                         specificPtr->loadTexture(state, path);
                 }
@@ -61,7 +56,6 @@ void Bullet::loadJsonFile(const std::string &path) {
 
 Bullet::Bullet(const Bullet &other)
            : Item(other),
-             inertie(other.inertie),
              state(other.state) {
 
         // Changement de possèsseur du composant copier.
@@ -88,7 +82,6 @@ Bullet::Bullet(const Bullet &other)
 
 Bullet::Bullet(Bullet &&other) noexcept
         : Item(std::move(other)),
-          inertie(other.inertie),
           state(other.state) {
 
         // Changement de possèsseur du composant déplacer.
@@ -122,7 +115,6 @@ Bullet & Bullet::operator=(const Bullet &other) {
         if (this == &other)
                 return *this;
         Item::operator =(other);
-        inertie = other.inertie;
         state = other.state;
 
         // Changement de possèsseur du composant copier.
@@ -153,7 +145,6 @@ Bullet & Bullet::operator=(Bullet &&other) noexcept {
         if (this == &other)
                 return *this;
         Item::operator =(std::move(other));
-        inertie = other.inertie;
         state = other.state;
 
         // Changement de possèsseur du composant déplacer.
@@ -186,6 +177,8 @@ Bullet & Bullet::operator=(Bullet &&other) noexcept {
 }
 
 b2Body *Bullet::getBody() const { return entityBody; }
+
+const BulletState &Bullet::getState() const { return state; }
 
 void Bullet::computePhysic(b2World *world) {
         Item::computePhysic(world);

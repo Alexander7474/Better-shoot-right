@@ -13,5 +13,12 @@
     "rows": 1,
     "n_frame" : 1,
     "duration" : 0
+  },
+  "2": {
+    "sprite_sheet": "broken.png",
+    "columns": 1,
+    "rows": 1,
+    "n_frame" : 1,
+    "duration" : 0
   }
 }

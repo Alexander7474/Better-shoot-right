@@ -8,14 +8,14 @@
 
 enum class BulletState {
         idle,
-        fired
+        fired,
+	broken
 };
 
 // TODO -- Ajouter un ficher de configuration json pour les balles pour configurer les caractéristiques physiques de celle ci
 // TODO -- Ajouter un ttl au balle
 class Bullet final: public Item {
       private:
-        Vector2f inertie;
         BulletState state;
       public:
         Bullet();
@@ -27,10 +27,16 @@ class Bullet final: public Item {
          * @brief Détonne la munition
          * @param inertie Force de la balle
          */
-        void fire(const Vector2f& inertie);
+        void fire();
+
+	/**
+	 * @brief Casse le bullet
+	 * @details A utiliser après une collision
+	 */
+	void broke();
 
         /**
-        * @brief charge une arme depuis un fichier json
+        * @brief charge une balle depuis un fichier json
         */
         void loadJsonFile(const std::string &path);
 
@@ -44,6 +50,8 @@ class Bullet final: public Item {
         Bullet &operator=(Bullet &&other) noexcept;
 
         b2Body *getBody() const;
+
+	const BulletState &getState() const;
 
         /**
         * @brief Héritage entity, compute le b2Body
