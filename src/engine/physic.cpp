@@ -54,6 +54,7 @@ b2Body *addStaticBox(b2World *world, const Geometric *box) {
 b2Body *addDynamicBox(b2World *world, Geometric *box, const float restitution,
                       const float density, const float friction,
                       const float linearDamping, const bool rotationLock,
+		      const bool isBullet,
                       const Vector2f &offsetX, const Vector2f &offsetY) {
 
         // Définir les mesures de la boite de BBOP vers Box2D
@@ -77,6 +78,7 @@ b2Body *addDynamicBox(b2World *world, Geometric *box, const float restitution,
         bodyDef.fixedRotation = rotationLock;
         bodyDef.linearDamping = linearDamping; // Très utile !
         bodyDef.angle = box->getRotation();
+	bodyDef.bullet = isBullet;
 
         b2Body *body = world->CreateBody(&bodyDef);
 
@@ -115,8 +117,8 @@ b2Body *addDynamicBox(b2World *world, Geometric *box, const float restitution,
 	return body;
 }
 
-void* CustomContactListener::game = nullptr;
-void CustomContactListener::setGameOwner(void* g) {
+Game* CustomContactListener::game = nullptr;
+void CustomContactListener::setGameOwner(Game* g) {
 	game = g;
 }
 

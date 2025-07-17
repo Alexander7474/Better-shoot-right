@@ -360,7 +360,7 @@ void GameCharacter::computePhysic(b2World *world) {
         setSize(20.f * scale, 63.f * scale);
         setOrigin(getSize().x / 2, getSize().y / 2);
         entityBody = addDynamicBox(world, this, restitution, density, friction,
-                                   linearDamping, true);
+                                   linearDamping, true, false);
 
         auto *data = new BodyData;
         data->type = BodyType::GameCharacter;
@@ -417,21 +417,21 @@ void GameCharacter::toggleRagdollMod(b2World *world) {
 
         // mise en place des ragdolls pour chaque membres (TEMPORAIRE)
         bodyR = addDynamicBox(world, &body.getCollisionBox(), 0.f, 1.f, 1.f,
-                              1.f, false, body.getCollisionBox().getOffsetX(),
+                              1.f, false, false, body.getCollisionBox().getOffsetX(),
                               body.getCollisionBox().getOffsetY());
         headR = addDynamicBox(world, &head.getCollisionBox(), 0.f, 1.f, 1.f,
-                              1.f, false, head.getCollisionBox().getOffsetX(),
+                              1.f, false, false, head.getCollisionBox().getOffsetX(),
                               head.getCollisionBox().getOffsetY());
         legsR = addDynamicBox(world, &legs.getCollisionBox(), 0.f, 1.f, 1.f,
-                              1.f, false, legs.getCollisionBox().getOffsetX(),
+                              1.f, false, false, legs.getCollisionBox().getOffsetX(),
                               legs.getCollisionBox().getOffsetY());
         rightArmR =
             addDynamicBox(world, &rightArm.getCollisionBox(), 0.f, 1.f, 1.f,
-                          1.f, false, rightArm.getCollisionBox().getOffsetX(),
+                          1.f, false, false, rightArm.getCollisionBox().getOffsetX(),
                           rightArm.getCollisionBox().getOffsetY());
         leftArmR =
             addDynamicBox(world, &leftArm.getCollisionBox(), 0.f, 1.f, 1.f, 1.f,
-                          false, leftArm.getCollisionBox().getOffsetX(),
+                          false, false, leftArm.getCollisionBox().getOffsetX(),
                           leftArm.getCollisionBox().getOffsetY());
 
         headR->SetLinearVelocity(b2Vec2(20.0f, 0.0f));

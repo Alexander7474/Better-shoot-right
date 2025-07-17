@@ -20,6 +20,7 @@
  */
 b2Body *addStaticBox(b2World *world, const Geometric *box);
 
+// TODO -- optimiser cette fonction qui gère la creation de tous les objet dynamique box2d (peut-être laisser les class se créer elle même dans box2d)
 /**
  * @brief Créé une boite de collision Dynamic dans un monde box2d à partir d'une
  * collision box BBOP
@@ -33,6 +34,7 @@ b2Body *addStaticBox(b2World *world, const Geometric *box);
  * @param friction
  * @param linearDamping
  * @param rotationLock Si le corp a sa rotation blocké
+ * @param isBullet est-ce une balle
  * @param offsetX Permet de prendre en compte un offsetX si la Geometric est une
  * boite de collision
  * @param offsetY Permet de prendre en compte un offsetY si la Geometric est une
@@ -43,6 +45,7 @@ b2Body *addStaticBox(b2World *world, const Geometric *box);
 b2Body *addDynamicBox(b2World *world, Geometric *box, const float restitution,
                       const float density, const float friction,
                       const float linearDamping, const bool rotationLock,
+		      const bool isBullet,
                       const Vector2f &offsetX = Vector2f(0, 0),
                       const Vector2f &offsetY = Vector2f(0, 0));
 
@@ -67,24 +70,25 @@ struct BodyData {
         uintptr_t ptr = 0; //<! pointeur vers la class
 };
 
+class Game;
 /**
  * @brief Listenner de contact pour gérer les collisions
  */
 class CustomContactListener final : public b2ContactListener {
       public:
-        void BeginContact(b2Contact *contact) override;
-        void EndContact(b2Contact *contact) override;
-
-      private:
-	static void* game; //<! Pointe vers la partie qui utilise le listener
-
 	/**
 	 * @brief Init le pointer game
 	 * @details Obligatiore pour utiliser des méthodes de
 	 * game lors de certain contact
 	 * @param g pointer vers la game
 	 */
-	static void setGameOwner(void* g);
+	static void setGameOwner(Game* g);
+
+        void BeginContact(b2Contact *contact) override;
+        void EndContact(b2Contact *contact) override;
+
+      private:
+	static Game* game; //<! Pointe vers la partie qui utilise le listener
 
         /**
          * @brief Gère les contacts

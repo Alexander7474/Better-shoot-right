@@ -64,7 +64,7 @@ void Item::computePhysic(b2World *world) {
         // une fois ajouter a umonde box2d c'est la galère pour récupérer la
         // taille donc faut faire attention
         entityBody =
-            addDynamicBox(world, &getCollisionBox(), 0.f, 1.f, 1.f, 1.f, false);
+            addDynamicBox(world, &getCollisionBox(), 0.f, 1.f, 1.f, 1.f, false, false);
 	
 	auto* data = new BodyData();
 	data->type = BodyType::Item;

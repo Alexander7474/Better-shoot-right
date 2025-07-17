@@ -181,7 +181,9 @@ b2Body *Bullet::getBody() const { return entityBody; }
 const BulletState &Bullet::getState() const { return state; }
 
 void Bullet::computePhysic(b2World *world) {
-        Item::computePhysic(world);
+	setOrigin(getSize().x / 2, getSize().y / 2);
+        entityBody =
+            addDynamicBox(world, &getCollisionBox(), 0.f, 1.f, 1.f, 1.f, false, true);
 
         // Ajout du pointeur userData
         auto *data = new BodyData;
