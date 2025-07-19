@@ -13,6 +13,7 @@
 #include "Bbop-2D/include/BBOP/Graphics/bbopFunc.h"
 #include "src/game/game.h"
 #include "src/engine/item.h"
+#include "src/engine/particle.h"
 #include "src/engine/macro.h"
 
 using namespace std;
@@ -59,7 +60,8 @@ int main() {
 
         // Initialisation du jeu
         ItemFactory::loadAllItems();
-        Game game;
+ 	ParticleFactory::loadAllParticles();
+ 	Game game;
 
         // main while loop
         while (!glfwWindowShouldClose(gameWindow)) {

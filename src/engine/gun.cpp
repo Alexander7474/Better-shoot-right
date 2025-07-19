@@ -80,7 +80,6 @@ void Gun::loadJsonFile(const string &path) {
                 bulletSpeed = jsonData.at("bullet_speed");
                 bulletType = jsonData.at("bullet_type");
 		semiAuto = jsonData.at("is_semi_automatic");
-		DEBUG_VALUE(semiAuto);
 
                 float x = jsonData.at("mouth_x");
                 float y = jsonData.at("mouth_y");
