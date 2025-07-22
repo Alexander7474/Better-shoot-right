@@ -62,9 +62,8 @@ void Game::update() {
 
 	for(unsigned long i = 0; i < particles.size(); i++){
  		if(particles[i]->update()){
-			particlesTempShit.push_back(std::move(particles[i]));
+			particlesTempShit.push_back(std::move(particles[i])); // TODO -- patch temp AnimatedSPrite / see spawnParticle todo 
 			particles.erase(particles.begin()+i);
-			ERROR_MESSAGE("erase");
 		}
 	}
 
@@ -168,11 +167,15 @@ void Game::addItem(Item *item) {
 
 // TODO -- URGENT gérer de bug lors de la destruction d'un ANimatedSprite qui empêche l'utilisation de textureColorBuffer de scene
 // TODO -- Modifier la class AnimatedSprite pour reset le départ de l'animation sans accéder à ds membres sensé êtres privés
-void Game::spawnParticle(std::string name, Vector2f pos, float rotation) {
+void Game::spawnParticle(std::string name, Vector2f pos, Vector2f size, float rotation) {
 	particles.push_back(std::unique_ptr<AnimatedSprite>(ParticleFactory::getParticle(name)));
-	particles.back()->anim_start = glfwGetTime(); // illegal
-	particles.back()->last_frame_t = glfwGetTime(); // go fuck yourself
-	particles.back()->setPosition(pos);
+	AnimatedSprite *tmp = particles.back().get();
+	tmp->anim_start = glfwGetTime(); // illegal
+	tmp->last_frame_t = glfwGetTime(); // go fuck yourself
+	tmp->setSize(size);
+	tmp->setRotation(rotation);
+	tmp->setOrigin(tmp->getSize().x/2.f, tmp->getSize().y/2.f);
+	tmp->setPosition(pos);
 }
 
 

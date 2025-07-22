@@ -171,6 +171,7 @@ void CustomContactListener::handleContact(b2Contact *contact,
 	// Gestion GameCharacter Static
 	if (hasTypes(dataA, dataB, BodyType::Static, BodyType::GameCharacter)){
 		std::swap(dataA, dataB);
+		std::swap(bodyA, bodyB);
 		normal.y = -normal.y;
 	}
 	if (hasTypes(dataA, dataB, BodyType::GameCharacter, BodyType::Static)){
@@ -182,18 +183,34 @@ void CustomContactListener::handleContact(b2Contact *contact,
 	}
 
 	// Gestion GameCharacter Bullet
-	// TODO -- Ajouter la gestion
+	if(hasTypes(dataA, dataB, BodyType::Bullet, BodyType::GameCharacter)){
+		std::swap(dataA, dataB);
+		std::swap(bodyA, bodyB);
+	}
+	if(hasTypes(dataA, dataB, BodyType::GameCharacter, BodyType::Bullet)){
+		auto *bullet = reinterpret_cast<Bullet*>(dataB->ptr);
+
+		if(bullet->getState() != BulletState::broken){
+			bullet->broke();
+			game->spawnParticle("blood", Vector2f(bodyB->GetPosition().x*PIXEL_PER_METER, bodyB->GetPosition().y*PIXEL_PER_METER), 
+						Vector2f(15.f,15.f), bullet->getRotation());
+		}
+		return;
+	}
 	
 	// Gestion Bullet Static
 	if(hasTypes(dataA, dataB, BodyType::Static, BodyType::Bullet)){
 		std::swap(dataA, dataB);
+		std::swap(bodyA, bodyB);
 	}
 	if(hasTypes(dataA, dataB, BodyType::Bullet, BodyType::Static)){
 		auto *bullet = reinterpret_cast<Bullet*>(dataA->ptr);
 
 		if(bullet->getState() != BulletState::broken){
 			bullet->broke();
-			game->spawnParticle("impact", bullet->getPosition());
+			game->spawnParticle("impact", Vector2f(bodyA->GetPosition().x*PIXEL_PER_METER, bodyA->GetPosition().y*PIXEL_PER_METER), 
+						Vector2f(15.f,15.f), bullet->getRotation());
 		}
+		return;
 	}
 }

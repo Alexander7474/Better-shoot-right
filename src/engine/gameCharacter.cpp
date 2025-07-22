@@ -19,8 +19,8 @@
 const char *gameCharacterStateString[4] = {"idle", "run", "ragdoll", "dead"};
 
 GameCharacter::GameCharacter()
-    : maxVelocityX(3.f), maxVelocityY(10.f), newtonX(8.f), newtonY(6.f), restitution(0.f), friction(1.f), density(1.f),
-      linearDamping(1.f), hp(10.f) {
+    : maxVelocityX(3.f), maxVelocityY(10.f), newtonX(8.f), newtonY(6.f), restitution(0.f), friction(1.f), density(1.5f),
+      linearDamping(2.f), hp(10.f) {
         characterDirection = rightDir;
         scale = 0.65f;
 
@@ -41,7 +41,7 @@ GameCharacter::GameCharacter()
         legs.setOrigin(32 * scale, 0 * scale); // origine sur les hanche
         legs.name = "legs";
 
-        const auto gunPtr = dynamic_cast<Gun *>(ItemFactory::getItem("sniper"));
+        const auto gunPtr = dynamic_cast<Gun *>(ItemFactory::getItem("ak47"));
         gun = std::make_unique<Gun>(*gunPtr);
         gun->setSize(64 * scale, 32 * scale);
 
@@ -357,7 +357,7 @@ void GameCharacter::setTouchingDown(const bool touchingDown) { this->touchingDow
 
 // ENTITY
 void GameCharacter::computePhysic(b2World *world) {
-        setSize(20.f * scale, 63.f * scale);
+        setSize(10.f * scale, 63.f * scale);
         setOrigin(getSize().x / 2, getSize().y / 2);
         entityBody = addDynamicBox(world, this, restitution, density, friction,
                                    linearDamping, true, false);
