@@ -6,6 +6,7 @@
 #include "macro.h"
 #include "../game/game.h"
 #include "physic.h"
+#include "particle.h"
 
 b2Body *addStaticBox(b2World *world, const Geometric *box) {
         // 1. Définir le corps statique
@@ -192,6 +193,7 @@ void CustomContactListener::handleContact(b2Contact *contact,
 
 		if(bullet->getState() != BulletState::broken){
 			bullet->broke();
+			game->spawnParticle("impact", bullet->getPosition());
 		}
 	}
 }

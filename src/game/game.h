@@ -10,6 +10,7 @@
 #include <box2d/box2d.h>
 #include <random>
 #include <vector>
+#include <string>
 
 // pointeur vers la fentre de jeu utilisable de partout
 extern GLFWwindow *gameWindow;
@@ -26,16 +27,20 @@ class Game {
       private:
         Scene scene;
         Camera mainPlayerCam;
-        Player mainPlayer{};
+        Player mainPlayer;
         Map map;
         std::vector<Trooper *> npc;
         std::vector<std::unique_ptr<DynamicSprite>>
             dynamics; // liste des sprites dynamics
         std::vector<std::unique_ptr<Item>> items;
+	std::vector<std::unique_ptr<AnimatedSprite>> particles;
+	std::vector<std::unique_ptr<AnimatedSprite>> particlesTempShit;
 
         // gestion physique
         b2World physicalWorld;
         std::vector<Entity *> entities; // liste des enititées
+      
+      	GameCharacter testPnj;
       public:
         Game();
 
@@ -64,6 +69,15 @@ class Game {
          * @warning Ne pas donner une entité déjà initialisé avec computePhysic()
          */
         void addItem(Item *item);
+
+	/**
+	 * @brief rajoute une particule dans le vector de particule 
+	 * @param name Nom de la particule (voire le fichier particles.json)
+	 * @param position
+	 * @param rotation
+	 * @details Génére la particule à partir de ParticleFactory
+	 */
+	void spawnParticle(std::string name, Vector2f pos, float rotation = 0.f);
 
         b2World *getPhysicalWorld();
 };

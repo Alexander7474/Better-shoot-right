@@ -2,6 +2,7 @@
 #include "../engine/dynamicSprite.h"
 #include "../engine/macro.h"
 #include "../engine/physic.h"
+#include "../engine/particle.h"
 
 #include <box2d/box2d.h>
 #include <memory>
@@ -23,13 +24,16 @@ Game::Game()
           0.0f,
           GRAVITY)) // création du monde physique avec un vecteur de gravité
 {
-        auto *listener = new CustomContactListener();
+        auto listener = new CustomContactListener();
+	listener->setGameOwner(this);
         physicalWorld.SetContactListener(listener);
 
         if (map.getSpawnPoints().size() > 1) {
                 mainPlayer.getCharacter().setPosition(map.getSpawnPoints()[0]);
+		testPnj.setPosition(mainPlayer.getCharacter().getPosition());
         }
-        // init
+
+	// init
         // physic-------------------------------------------------------------------------
         // rajoute le boite de collision au monde physique
         for (CollisionBox &box : map.getCollision()) {
@@ -37,6 +41,7 @@ Game::Game()
         }
 
         entities.push_back(&mainPlayer.getCharacter());
+	entities.push_back(&testPnj);
 
         // compute entities
         unsigned long long cptEnt = 0;
@@ -52,11 +57,19 @@ Game::Game()
 }
 
 void Game::update() {
-        // update des éléments des la game 
-        map.update();
-
 	for(const auto &item : items)
 		item->update();
+
+	for(unsigned long i = 0; i < particles.size(); i++){
+ 		if(particles[i]->update()){
+			particlesTempShit.push_back(std::move(particles[i]));
+			particles.erase(particles.begin()+i);
+			ERROR_MESSAGE("erase");
+		}
+	}
+
+        // update des éléments des la game 
+        map.update();
 
 	// Gestion de la caméra ------------------------------------------------------------
         // déterminer la position du milieu entre le joueur et son crossair
@@ -88,6 +101,8 @@ void Game::update() {
         mainPlayerCam.setPosition(middlePos);
         mainPlayer.update(&mainPlayerCam, &map);
 
+	testPnj.update(&map);
+
         // Gestion de la
         // physique-------------------------------------------------------------------------
         constexpr int velocityIterations = 6;
@@ -106,6 +121,7 @@ void Game::update() {
 void Game::Draw() {
         map.Draw(scene, mainPlayerCam);
         scene.Draw(mainPlayer);
+	scene.Draw(testPnj);
 
         for (auto &d : dynamics) {
                 scene.Draw(*d);
@@ -138,6 +154,9 @@ void Game::Draw() {
         }
 #endif
 
+	for(auto &p : particles)
+		scene.Draw(*p);
+
         scene.render();
 }
 
@@ -146,5 +165,15 @@ void Game::addItem(Item *item) {
         items.push_back(std::unique_ptr<Item>(item));
         entities.push_back(items.back().get());
 }
+
+// TODO -- URGENT gérer de bug lors de la destruction d'un ANimatedSprite qui empêche l'utilisation de textureColorBuffer de scene
+// TODO -- Modifier la class AnimatedSprite pour reset le départ de l'animation sans accéder à ds membres sensé êtres privés
+void Game::spawnParticle(std::string name, Vector2f pos, float rotation) {
+	particles.push_back(std::unique_ptr<AnimatedSprite>(ParticleFactory::getParticle(name)));
+	particles.back()->anim_start = glfwGetTime(); // illegal
+	particles.back()->last_frame_t = glfwGetTime(); // go fuck yourself
+	particles.back()->setPosition(pos);
+}
+
 
 b2World *Game::getPhysicalWorld() { return &physicalWorld; }
