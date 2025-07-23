@@ -4,13 +4,13 @@
 		"column" : 4,
 		"row" : 4,
 		"frame" : 16,
-		"frame_time" : 0.05
+		"frame_time" : 0.025
 	},
 	"impact": {
 		"sheet": "assets/particles/Sparks-Sheet.png",
 		"column" : 3,
 		"row" : 3,
 		"frame" : 9,
-		"frame_time" : 0.05
+		"frame_time" : 0.025
 	}
 }

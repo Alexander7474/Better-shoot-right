@@ -72,13 +72,9 @@ class Game {
 
 	/**
 	 * @brief rajoute une particule dans le vector de particule 
-	 * @param name Nom de la particule (voire le fichier particles.json)
-	 * @param position
-	 * @param size
-	 * @param rotation
-	 * @details Génére la particule à partir de ParticleFactory
+	 * @param p Pointeur vers la particule	 
 	 */
-	void spawnParticle(std::string name, Vector2f pos, Vector2f size, float rotation = 0.f);
+	void addParticle(AnimatedSprite *p);
 
         b2World *getPhysicalWorld();
 };

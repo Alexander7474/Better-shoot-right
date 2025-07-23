@@ -19,8 +19,9 @@ class ParticleFactory final {
 		static void loadAllParticles();
 
 		/**
-		 * @brief Donne une copie de la particule demandé
+		 * @brief Donne la particule demandé
 		 *
+		 * @warning La méthode ne fait pas de copy
 		 * @param name Nom de la particule 
 		 * @return pointeur vers une copie de la particule 
 		 */

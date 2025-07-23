@@ -57,7 +57,5 @@ AnimatedSprite* ParticleFactory::getParticle(std::string name){
 		return nullptr;
 	}
 
-	AnimatedSprite *copy = new AnimatedSprite(*particles[name].get());
-	
-	return copy;
+	return particles[name].get();
 }

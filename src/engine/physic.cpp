@@ -192,8 +192,17 @@ void CustomContactListener::handleContact(b2Contact *contact,
 
 		if(bullet->getState() != BulletState::broken){
 			bullet->broke();
-			game->spawnParticle("blood", Vector2f(bodyB->GetPosition().x*PIXEL_PER_METER, bodyB->GetPosition().y*PIXEL_PER_METER), 
-						Vector2f(15.f,15.f), bullet->getRotation());
+			
+			AnimatedSprite *tmp = new AnimatedSprite(*ParticleFactory::getParticle("blood"));
+			
+			//setup tmp
+			tmp->anim_start = glfwGetTime(); // illegal
+			tmp->last_frame_t = glfwGetTime(); // go fuck yourself
+			tmp->setSize(10.f,10.f);
+			tmp->setRotation(bullet->getRotation());
+			tmp->setOrigin(tmp->getSize().x/2.f, tmp->getSize().y/2.f);
+			tmp->setPosition(Vector2f(bodyB->GetPosition().x*PIXEL_PER_METER, bodyB->GetPosition().y*PIXEL_PER_METER));
+			game->addParticle(tmp);
 		}
 		return;
 	}
@@ -208,8 +217,17 @@ void CustomContactListener::handleContact(b2Contact *contact,
 
 		if(bullet->getState() != BulletState::broken){
 			bullet->broke();
-			game->spawnParticle("impact", Vector2f(bodyA->GetPosition().x*PIXEL_PER_METER, bodyA->GetPosition().y*PIXEL_PER_METER), 
-						Vector2f(15.f,15.f), bullet->getRotation());
+
+			AnimatedSprite *tmp = new AnimatedSprite(*ParticleFactory::getParticle("impact"));
+			
+			//setup de la particle 
+			tmp->anim_start = glfwGetTime(); // illegal
+			tmp->last_frame_t = glfwGetTime(); // go fuck yourself
+			tmp->setSize(10.f,10.f);
+			tmp->setRotation(bullet->getRotation()+0.5f);
+			tmp->setOrigin(tmp->getSize().x/2.f, tmp->getSize().y/2.f);
+			tmp->setPosition(Vector2f(bodyA->GetPosition().x*PIXEL_PER_METER, bodyA->GetPosition().y*PIXEL_PER_METER));
+			game->addParticle(tmp);
 		}
 		return;
 	}
