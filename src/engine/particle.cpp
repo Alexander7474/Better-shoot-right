@@ -4,6 +4,8 @@
 
 #include <nlohmann/json.hpp>
 
+#include <GLFW/glfw3.h>
+
 bool ParticleFactory::initialized = false;
 std::unordered_map<std::string, std::unique_ptr<AnimatedSprite>> ParticleFactory::particles;
 
@@ -48,14 +50,50 @@ void ParticleFactory::loadAllParticles(){
 
 }
 
-AnimatedSprite* ParticleFactory::getParticle(std::string name){
+ParticleFactory::ParticleFactory(std::string name) {
+	particle = new AnimatedSprite(*particles[name].get());
+	particle->anim_start = glfwGetTime(); // illegal
+	particle->last_frame_t = glfwGetTime(); // go fuck yourself
+}
+
+ParticleFactory ParticleFactory::getParticle(std::string name){
 #ifdef PARTICLE_DEBUG
 	DEBUG_MESSAGE("Appelle ParticleFactory::getParticle " + name);
 #endif 
+
+	return ParticleFactory(name);
+}
+
+ParticleFactory& ParticleFactory::withSize(Vector2f size) {
+	this->size = size;
+	return *this;
+}
+
+ParticleFactory& ParticleFactory::withOrigin(Vector2f origin) {
+	this->origin = origin;
+	return *this;
+}
+
+ParticleFactory& ParticleFactory::withPosition(Vector2f position) {
+	this->position = position;
+	return *this;
+}
+
+ParticleFactory& ParticleFactory::withRotation(float rotation) {
+	this->rotation = rotation;
+	return *this;
+}
+
+AnimatedSprite *ParticleFactory::build() {
 	if(!initialized){
-		ERROR_MESSAGE("ParticleFactorty::getParticle appellé main ParticleFactory non initializé");
+		ERROR_MESSAGE("ParticleFactorty::build appellé main ParticleFactory non initializé");
 		return nullptr;
 	}
 
-	return particles[name].get();
+	particle->setSize(size);
+	particle->setOrigin(origin);
+	particle->setPosition(position);
+	particle->setRotation(rotation);
+
+	return particle;
 }

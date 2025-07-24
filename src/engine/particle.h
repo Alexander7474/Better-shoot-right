@@ -12,6 +12,16 @@ class ParticleFactory final {
 
 		static std::unordered_map<std::string, std::unique_ptr<AnimatedSprite>> particles;
 
+
+		ParticleFactory(std::string name);
+
+		AnimatedSprite *particle;
+		Vector2f size;
+		Vector2f origin;
+		Vector2f position;
+		float rotation;
+		bool verticalFlip;
+		bool horizontalFlip;
 	public:
 		/**
 		 * @brief Charge toutes le particules du fichier particles.json dans assets/particle/
@@ -19,12 +29,18 @@ class ParticleFactory final {
 		static void loadAllParticles();
 
 		/**
-		 * @brief Donne la particule demandé
+		 * @brief Donne une usine avec la particule demandé
 		 *
-		 * @warning La méthode ne fait pas de copy
 		 * @param name Nom de la particule 
-		 * @return pointeur vers une copie de la particule 
+		 * @return Usine prette a setup la particle demandé
 		 */
-		static AnimatedSprite *getParticle(std::string name);
+		static ParticleFactory getParticle(std::string name);
+
+		ParticleFactory& withSize(Vector2f size);
+		ParticleFactory& withOrigin(Vector2f origin);
+		ParticleFactory& withPosition(Vector2f position);
+		ParticleFactory& withRotation(float rotation);
+
+		AnimatedSprite *build();
 
 };
