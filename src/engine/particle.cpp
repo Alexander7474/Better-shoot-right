@@ -51,6 +51,8 @@ void ParticleFactory::loadAllParticles(){
 }
 
 ParticleFactory::ParticleFactory(std::string name) {
+	if(!initialized)
+		return;
 	particle = new AnimatedSprite(*particles[name].get());
 	particle->anim_start = glfwGetTime(); // illegal
 	particle->last_frame_t = glfwGetTime(); // go fuck yourself
@@ -84,6 +86,16 @@ ParticleFactory& ParticleFactory::withRotation(float rotation) {
 	return *this;
 }
 
+ParticleFactory& ParticleFactory::withVerticalFlip() {
+	verticalFlip = true;
+	return *this;
+}
+
+ParticleFactory& ParticleFactory::withHorizontalFlip() {
+	horizontalFlip = true;
+	return *this;
+}
+
 AnimatedSprite *ParticleFactory::build() {
 	if(!initialized){
 		ERROR_MESSAGE("ParticleFactorty::build appellé main ParticleFactory non initializé");
@@ -94,6 +106,12 @@ AnimatedSprite *ParticleFactory::build() {
 	particle->setOrigin(origin);
 	particle->setPosition(position);
 	particle->setRotation(rotation);
+
+	if(verticalFlip)
+		particle->flipVertically();
+
+	if(horizontalFlip)
+		particle->flipHorizontally();
 
 	return particle;
 }

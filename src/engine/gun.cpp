@@ -73,7 +73,6 @@ void Gun::loadJsonFile(const string &path) {
         try {
                 // chargement des infos de l'arme
                 setName(jsonData.at("name"));
-                damage = jsonData.at("damage");
                 magazineSize = jsonData.at("magazine_size");
                 ammo = magazineSize;
                 rearmTime = jsonData.at("ream_time");
@@ -204,10 +203,6 @@ void Gun::setGunDirection(const Direction gunDirection) {
         this->gunDirection = gunDirection;
 }
 
-float Gun::getDamage() const { return damage; }
-
-void Gun::setDamage(const float damage) { this->damage = damage; }
-
 bool Gun::isArmed() const { return armed; }
 
 void Gun::setArmed(const bool armed) { this->armed = armed; }
@@ -224,7 +219,7 @@ void Gun::setAmmo(const int ammo) { this->ammo = ammo; }
 
 Gun::Gun(const Gun &other)
     : Item(other), state(other.state), attachPoint(other.attachPoint),
-      gunDirection(other.gunDirection), damage(other.damage),
+      gunDirection(other.gunDirection), 
       armed(other.armed), magazineSize(other.magazineSize), ammo(other.ammo),
       lastShotTime(other.lastShotTime), rearmTime(other.rearmTime),
       bulletSpeed(other.bulletSpeed),
@@ -255,7 +250,7 @@ Gun::Gun(const Gun &other)
 
 Gun::Gun(Gun &&other) noexcept
     : Item(std::move(other)), state(other.state),
-      attachPoint(other.attachPoint), gunDirection(other.gunDirection),damage(other.damage),
+      attachPoint(other.attachPoint), gunDirection(other.gunDirection),
       armed(other.armed), magazineSize(other.magazineSize), ammo(other.ammo),
       lastShotTime(other.lastShotTime), rearmTime(other.rearmTime),
       bulletSpeed(other.bulletSpeed), gunMouth(other.gunMouth), bulletType(other.bulletType),
@@ -268,7 +263,6 @@ Gun &Gun::operator=(const Gun &other) {
         state = other.state;
         attachPoint = other.attachPoint;
         gunDirection = other.gunDirection;
-        damage = other.damage;
         armed = other.armed;
         magazineSize = other.magazineSize;
         ammo = other.ammo;
@@ -309,7 +303,6 @@ Gun &Gun::operator=(Gun &&other) noexcept {
         state = other.state;
         attachPoint = other.attachPoint;
         gunDirection = other.gunDirection;
-        damage = other.damage;
         armed = other.armed;
         magazineSize = other.magazineSize;
         ammo = other.ammo;

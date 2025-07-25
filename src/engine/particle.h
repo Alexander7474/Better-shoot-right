@@ -15,13 +15,13 @@ class ParticleFactory final {
 
 		ParticleFactory(std::string name);
 
-		AnimatedSprite *particle;
+		AnimatedSprite *particle = nullptr;
 		Vector2f size;
 		Vector2f origin;
 		Vector2f position;
-		float rotation;
-		bool verticalFlip;
-		bool horizontalFlip;
+		float rotation{};
+		bool verticalFlip{};
+		bool horizontalFlip{};
 	public:
 		/**
 		 * @brief Charge toutes le particules du fichier particles.json dans assets/particle/
@@ -32,15 +32,26 @@ class ParticleFactory final {
 		 * @brief Donne une usine avec la particule demandé
 		 *
 		 * @param name Nom de la particule 
-		 * @return Usine prette a setup la particle demandé
+		 * @return Usine prête a setup la particle demandé
 		 */
 		static ParticleFactory getParticle(std::string name);
 
+		/**
+		 * @brief Modification des paramètre d'une particule généré
+		 * @return Usine avec la modification
+		 */
+		ParticleFactory& withVerticalFlip();
+		ParticleFactory& withHorizontalFlip();
 		ParticleFactory& withSize(Vector2f size);
 		ParticleFactory& withOrigin(Vector2f origin);
 		ParticleFactory& withPosition(Vector2f position);
 		ParticleFactory& withRotation(float rotation);
 
+		/**
+		 * @brief Build la particule du pointer particle
+		 *
+		 * @return Pointer vers la particule 
+		 */
 		AnimatedSprite *build();
 
 };

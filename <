@@ -66,6 +66,9 @@ void GameCharacter::createTextureCache(const string &path) {
 }
 
 void GameCharacter::update(Map *map) {
+	if(hp <= 0.f)
+
+
         // gestion de l'état du personnage
         if (!onRagdoll) {
                 if (entityBody->GetLinearVelocity().x <= 0.5f &&

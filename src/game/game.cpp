@@ -3,6 +3,7 @@
 #include "../engine/macro.h"
 #include "../engine/physic.h"
 #include "../engine/particle.h"
+#include "../engine/member.h"
 
 #include <box2d/box2d.h>
 #include <memory>
@@ -95,6 +96,13 @@ void Game::update() {
                 middlePos.y =
                     (mainPlayer.getCharacter().getPosition().y + scale * dy);
         }
+
+	// verifier la vie des bots et du joueur
+	// TODO -- vérifier la vie du bot
+	if(mainPlayer.getCharacter().getHp() <= 0.f && mainPlayer.getCharacter().getHead().getState() != MemberState::ragdoll)
+		mainPlayer.getCharacter().toggleRagdollMod(&physicalWorld);
+	if(testPnj.getHp() <= 0.f && testPnj.getHead().getState() != MemberState::ragdoll)
+		testPnj.toggleRagdollMod(&physicalWorld);
 
         mainPlayerCam.setScale(0.5f);
         mainPlayerCam.setPosition(middlePos);

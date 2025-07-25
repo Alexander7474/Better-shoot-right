@@ -1,7 +1,6 @@
 {
   "name" : "scar",
   "bullet_type" : "5-56x45mm",
-  "damage" : 5.3,
   "magazine_size" : 25,
   "ream_time" : 0.25,
   "bullet_speed" : 2500.0,

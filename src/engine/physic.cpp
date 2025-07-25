@@ -192,7 +192,10 @@ void CustomContactListener::handleContact(b2Contact *contact,
 
 		if(bullet->getState() != BulletState::broken){
 			bullet->broke();
-			
+
+			auto *character = reinterpret_cast<GameCharacter*>(dataA->ptr);
+			character->setHp(character->getHp() - bullet->getDamage());
+
 			AnimatedSprite *tmp = ParticleFactory::getParticle("blood")
 				.withSize(Vector2f(10.f,10.f))
 				.withRotation(bullet->getRotation())
