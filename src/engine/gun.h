@@ -29,7 +29,6 @@ class Gun final : public Item {
         Direction gunDirection;
 
         // gestion des tirs
-        float damage{};        // degat de l'arme
         bool armed{};          // l'arme est armé ?
         int magazineSize{};    // taille du chargeur
         int ammo{};            // nombre de mun dans le chargeur
@@ -74,10 +73,6 @@ class Gun final : public Item {
         [[nodiscard]] Direction getGunDirection() const;
 
         void setGunDirection(Direction gunDirection);
-
-        float getDamage() const;
-
-        void setDamage(float damage);
 
         bool isArmed() const;
 

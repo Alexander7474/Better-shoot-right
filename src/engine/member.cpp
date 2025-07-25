@@ -62,4 +62,6 @@ void Member::setetat(int k) {
         }
 }
 
+MemberState Member::getState() { return state; };
+
 int Member::getetat() { return static_cast<int>(state); }

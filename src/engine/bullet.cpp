@@ -1,7 +1,13 @@
+
 #include "bullet.h"
+
 #include "macro.h"
+
 #include "physic.h"
+
 #include "../game/game.h"
+
+#include <nlohmann/json.hpp>
 
 using namespace std;
 
@@ -52,11 +58,38 @@ void Bullet::loadJsonFile(const std::string &path) {
                         specificPtr->loadTexture(state, path);
                 }
         }
+
+	// Après avoir chargé audio et animation,
+        // on charge les caractèristique de la balle.
+	std::string jsonPath = path + "bullet.json";
+        std::ifstream jsonFile(jsonPath);
+        if (!jsonFile.is_open()) {
+                ERROR_MESSAGE("Chargement fichier json " + path);
+                return;
+        }
+
+        // loading with json
+        nlohmann::json jsonData;
+        try {
+                jsonFile >> jsonData;
+        } catch (const std::exception &e) {
+                ERROR_MESSAGE("Découpage json " + path);
+                return;
+        }
+
+        try {
+                // chargement des infos de l'arme
+                setName(jsonData.at("name"));
+		damage = jsonData.at("damage");
+        } catch (const nlohmann::json::exception &e) {
+                ERROR_MESSAGE("Recupération caractéristique " + jsonPath);
+                return;
+        }
 }
 
 Bullet::Bullet(const Bullet &other)
            : Item(other),
-             state(other.state) {
+             state(other.state), damage(other.damage){
 
         // Changement de possèsseur du composant copier.
         // On cast en premier l'autre composant pour voir
@@ -82,7 +115,7 @@ Bullet::Bullet(const Bullet &other)
 
 Bullet::Bullet(Bullet &&other) noexcept
         : Item(std::move(other)),
-          state(other.state) {
+          state(other.state), damage(other.damage) {
 
         // Changement de possèsseur du composant déplacer.
         // On cast en premier l'autre composant pour voir
@@ -116,6 +149,7 @@ Bullet & Bullet::operator=(const Bullet &other) {
                 return *this;
         Item::operator =(other);
         state = other.state;
+	damage = other.damage;
 
         // Changement de possèsseur du composant copier.
         // On cast en premier l'autre composant pour voir
@@ -146,6 +180,7 @@ Bullet & Bullet::operator=(Bullet &&other) noexcept {
                 return *this;
         Item::operator =(std::move(other));
         state = other.state;
+	damage = other.damage;
 
         // Changement de possèsseur du composant déplacer.
         // On cast en premier l'autre composant pour voir
@@ -181,11 +216,21 @@ b2Body *Bullet::getBody() const { return entityBody; }
 const BulletState &Bullet::getState() const { return state; }
 
 void Bullet::computePhysic(b2World *world) {
-        Item::computePhysic(world);
+	setOrigin(getSize().x / 2, getSize().y / 2);
+        entityBody =
+            addDynamicBox(world, &getCollisionBox(), 0.f, 1.f, 1.f, 1.f, false, true);
 
         // Ajout du pointeur userData
         auto *data = new BodyData;
         data->type = BodyType::Bullet;
         data->ptr = reinterpret_cast<uintptr_t>(this);
         entityBody->GetUserData().pointer = reinterpret_cast<uintptr_t>(data);
+}
+
+float Bullet::getDamage() {
+	return damage;
+}
+
+void Bullet::setDamage(float damage) {
+	this->damage = damage;
 }

@@ -17,6 +17,8 @@ enum class BulletState {
 class Bullet final: public Item {
       private:
         BulletState state;
+ 	float damage;
+
       public:
         Bullet();
         Bullet(const std::string& path);
@@ -50,6 +52,8 @@ class Bullet final: public Item {
         Bullet &operator=(Bullet &&other) noexcept;
 
         b2Body *getBody() const;
+	float getDamage();
+	void setDamage(float damage);
 
 	const BulletState &getState() const;
 

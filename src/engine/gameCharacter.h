@@ -21,6 +21,7 @@ enum Direction { rightDir, leftDir };
 #endif
 
 // TODO -- Gérer la vie et la collision avec le balle
+// TODO -- Modifier la méthode setPos qui ne sert plus avec box2d
 class GameCharacter : public BbopDrawable, public Geometric, public Entity {
       private:
         // membres
@@ -47,14 +48,14 @@ class GameCharacter : public BbopDrawable, public Geometric, public Entity {
         float scale;
 
         // attributs de la physique
-        float maxVelocityX;
-        float maxVelocityY;
-        float newtonX;
-        float newtonY;
-        float restitution;
-        float friction;
-        float density;
-        float linearDamping;
+        float maxVelocityX, 
+	      maxVelocityY,
+              newtonX,
+	      newtonY,
+              restitution,
+	      friction,
+	      density,
+	      linearDamping;
         bool onRagdoll,touchingDown = false;
 
         // attributs du jeu

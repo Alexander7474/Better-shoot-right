@@ -6,6 +6,7 @@
 #include "macro.h"
 #include "../game/game.h"
 #include "physic.h"
+#include "particle.h"
 
 b2Body *addStaticBox(b2World *world, const Geometric *box) {
         // 1. Définir le corps statique
@@ -54,6 +55,7 @@ b2Body *addStaticBox(b2World *world, const Geometric *box) {
 b2Body *addDynamicBox(b2World *world, Geometric *box, const float restitution,
                       const float density, const float friction,
                       const float linearDamping, const bool rotationLock,
+		      const bool isBullet,
                       const Vector2f &offsetX, const Vector2f &offsetY) {
 
         // Définir les mesures de la boite de BBOP vers Box2D
@@ -77,6 +79,7 @@ b2Body *addDynamicBox(b2World *world, Geometric *box, const float restitution,
         bodyDef.fixedRotation = rotationLock;
         bodyDef.linearDamping = linearDamping; // Très utile !
         bodyDef.angle = box->getRotation();
+	bodyDef.bullet = isBullet;
 
         b2Body *body = world->CreateBody(&bodyDef);
 
@@ -115,8 +118,8 @@ b2Body *addDynamicBox(b2World *world, Geometric *box, const float restitution,
 	return body;
 }
 
-void* CustomContactListener::game = nullptr;
-void CustomContactListener::setGameOwner(void* g) {
+Game* CustomContactListener::game = nullptr;
+void CustomContactListener::setGameOwner(Game* g) {
 	game = g;
 }
 
@@ -168,6 +171,7 @@ void CustomContactListener::handleContact(b2Contact *contact,
 	// Gestion GameCharacter Static
 	if (hasTypes(dataA, dataB, BodyType::Static, BodyType::GameCharacter)){
 		std::swap(dataA, dataB);
+		std::swap(bodyA, bodyB);
 		normal.y = -normal.y;
 	}
 	if (hasTypes(dataA, dataB, BodyType::GameCharacter, BodyType::Static)){
@@ -179,17 +183,51 @@ void CustomContactListener::handleContact(b2Contact *contact,
 	}
 
 	// Gestion GameCharacter Bullet
-	// TODO -- Ajouter la gestion
+	if(hasTypes(dataA, dataB, BodyType::Bullet, BodyType::GameCharacter)){
+		std::swap(dataA, dataB);
+		std::swap(bodyA, bodyB);
+	}
+	if(hasTypes(dataA, dataB, BodyType::GameCharacter, BodyType::Bullet)){
+		auto *bullet = reinterpret_cast<Bullet*>(dataB->ptr);
+
+		if(bullet->getState() != BulletState::broken){
+			bullet->broke();
+
+			auto *character = reinterpret_cast<GameCharacter*>(dataA->ptr);
+			character->setHp(character->getHp() - bullet->getDamage());
+
+			AnimatedSprite *tmp = ParticleFactory::getParticle("blood")
+				.withSize(Vector2f(10.f,10.f))
+				.withRotation(bullet->getRotation())
+				.withOrigin(Vector2f(5.f,5.f))
+				.withPosition(Vector2f(bodyB->GetPosition().x*PIXEL_PER_METER, bodyB->GetPosition().y*PIXEL_PER_METER))
+				.build();
+		
+			game->addParticle(tmp);
+		}
+		return;
+	}
 	
 	// Gestion Bullet Static
 	if(hasTypes(dataA, dataB, BodyType::Static, BodyType::Bullet)){
 		std::swap(dataA, dataB);
+		std::swap(bodyA, bodyB);
 	}
 	if(hasTypes(dataA, dataB, BodyType::Bullet, BodyType::Static)){
 		auto *bullet = reinterpret_cast<Bullet*>(dataA->ptr);
 
 		if(bullet->getState() != BulletState::broken){
 			bullet->broke();
+
+			AnimatedSprite *tmp = ParticleFactory::getParticle("impact")
+				.withSize(Vector2f(10.f,10.f))
+				.withRotation(bullet->getRotation())
+				.withOrigin(Vector2f(5.f,5.f))
+				.withPosition(Vector2f(bodyA->GetPosition().x*PIXEL_PER_METER, bodyA->GetPosition().y*PIXEL_PER_METER))
+				.build();
+			
+			game->addParticle(tmp);
 		}
+		return;
 	}
 }
