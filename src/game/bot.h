@@ -7,6 +7,17 @@
 
 using namespace std;
 
+// TODO -- 
+// Bot ne doit pas hériter de gameCharacter mais posséder un gameCharacter (dans un unique_ptr) avec getter
+// Avec la possession d'un gameCharacter bot pourra avoir une simple méthode update et pas Bupdate
+// gameWindow est une variable global arrête de la passer en paramètre 
+// Modifie la fonction Draw pour qu'elle corresponde au standard de BBOP
+// Rend tes variable plus explicite, arrête les abrègés et les nom pas fini genre timer c'est timerDiscussion
+// Utilise des std::vector préalloué pour spawn (spawn qui devrais plutôt s'appeller crossPoints)
+// Utilise des enum class au lieu de enum
+// Fait une doxygen pour tes fonctions et renome les au format camelCase
+// IL FAUT QUE TOUS LES BOT PUISSE ÊTRE UTILISÉ À PARTIR DE LA CLASS BOT ET DES MÉTHODES UPDATE() ET DRAW()
+
 class Bot : public GameCharacter
 {
 protected:
