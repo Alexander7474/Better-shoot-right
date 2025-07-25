@@ -55,6 +55,9 @@ class Gun final : public Item {
 	 * @param mouseHold La souris vien d'être clické ?
          */
         void shoot(Game *game, bool mouseHolded);
+	
+	// TODO -- enlever cette fonction qui sert uniquement a trooper
+	void shoot();
 
         /**
          * remplie le nombre de munition dans le chargeur

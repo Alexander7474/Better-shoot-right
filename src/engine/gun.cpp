@@ -314,3 +314,7 @@ Gun &Gun::operator=(Gun &&other) noexcept {
 	semiAuto = other.semiAuto;
         return *this;
 }
+
+void Gun::shoot() {
+	return;
+}
