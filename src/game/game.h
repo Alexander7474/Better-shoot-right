@@ -23,6 +23,7 @@ extern double LAST_FPS_UPDATE;
 extern float GRAVITY;
 extern std::default_random_engine RANDOM_ENGINE;
 
+// TODO -- Ajouter la possibilité de placer des bots sur les map (entity ldtk)
 class Game {
       private:
         Scene scene;
