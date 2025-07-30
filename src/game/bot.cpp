@@ -1,18 +1,50 @@
-#include"bot.h"
+#include "bot.h"
+#include "agressivite.h" 
 
-bool Bot::champ_visuel(GameCharacter *user) {
+Bot::Bot()
+    : pnj(std::make_unique<GameCharacter>()) {
+    
+    
+    pnj->lookAt(Vector2f(pnj->getPosition().x + 5, pnj->getPosition().y));
+    
+    etat = Bot::State::patrol; // ✅ Proper initialization
+
+    fov = M_PI / 4;
+    font = new Font(16, "toto.ttf");
+
+    hpbar = new RectangleShape(Vector2f(35.f, 3.f),
+                               Vector2f(pnj->getPosition().x - 3, pnj->getPosition().y - 2),
+                               Vector3i(255, 0, 0),
+                               Vector2f(pnj->getPosition().x - 30, pnj->getPosition().y - 20));
+
+    dialoque = new TexteBox("shut up steve", font);
+    ftd = false;
+
+    Chokpoint= new Vector2f[3]{
+        Vector2f(500.f, 1281.f),
+        Vector2f(550.f, 1281.f),
+        Vector2f(600.f, 1281.f)
+    };
+
+    hpbar->setOrigin(pnj->getPosition());
+
+    cpt = 0;
+    iterateur = 1;
+    menace = new Agressivite(1, 50, this);
+}
+
+bool Bot::ChampVisuel(GameCharacter* user) {
     float range = 200.0f;
 
     Vector2f toUser = {
-        user->getPosition().x - getPosition().x,
-        user->getPosition().y - getPosition().y
+        user->getPosition().x - pnj->getPosition().x,
+        user->getPosition().y - pnj->getPosition().y
     };
     float angleToUser = atan2(toUser.y, toUser.x);
 
-
     Vector2f direction = {
-        getLookingPoint().x - getPosition().x,
-        getLookingPoint().y - getPosition().y
+        pnj->getLookingPoint().x - pnj->getPosition().x,
+        pnj->getLookingPoint().y - pnj->getPosition().y
     };
     float theta0 = atan2(direction.y, direction.x);
 
@@ -21,7 +53,7 @@ bool Bot::champ_visuel(GameCharacter *user) {
         return false;
     }
 
-    if (bbopGetDistance(getPosition(), user->getPosition()) < range) {
+    if (bbopGetDistance(pnj->getPosition(), user->getPosition()) < range) {
 
         std::vector<float> theta(21);
         for (int i = 0; i < 21; i++) {
@@ -29,28 +61,28 @@ bool Bot::champ_visuel(GameCharacter *user) {
         }
 
         CollisionBox partie[5] = {
-            getRightArm().getCollisionBox(),
-            getLeftArm().getCollisionBox(),
-            getLegs().getCollisionBox(),
-            getBody().getCollisionBox(),
-            getHead().getCollisionBox()
+            pnj->getRightArm().getCollisionBox(),
+            pnj->getLeftArm().getCollisionBox(),
+            pnj->getLegs().getCollisionBox(),
+            pnj->getBody().getCollisionBox(),
+            pnj->getHead().getCollisionBox()
         };
 
         for (int i = 0; i < 21; i++) {
-            Vector2f start_p = getPosition();
+            Vector2f start_p = pnj->getPosition();
             Vector2f step = {
                 (range * cos(theta[i])) / 5,
                 (range * sin(theta[i])) / 5
             };
 
             for (int j = 0; j < 5; j++) {
-                if (detect_point(partie, start_p)) {
+                if (DetectPoint(partie, start_p)) {
                     if (!ftd) {
                         ftd = true;
-                        detect2 = glfwGetTime();
-                        seekp = user->getPosition();
+                        Detect = glfwGetTime();
+                        SeekPosition = user->getPosition();
                     }
-                    divi = fabs((getPosition().x - start_p.x) / 5);
+                    Diviseur = fabs((pnj->getPosition().x - start_p.x) / 5);
                     return true;
                 }
                 start_p.x += step.x;
@@ -61,58 +93,118 @@ bool Bot::champ_visuel(GameCharacter *user) {
     return false;
 }
 
-
-bool Bot::detect_point(CollisionBox* menber,Vector2f point){
-    for (int i = 0; i < 5; i++)
-    {
-        if (point.x >= menber[i].getLeft() && point.x <= menber[i].getRight() && point.y >= menber[i].getTop() && point.y <= menber[i].getBottom())
-        {
+bool Bot::DetectPoint(CollisionBox* menber, Vector2f point) {
+    for (int i = 0; i < 5; i++) {
+        if (point.x >= menber[i].getLeft() && point.x <= menber[i].getRight() &&
+            point.y >= menber[i].getTop() && point.y <= menber[i].getBottom()) {
             return true;
         }
-
     }
     return false;
 }
-bool Bot::patrol_zone(){
 
-    for (int i = 0; i < 3; i++)
-    {
-        if (bbopGetDistance(getPosition(),spawn[0])<500)
-        {
+bool Bot::PatrolZone() {
+    for (int i = 0; i < 3; i++) {
+        if (bbopGetDistance(pnj->getPosition(), Chokpoint[cpt]) < 500) {
             return true;
         }
-
     }
-
     return false;
 }
 
-bool Bot::bc_patrol(Vector2f point) {
-
-    if (bbopGetDistance(point, getPosition())> 5) {
-        if (oldp.x == getPosition().x) {
-            jump();
+bool Bot::MoveToPoint(Vector2f point) {
+    if (bbopGetDistance(point, pnj->getPosition()) > 15) {
+        if (PreviousPosition.x == pnj->getPosition().x) {
+            pnj->jump();
         }
 
-        if (point.x - getPosition().x > 0) {
-            goRight();
-            lookAt(Vector2f(getPosition().x + 5, getPosition().y));
+        if (point.x - pnj->getPosition().x > 0) {
+            pnj->goRight();
+            pnj->lookAt(Vector2f(pnj->getPosition().x + 5, pnj->getPosition().y));
         } else {
-            goLeft();
-            lookAt(Vector2f(getPosition().x - 5, getPosition().y));
+            pnj->goLeft();
+            pnj->lookAt(Vector2f(pnj->getPosition().x - 5, pnj->getPosition().y));
         }
 
-        oldp = getPosition();
+        PreviousPosition = pnj->getPosition();
         return false;
     } else {
         return true;
     }
 }
 
-void Bot::setspawn(Vector2f s1,Vector2f s2,Vector2f s3){
-    spawn=new Vector2f[3]{
+void Bot::setChockPoint(Vector2f s1, Vector2f s2, Vector2f s3) {
+    Chokpoint= new Vector2f[3]{
         s1,
         s2,
         s3
     };
+}
+
+Vector2f Bot::getSeekPosition() {
+    return SeekPosition;
+}
+
+void Bot::update(Map* map, GameCharacter* user) {
+    if (pnj->getHead().getetat() != 3) {
+        DetectPlayer(user);
+        PatrolMod();
+        menace->update(user);
+        hpbar->setPosition(Vector2f(pnj->getPosition().x + 290, pnj->getPosition().y - 20));
+        dialoque->setPosition(Vector2f(pnj->getPosition().x, pnj->getPosition().y - 50));
+    }
+    pnj->update(map);
+}
+
+void Bot::PatrolMod() {
+    if (PatrolZone() && getState()==Bot::State::patrol) {
+        if (bbopGetDistance(pnj->getPosition(), Chokpoint[cpt]) < 40.0f) {
+            if (cpt == 2) {
+                iterateur = -1;
+            }
+            if (cpt == 0) {
+                iterateur = 1;
+            }
+            cpt += iterateur;
+        }
+        MoveToPoint(Chokpoint[cpt]);
+    } else {
+        MoveToPoint(Chokpoint[0]);
+    }
+}
+
+void Bot::DetectPlayer(GameCharacter* user) {
+    if (ChampVisuel(user)) {
+        unlock = glfwGetTime();
+        if (glfwGetTime() - Diviseur > Detect) {
+            etat = Bot::State::engage;   // ✅ corrected
+        } else if (glfwGetTime() - Diviseur / 2 > Detect) {
+            etat = Bot::State::seek;     // ✅ corrected
+        }
+    }
+
+    if (etat == Bot::State::engage && glfwGetTime() - unlock > 5) {
+        etat = Bot::State::patrol;       // ✅ corrected
+        ftd = false;
+    } else if (etat == Bot::State::seek && glfwGetTime() - unlock > 5) {
+        etat = Bot::State::patrol;       // ✅ corrected
+        ftd = false;
+    }
+}
+
+void Bot::Draw(Scene* scene) {
+    if (glfwGetTime() - timer < 3) {
+        scene->Draw(*dialoque);
+    }
+    float hp = (35.f / 500.f) * pnj->getHp();
+    hpbar->setSize(Vector2f(hp, hpbar->getSize().y));
+    scene->Draw(*hpbar);
+}
+
+GameCharacter* Bot::getCharacthere() {
+    return pnj.get();
+}
+
+Bot::State Bot::getState() {
+    return etat;
 }

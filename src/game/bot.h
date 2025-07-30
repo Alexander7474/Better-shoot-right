@@ -5,7 +5,10 @@
 #include "../engine/gameCharacter.h"
 #include "../engine/crossair.h"
 
+class Agressivite;
+
 using namespace std;
+
 
 // TODO -- 
 // Bot ne doit pas hériter de gameCharacter mais posséder un gameCharacter (dans un unique_ptr) avec getter
@@ -13,24 +16,15 @@ using namespace std;
 // gameWindow est une variable global arrête de la passer en paramètre 
 // Modifie la fonction Draw pour qu'elle corresponde au standard de BBOP
 // Rend tes variable plus explicite, arrête les abrègés et les nom pas fini genre timer c'est timerDiscussion
-// Utilise des std::vector préalloué pour spawn (spawn qui devrais plutôt s'appeller crossPoints)
+// Utilise des std::vector préalloué pour Chokpoint(Chokpointqui devrais plutôt s'appeller crossPoints)
 // Utilise des enum class au lieu de enum
 // Fait une doxygen pour tes fonctions et renome les au format camelCase
 // IL FAUT QUE TOUS LES BOT PUISSE ÊTRE UTILISÉ À PARTIR DE LA CLASS BOT ET DES MÉTHODES UPDATE() ET DRAW()
 
-class Bot : public GameCharacter
+class Bot
 {
-protected:
-    Vector2f *spawn; //liste des point de passage en mode patrouille//
-    Vector2f oldp; //ancienne position pour le deplacement//
-    float fov ;//fov/
-    Vector2f seekp;//dernier point du joueur avant de sortir du champvisuel//
-    float detect2,divi;//temp de detection//
-    bool ftd;//first time detect//
-    Font *font;
-    float timer;//timer pour la discussion//
 public:
-    Bot()=default;
+    Bot();
     /**
      * @brief verifie si le joueur se situe dans le champ visuel
      *
@@ -38,13 +32,13 @@ public:
      * 
      * @return true si le jouer est dans le champvisuel
      */
-    bool champ_visuel(GameCharacter *user);
+    bool ChampVisuel(GameCharacter *user);
     /**
      * @brief verifie si le bot est proche d un des point de patrouille
      *
      * @return true si le bot est a une certaine distance de la zone de patrouille 
      */
-    bool patrol_zone();
+    bool PatrolZone();
     /**
      * @brief retourne a un point donne
      *
@@ -52,7 +46,7 @@ public:
      * 
      * @return true si le bot est arrive au point donne
      */
-    bool bc_patrol(Vector2f point);
+    bool MoveToPoint(Vector2f point);
     /**
      * @brief verifie si un des menbres du joueur est detecte 
      *
@@ -61,7 +55,7 @@ public:
      * 
      * @return true si le point est dans la collisonbox du joueur
      */
-    bool detect_point(CollisionBox* menber,Vector2f point);
+    bool DetectPoint(CollisionBox* menber,Vector2f point);
     /**
      * @brief permet de donner une liste de point de patrouille
      *
@@ -71,10 +65,42 @@ public:
      * 
      * @return true si le point est dans la collisonbox du joueur
      */
-    void setspawn(Vector2f s1,Vector2f s2,Vector2f s3);
+    void setChockPoint(Vector2f s1,Vector2f s2,Vector2f s3);
     /**
      * @return dernier point du jouer etant encore detecte
      */
-    vector2f getSeekPoint();
+    enum class State{
+        patrol =1,
+        seek =2,
+        engage =3,
+        interaction =4
+    };
+    Vector2f getSeekPosition();
+    void update(Map *map,GameCharacter *perso1);//mise a jour du bot//
+    void PatrolMod();//patrouille//
+    void DetectPlayer(GameCharacter *user);//look bot// 
+    void Draw(Scene* scene);//dessine la bar de vie et le dialogue//
+    GameCharacter * getCharacthere();
+    State getState();
+protected:
+    unique_ptr<GameCharacter> pnj;
+    Vector2f *Chokpoint; //liste des point de passage en mode patrouille//
+    Vector2f PreviousPosition; //ancienne position pour le deplacement//
+    float fov ;//fov/
+    Vector2f SeekPosition;//dernier point du joueur avant de sortir du champvisuel//
+    float Detect,Diviseur;//temp de detection//
+    bool ftd;//first time detect//
+    Font *font;
+    float timer;//timer pour la discussion//
+    int cpt,iterateur;//sense en mode patrouille//
+    float unlock;//temp avant de delock le joueur//
+    RectangleShape *hpbar;//barre de vie//
+    TexteBox *dialoque;//texte de dialogue//
+    State etat;//etat du bot//
+    bool discussing;//en train de parler//
+    Agressivite *menace;
+    
+
+
 };
 

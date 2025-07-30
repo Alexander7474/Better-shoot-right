@@ -1,41 +1,43 @@
 #include"agressivite.h"
+#include "bot.h"
 
-aagressivite::agressivite(int level, float range){
-    this.range=range;
-    this.level=level;
+Agressivite::Agressivite(int level, float range, Bot *pnj){
+    this->range=range;
+    this->level=level;
+    this->pnj=pnj;
 }
 
-void agressivite::update(&Bot pnj,&enum etat,GameCharacter *joueur){
-    float espace = getPosition().x-joueur->getPosition().x;
+void Agressivite::update(GameCharacter *joueur){
+    float espace = pnj->getCharacthere()->getPosition().x-joueur->getPosition().x;
     switch (level)
     {
         case 0:
             
-            if (etat==seek)
+            if (pnj->getState() == Bot::State::seek)
             {
-                pnj.lookAt(pnj.getSeekPoint());
+                pnj->getCharacthere()->lookAt(pnj->getSeekPosition());
                 if (espace>0)
                 {
-                    pnj.goLeft();
+                    pnj->getCharacthere()->goLeft();
                 }else{
-                    pnj.goRight();
+                    pnj->getCharacthere()->goRight();
                 }
             }
-            if (etat==engage)
+            if (pnj->getState()== Bot::State::engage)
             {
-                pnj.lookAt(joueur->getPosition());
+                pnj->getCharacthere()->lookAt(joueur->getPosition());
                 if (espace>50.0f)
                 {
-                    goLeft();
+                    pnj->getCharacthere()->goLeft();
                 }
                 if (espace<-50.0f)
                 {
-                    goRight();
+                    pnj->getCharacthere()->goRight();
                 }
                 if (espace<range && espace>-range)
                 {
-                    getGun().shoot();
-                    getGun().reload();
+                    pnj->getCharacthere()->getGun().shoot();
+                    pnj->getCharacthere()->getGun().reload();
                 }
             }
             break;
@@ -44,9 +46,9 @@ void agressivite::update(&Bot pnj,&enum etat,GameCharacter *joueur){
         case 1:
             if (espace>0)
             {
-                pnj.goLeft();
+                pnj->getCharacthere()->goLeft();
             }else{
-                pnj.goRight();
+                pnj->getCharacthere()->goRight();
             }
             break;
     }
