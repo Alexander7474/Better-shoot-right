@@ -1,8 +1,11 @@
 #include "gun.h"
 
 #include <GLFW/glfw3.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
 
 #include <cmath>
+#include <memory>
 #include <nlohmann/json.hpp>
 #include <random>
 #include <string>
@@ -10,49 +13,51 @@
 
 #include "../game/game.h"
 #include "bullet.h"
+#include "macro.h"
 
-Gun::Gun() : Item(Texture("assets/guns/scar/scar.png")) {
+Gun::Gun() : Item(Texture("assets/default.png")) {
         // arme par default
-        setName("scar");
-        armed = true;
-        rearmTime = 0.1;
-        magazineSize = 20;
-        ammo = 20;
+        setSize(64, 32);
+        setName("default-gun");
         lastShotTime = glfwGetTime() - rearmTime;
-        damage = 0.5f;
         gunMouth = Vector2f(20.f, 5.f);
-        bulletSpeed = 1.f;
         gunDirection = rightDir;
-
-        // texture par default des balles
-        bulletTexture = std::unique_ptr<Texture>(new Texture("assets/guns/bullets/default.png"));
-
         state = GunState::idle;
-        animation = std::unique_ptr<AnimationComponent<GunState>>(
-            new AnimationComponent<GunState>(this));
-
-        loadJsonFile("assets/guns/scar/");
+        bulletType = "5-56x45mm";
 }
 
-void Gun::loadJsonFile(const string& path) {
+Gun::Gun(const std::string &path) : Gun() {
+        animation = std::make_unique<AnimationComponent<GunState>>(this);
+        audio = std::make_unique<AudioComponent<GunState>>(this);
 
-        // cast std::unique_ptr<IAnimationComponent> de Item vers AnimationComponent<GunState>* pour charger les anims
-        if (auto specificPtr = dynamic_cast<AnimationComponent<GunState>*>(animation.get())) {
-                for (int i = 0; i < static_cast<int>(GunState::reload); ++i) {
+        loadJsonFile(path);
+}
+
+void Gun::loadJsonFile(const string &path) {
+        // Chargement des sons dans AudioComponent
+        if (auto specificPtr =
+                dynamic_cast<AudioComponent<GunState> *>(audio.get())) {
+                for (int i = 0; i <= static_cast<int>(GunState::reload); ++i) {
                         const auto state = static_cast<GunState>(i);
-                        specificPtr->loadTextureCache(state, path);
+                        specificPtr->loadSound(state, path);
                 }
         }
 
-        // Après avoir toute les texture par default on
-        // charge les textures personnalisé avec leur
-        // fichier json.
-        // Si pas de fichier json, il reste les texture
-        // par défault.
+        // Chargement des textures dans AnimationComponent
+        if (auto specificPtr =
+                dynamic_cast<AnimationComponent<GunState> *>(animation.get())) {
+                for (int i = 0; i <= static_cast<int>(GunState::reload); ++i) {
+                        const auto state = static_cast<GunState>(i);
+                        specificPtr->loadTexture(state, path);
+                }
+        }
+
+        // Après avoir chargé audio et animation,
+        // on charge les caractèristique de l'arme.
         string jsonPath = path + "gun.json";
         std::ifstream jsonFile(jsonPath);
         if (!jsonFile.is_open()) {
-                LOGS.push_back("Erreur loading json file for " + getName());
+                ERROR_MESSAGE("Chargement fichier json " + path);
                 return;
         }
 
@@ -61,117 +66,132 @@ void Gun::loadJsonFile(const string& path) {
         try {
                 jsonFile >> jsonData;
         } catch (const std::exception &e) {
-                LOGS.push_back("Erreur parsing json for " + getName());
+                ERROR_MESSAGE("Découpage json " + path);
                 return;
         }
 
         try {
                 // chargement des infos de l'arme
                 setName(jsonData.at("name"));
-                damage = jsonData.at("damage");
                 magazineSize = jsonData.at("magazine_size");
                 ammo = magazineSize;
                 rearmTime = jsonData.at("ream_time");
                 bulletSpeed = jsonData.at("bullet_speed");
-
-                string sound = jsonData.at("shot_sound");
-                // gunShotSound =
-                // soundEngine->addSoundSourceFromFile(sound.c_str());
-
-                string bullet = jsonData.at("bullet_texture");
-                bulletTexture = std::unique_ptr<Texture>(new Texture(bullet.c_str()));
+                bulletType = jsonData.at("bullet_type");
+		semiAuto = jsonData.at("is_semi_automatic");
 
                 float x = jsonData.at("mouth_x");
                 float y = jsonData.at("mouth_y");
                 gunMouth.x = x;
                 gunMouth.y = y;
-
         } catch (const nlohmann::json::exception &e) {
-                LOGS.push_back("Erreur getting JSON info for " + getName());
+                ERROR_MESSAGE("Recupération caractéristique " + jsonPath);
                 return;
         }
 }
 
 void Gun::update() {
-
         // Play animation
         // Cast std::unique_ptr<IAnimationComponent> de Item
         // vers AnimationComponent<GunState>* pour jouer les
         // anims
-        if (auto specificPtr = dynamic_cast<AnimationComponent<GunState>*>(animation.get())) {
-                if (specificPtr->play(state)) {
+        if (const auto specificPtr =
+                dynamic_cast<AnimationComponent<GunState> *>(animation.get())) {
+                if (specificPtr->play(state)) { // dès qu'une anim est fini on retourne sur idle
                         state = GunState::idle;
                 }
         }
 
         if (!armed) {
-                if (glfwGetTime() - lastShotTime >= rearmTime && ammo > 0) {
+                if (glfwGetTime() - lastShotTime >= rearmTime && ammo > 0 && state == GunState::idle) {
                         armed = true;
                 }
         }
-
-        for (Bullet &b : bulletVector) {
-                b.update();
-        }
 }
 
-void Gun::setAttachPoint(Vector2f ap) {
+void Gun::setAttachPoint(const Vector2f &ap) {
         attachPoint = ap;
         setPosition(ap);
 }
 
 void Gun::setAttachPoint(float x, float y) { setAttachPoint(Vector2f(x, y)); }
 
-void Gun::shoot() {
-        if (armed) {
-                lastShotTime = glfwGetTime();
-                ammo--;
-                armed = false;
-                state = GunState::shoot;
+void Gun::shoot(Game *game, bool mouseHolded) {
+        if (!armed || (semiAuto && mouseHolded)) 
+		return;
 
-                // creation de la balle
-                Vector2f mouth(
-                    getPosition().x + gunMouth.x,
-                    getPosition().y + gunMouth.y);  // position bouche du canon
+	lastShotTime = glfwGetTime();
+	ammo--;
+	armed = false;
+	state = GunState::shoot;
 
-                // ajout d'un peu d'aléatoire dans la direction
-                uniform_real_distribution<float> distribution(-0.1f, 0.1f);
-                const float r = distribution(RANDOM_ENGINE);
-                const float rotation = getRotation() + r;  // rotation de l'arme
+	// creation de la balle
+	Vector2f mouth(getPosition().x + gunMouth.x,
+		       getPosition().y +
+			   gunMouth.y); // position bouche du canon
 
-                Vector2f inertie(
-                    cos(rotation) * bulletSpeed,
-                    sin(rotation) *
-                        bulletSpeed);  // vecteur d'inertie en fonction de la
-                                       // rotaion du canon
+	// ajout d'un peu d'aléatoire dans la direction
+	uniform_real_distribution<float> distribution(-0.1f, 0.1f);
+	const float r = distribution(RANDOM_ENGINE);
+	const float rotation = getRotation() + r; // rotation de l'arme
 
-                if (gunDirection == leftDir) {
-                        inertie = Vector2f(cos(rotation) * -bulletSpeed,
-                                           sin(rotation) * -bulletSpeed);
-                        mouth = Vector2f(getPosition().x - gunMouth.x, mouth.y);
-                }
+	Vector2f inertie(
+	    cos(rotation) * bulletSpeed,
+	    sin(rotation) *
+		bulletSpeed); // vecteur d'inertie en fonction de la
+			      // rotaion du canon
 
-                // calcule position de sortie de la balle
-                const float outX =
-                    getPosition().x +
-                    (mouth.x - getPosition().x) * cos(getRotation()) -
-                    (mouth.y - getPosition().y) * sin(getRotation());
-                const float outY =
-                    getPosition().y +
-                    (mouth.x - getPosition().x) * sin(getRotation()) +
-                    (mouth.y - getPosition().y) * cos(getRotation());
+	if (gunDirection == leftDir) {
+		inertie = Vector2f(cos(rotation) * -bulletSpeed,
+				   sin(rotation) * -bulletSpeed);
+		mouth = Vector2f(getPosition().x - gunMouth.x, mouth.y);
+	}
 
-                Bullet b(bulletTexture.get(), inertie);
-                b.setPosition(outX, outY);
-                b.setRotation(getRotation());
+	// calcule position de sortie de la balle
+	const float outX =
+	    getPosition().x +
+	    (mouth.x - getPosition().x) * cos(getRotation()) -
+	    (mouth.y - getPosition().y) * sin(getRotation());
+	const float outY =
+	    getPosition().y +
+	    (mouth.x - getPosition().x) * sin(getRotation()) +
+	    (mouth.y - getPosition().y) * cos(getRotation());
 
-                if (gunDirection == leftDir) b.flipVertically();
+	const auto specPtr = dynamic_cast<Bullet*>(ItemFactory::getItem(bulletType));
+	const auto b = new Bullet(*specPtr);
 
-                bulletVector.push_back(b);
-        }
+	// utilisr la ItemFActory ici avec bullet
+	b->setPosition(outX, outY);
+	b->setRotation(getRotation());
+
+	if (gunDirection == leftDir)
+		b->flipVertically();
+
+	b->fire();
+	b->computePhysic(game->getPhysicalWorld());
+
+	b->getBody()->ApplyForceToCenter(b2Vec2(inertie.x,inertie.y), true);
+
+	game->addItem(b);
+
+	// Joue le sound du tir
+	if (const auto specificPtr = dynamic_cast<AudioComponent<GunState> *>(audio.get())) 
+		specificPtr->play(state);
 }
 
-void Gun::reload() { ammo = magazineSize; }
+void Gun::reload() {
+        if (state == GunState::reload)
+                return;
+
+        state = GunState::reload;
+        ammo = magazineSize;
+
+        // Joue le sound du reload
+        if (const auto specificPtr =
+                dynamic_cast<AudioComponent<GunState> *>(audio.get())) {
+                specificPtr->play(state);
+        }
+}
 
 GunState Gun::getState() const { return state; }
 
@@ -182,10 +202,6 @@ Direction Gun::getGunDirection() const { return gunDirection; }
 void Gun::setGunDirection(const Direction gunDirection) {
         this->gunDirection = gunDirection;
 }
-
-float Gun::getDamage() const { return damage; }
-
-void Gun::setDamage(const float damage) { this->damage = damage; }
 
 bool Gun::isArmed() const { return armed; }
 
@@ -201,8 +217,104 @@ int Gun::getAmmo() const { return ammo; }
 
 void Gun::setAmmo(const int ammo) { this->ammo = ammo; }
 
-const std::vector<Bullet> &Gun::getBulletVector() const { return bulletVector; }
+Gun::Gun(const Gun &other)
+    : Item(other), state(other.state), attachPoint(other.attachPoint),
+      gunDirection(other.gunDirection), 
+      armed(other.armed), magazineSize(other.magazineSize), ammo(other.ammo),
+      lastShotTime(other.lastShotTime), rearmTime(other.rearmTime),
+      bulletSpeed(other.bulletSpeed),
+      gunMouth(other.gunMouth), bulletType(other.bulletType),
+      semiAuto(other.semiAuto) {
 
-void Gun::setBulletVector(const std::vector<Bullet> &bulletVector) {
-        this->bulletVector = bulletVector;
+        // Changement de possèsseur du composant copier.
+        // On cast en premier l'autre composant pour voir
+        // si il correspond bien.
+        // Puis on copie et change l'ownership.
+        if (const auto specificPtr =
+                dynamic_cast<AnimationComponent<GunState> *>(
+                    other.animation.get())) {
+                animation = std::make_unique<AnimationComponent<GunState>>(
+                    *specificPtr); // copie
+                dynamic_cast<AnimationComponent<GunState> *>(animation.get())
+                    ->setOwner(this);
+        }
+
+        if (const auto specificPtr =
+                dynamic_cast<AudioComponent<GunState> *>(other.audio.get())) {
+                audio = std::make_unique<AudioComponent<GunState>>(
+                    *specificPtr); // copie
+                dynamic_cast<AudioComponent<GunState> *>(audio.get())
+                    ->setOwner(this);
+        }
+}
+
+Gun::Gun(Gun &&other) noexcept
+    : Item(std::move(other)), state(other.state),
+      attachPoint(other.attachPoint), gunDirection(other.gunDirection),
+      armed(other.armed), magazineSize(other.magazineSize), ammo(other.ammo),
+      lastShotTime(other.lastShotTime), rearmTime(other.rearmTime),
+      bulletSpeed(other.bulletSpeed), gunMouth(other.gunMouth), bulletType(other.bulletType),
+      semiAuto(other.semiAuto) {}
+
+Gun &Gun::operator=(const Gun &other) {
+        if (this == &other)
+                return *this;
+        Item::operator=(other);
+        state = other.state;
+        attachPoint = other.attachPoint;
+        gunDirection = other.gunDirection;
+        armed = other.armed;
+        magazineSize = other.magazineSize;
+        ammo = other.ammo;
+        lastShotTime = other.lastShotTime;
+        rearmTime = other.rearmTime;
+        bulletSpeed = other.bulletSpeed;
+        gunMouth = other.gunMouth;
+        bulletType = other.bulletType;
+	semiAuto = other.semiAuto;
+
+        // Changement de possèsseur du composant copier.
+        // On cast en premier l'autre composant pour voir
+        // si il correspond bien.
+        // Puis on copie et change l'ownership.
+        if (const auto specificPtr =
+                dynamic_cast<AnimationComponent<GunState> *>(
+                    other.animation.get())) {
+                animation = std::make_unique<AnimationComponent<GunState>>(
+                    *specificPtr); // copie
+                dynamic_cast<AnimationComponent<GunState> *>(animation.get())
+                    ->setOwner(this);
+        }
+
+        if (const auto specificPtr =
+                dynamic_cast<AudioComponent<GunState> *>(other.audio.get())) {
+                audio = std::make_unique<AudioComponent<GunState>>(
+                    *specificPtr); // copie
+                dynamic_cast<AudioComponent<GunState> *>(audio.get())
+                    ->setOwner(this);
+        }
+        return *this;
+}
+
+Gun &Gun::operator=(Gun &&other) noexcept {
+        if (this == &other)
+                return *this;
+        Item::operator=(std::move(other));
+        state = other.state;
+        attachPoint = other.attachPoint;
+        gunDirection = other.gunDirection;
+        armed = other.armed;
+        magazineSize = other.magazineSize;
+        ammo = other.ammo;
+        lastShotTime = other.lastShotTime;
+        rearmTime = other.rearmTime;
+        bulletSpeed = other.bulletSpeed;
+        gunMouth = other.gunMouth;
+        bulletType = other.bulletType;
+	semiAuto = other.semiAuto;
+        return *this;
+}
+
+void Gun::shoot() {
+	return;
 }

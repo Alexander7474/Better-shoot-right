@@ -1,0 +1,11 @@
+{
+  "name" : "scar",
+  "bullet_type" : "5-56x45mm",
+  "magazine_size" : 5,
+  "ream_time" : 1.2,
+  "is_semi_automatic": true,
+  "bullet_speed" : 200,
+  "mouth_x" : 32.0,
+  "mouth_y" : -2
+}
+

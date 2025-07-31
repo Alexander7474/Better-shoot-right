@@ -1,6 +1,12 @@
-#include "physic.h"
 #include <box2d/b2_body.h>
 #include <string>
+#include <utility>
+
+#include "gameCharacter.h"
+#include "macro.h"
+#include "../game/game.h"
+#include "physic.h"
+#include "particle.h"
 
 b2Body *addStaticBox(b2World *world, const Geometric *box) {
         // 1. Définir le corps statique
@@ -22,48 +28,58 @@ b2Body *addStaticBox(b2World *world, const Geometric *box) {
         fixtureDef.density = 0.f;
         fixtureDef.friction = 1.f;
 
+#ifdef PHYSIC_DEBUG
         std::string log =
             "Box static ajouter l:" + std::to_string(box->getSize().x) +
             " h:" + std::to_string(box->getSize().y) +
             " x:" + std::to_string(box->getPosition().x) +
             " y:" + std::to_string(box->getPosition().y);
-        log += "\nBOX2D COORD x:" + std::to_string(body->GetPosition().x) +
+        log += " | BOX2D COORD x:" + std::to_string(body->GetPosition().x) +
                " y:" + std::to_string(body->GetPosition().y);
-        LOGS.push_back(log);
+        DEBUG_MESSAGE(log);
+#endif
 
         // 3. Ajouter la fixture au corps
         body->CreateFixture(&fixtureDef); // densité = 0 pour statique
 
-        return body;
+	// Ajout d'un pointer vers BodyData Undefined 
+	// pour eviter les erreurs dans handleContact
+	auto *data = new BodyData;
+        data->type = BodyType::Static;
+
+	body->GetUserData().pointer = reinterpret_cast<uintptr_t>(data);
+        
+	return body;
 }
 
-b2Body *addDynamicBox(b2World *world, Geometric *box,
-                      const float restitution, const float density,
-                      const float friction, const float linearDamping,
-                      const bool rotationLock, const Vector2f& offsetX,
-                      const Vector2f& offsetY) {
+b2Body *addDynamicBox(b2World *world, Geometric *box, const float restitution,
+                      const float density, const float friction,
+                      const float linearDamping, const bool rotationLock,
+		      const bool isBullet,
+                      const Vector2f &offsetX, const Vector2f &offsetY) {
 
-        //Définir les mesures de la boite de BBOP vers Box2D
+        // Définir les mesures de la boite de BBOP vers Box2D
         const Vector2f sizeNoOffset(
-                (box->getSize().x - offsetX.x - offsetX.y)/2.f,
-                (box->getSize().y - offsetY.x - offsetY.y)/2.f);
+            (box->getSize().x - offsetX.x - offsetX.y) / 2.f,
+            (box->getSize().y - offsetY.x - offsetY.y) / 2.f);
 
         const Vector2f posNoOffset(
-                box->getPosition().x + box->getSize().x / 2.f + offsetX.x / 2.f,
-                box->getPosition().y + box->getSize().y / 2.f + offsetY.x / 2.f);
+            box->getPosition().x + box->getSize().x / 2.f + offsetX.x / 2.f,
+            box->getPosition().y + box->getSize().y / 2.f + offsetY.x / 2.f);
 
         box->setOrigin(
-                box->getSize().x / 2.f + offsetX.x /2.f - offsetX.y /2.f,
-                box->getSize().y / 2.f + offsetY.x /2.f - offsetY.y /2.f);
+            box->getSize().x / 2.f + offsetX.x / 2.f - offsetX.y / 2.f,
+            box->getSize().y / 2.f + offsetY.x / 2.f - offsetY.y / 2.f);
 
         // 1. Définir le corps statique
         b2BodyDef bodyDef;
-        bodyDef.position.Set(
-            posNoOffset.x / PIXEL_PER_METER,
-            posNoOffset.y / PIXEL_PER_METER);
+        bodyDef.position.Set(posNoOffset.x / PIXEL_PER_METER,
+                             posNoOffset.y / PIXEL_PER_METER);
         bodyDef.type = b2_dynamicBody;
         bodyDef.fixedRotation = rotationLock;
         bodyDef.linearDamping = linearDamping; // Très utile !
+        bodyDef.angle = box->getRotation();
+	bodyDef.bullet = isBullet;
 
         b2Body *body = world->CreateBody(&bodyDef);
 
@@ -78,19 +94,33 @@ b2Body *addDynamicBox(b2World *world, Geometric *box,
         fixtureDef.density = density;
         fixtureDef.friction = friction;
 
+#ifdef PHYSIC_DEBUG
         std::string log =
             "Box dynamic ajouter l:" + std::to_string(box->getSize().x) +
             " h:" + std::to_string(box->getSize().y) +
             " x:" + std::to_string(box->getPosition().x) +
             " y:" + std::to_string(box->getPosition().y);
-        log += "\nBOX2D COORD x:" + std::to_string(body->GetPosition().x) +
+        log += " | BOX2D COORD x:" + std::to_string(body->GetPosition().x) +
                " y:" + std::to_string(body->GetPosition().y);
-        LOGS.push_back(log);
+        DEBUG_MESSAGE(log);
+#endif
 
         // 3. Ajouter la fixture au corps
         body->CreateFixture(&fixtureDef);
 
-        return body;
+	// Ajout d'un pointer vers BodyData Undefined 
+	// pour eviter les erreurs dans handleContact
+	auto *data = new BodyData;
+        data->type = BodyType::Undefined;
+        
+	body->GetUserData().pointer = reinterpret_cast<uintptr_t>(data);
+	
+	return body;
+}
+
+Game* CustomContactListener::game = nullptr;
+void CustomContactListener::setGameOwner(Game* g) {
+	game = g;
 }
 
 void CustomContactListener::BeginContact(b2Contact *contact) {
@@ -103,35 +133,101 @@ void CustomContactListener::EndContact(b2Contact *contact) {
 
 void CustomContactListener::handleContact(b2Contact *contact,
                                           const bool begin) {
-        b2Fixture *fixtureA = contact->GetFixtureA();
+#ifdef CONTACT_DEBUG
+        DEBUG_MESSAGE("Appelle CustomContactListener::handleContact");
+#endif
+
+	b2Fixture *fixtureA = contact->GetFixtureA();
         b2Fixture *fixtureB = contact->GetFixtureB();
         b2Body *bodyA = fixtureA->GetBody();
         b2Body *bodyB = fixtureB->GetBody();
 
         b2WorldManifold manifold;
         contact->GetWorldManifold(&manifold);
-        const b2Vec2 normal = manifold.normal;
+        b2Vec2 normal = manifold.normal;
 
-        if (bodyB->GetUserData().pointer) {
-                if (normal.y < -0.02f) {
-                        reinterpret_cast<BodyData *>(
-                            bodyB->GetUserData().pointer)
-                            ->isTouchingDown = begin;
-                } else {
-                        reinterpret_cast<BodyData *>(
-                            bodyB->GetUserData().pointer)
-                            ->isTouchingDown = false;
-                }
-        }
-        if (bodyA->GetUserData().pointer) {
-                if (normal.y > 0.02f) {
-                        reinterpret_cast<BodyData *>(
-                            bodyA->GetUserData().pointer)
-                            ->isTouchingDown = begin;
-                } else {
-                        reinterpret_cast<BodyData *>(
-                            bodyA->GetUserData().pointer)
-                            ->isTouchingDown = false;
-                }
-        }
+	if(!bodyB->GetUserData().pointer || !bodyA->GetUserData().pointer){
+		ERROR_MESSAGE("Impossible de gérer un contact sans pointer dans UserData");
+		return;
+	}
+
+	auto *dataA = reinterpret_cast<BodyData *>(bodyA->GetUserData().pointer);
+	auto *dataB = reinterpret_cast<BodyData *>(bodyB->GetUserData().pointer);
+
+	// Lambda de detection du type de collision 
+	auto hasTypes = [](BodyData *a, BodyData *b, BodyType tA, BodyType tB){
+		return (a->type == tA && b->type == tB);
+	};
+
+	// La gestion du contact peut-être fais
+	// avec bodyA = GameCharacter et bodyB
+	// = Static.
+	// Si ces l'inverse, on échange bodyA et B.
+	//
+	// (On ne peut pas prédire dans quelle 
+	// ordre box2D va renvoyer la collision)
+	//
+	
+	// Gestion GameCharacter Static
+	if (hasTypes(dataA, dataB, BodyType::Static, BodyType::GameCharacter)){
+		std::swap(dataA, dataB);
+		std::swap(bodyA, bodyB);
+		normal.y = -normal.y;
+	}
+	if (hasTypes(dataA, dataB, BodyType::GameCharacter, BodyType::Static)){
+		if (normal.y > 0.2f) {
+			auto* character = reinterpret_cast<GameCharacter*>(dataA->ptr);
+			character->setTouchingDown(begin);
+		}
+		return;
+	}
+
+	// Gestion GameCharacter Bullet
+	if(hasTypes(dataA, dataB, BodyType::Bullet, BodyType::GameCharacter)){
+		std::swap(dataA, dataB);
+		std::swap(bodyA, bodyB);
+	}
+	if(hasTypes(dataA, dataB, BodyType::GameCharacter, BodyType::Bullet)){
+		auto *bullet = reinterpret_cast<Bullet*>(dataB->ptr);
+
+		if(bullet->getState() != BulletState::broken){
+			bullet->broke();
+
+			auto *character = reinterpret_cast<GameCharacter*>(dataA->ptr);
+			character->setHp(character->getHp() - bullet->getDamage());
+
+			AnimatedSprite *tmp = ParticleFactory::getParticle("blood")
+				.withSize(Vector2f(10.f,10.f))
+				.withRotation(bullet->getRotation())
+				.withOrigin(Vector2f(5.f,5.f))
+				.withPosition(Vector2f(bodyB->GetPosition().x*PIXEL_PER_METER, bodyB->GetPosition().y*PIXEL_PER_METER))
+				.build();
+		
+			game->addParticle(tmp);
+		}
+		return;
+	}
+	
+	// Gestion Bullet Static
+	if(hasTypes(dataA, dataB, BodyType::Static, BodyType::Bullet)){
+		std::swap(dataA, dataB);
+		std::swap(bodyA, bodyB);
+	}
+	if(hasTypes(dataA, dataB, BodyType::Bullet, BodyType::Static)){
+		auto *bullet = reinterpret_cast<Bullet*>(dataA->ptr);
+
+		if(bullet->getState() != BulletState::broken){
+			bullet->broke();
+
+			AnimatedSprite *tmp = ParticleFactory::getParticle("impact")
+				.withSize(Vector2f(10.f,10.f))
+				.withRotation(bullet->getRotation())
+				.withOrigin(Vector2f(5.f,5.f))
+				.withPosition(Vector2f(bodyA->GetPosition().x*PIXEL_PER_METER, bodyA->GetPosition().y*PIXEL_PER_METER))
+				.build();
+			
+			game->addParticle(tmp);
+		}
+		return;
+	}
 }

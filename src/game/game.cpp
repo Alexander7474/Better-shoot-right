@@ -1,122 +1,183 @@
 #include "game.h"
-#include "../engine/physic.h"
-#include "entity.h"
 #include "../engine/dynamicSprite.h"
+#include "../engine/macro.h"
+#include "../engine/physic.h"
+#include "../engine/particle.h"
+#include "../engine/member.h"
 
-#include <box2d/b2_body.h>
 #include <box2d/box2d.h>
+#include <memory>
 #include <string>
 
-using namespace std;
-
-GLFWwindow* gameWindow = nullptr;
+GLFWwindow *gameWindow = nullptr;
 
 double DELTA_TIME = 0;
 double FPS = 0;
 double FPS_COUNTER = 0;
 double LAST_FPS_UPDATE = glfwGetTime();
 float GRAVITY = 9.8f;
-default_random_engine RANDOM_ENGINE; 
+default_random_engine RANDOM_ENGINE;
 
 Game::Game()
-  :  map("assets/map/map1/"), physicalWorld(b2Vec2(0.0f,GRAVITY)) // création du monde physique avec un vecteur de gravité
+    : mainPlayer(this),
+      map("assets/map/default/"),
+      physicalWorld(b2Vec2(
+          0.0f,
+          GRAVITY)) // création du monde physique avec un vecteur de gravité
 {
-  auto* listener = new CustomContactListener();
-  physicalWorld.SetContactListener(listener);
-  npc=new Bot();
-  
-  if(map.getSpawnPoints().size() > 1){
-    mainPlayer.getCharacter().setPosition(map.getSpawnPoints()[0]);
-    npc->getCharacthere()->setPosition(Vector2f(500.f, 1281.f));
-  }
-  //init physic-------------------------------------------------------------------------
-  //rajoute le boite de collision au monde physique
-  for(CollisionBox& box : map.getCollision()){
-    addStaticBox(&physicalWorld, &box);
-  }
+        auto listener = new CustomContactListener();
+	listener->setGameOwner(this);
+        physicalWorld.SetContactListener(listener);
 
-  entities.push_back(&mainPlayer.getCharacter());
-  entities.push_back(npc->getCharacthere());
+        if (map.getSpawnPoints().size() > 1) {
+                mainPlayer.getCharacter().setPosition(map.getSpawnPoints()[0]);
+		testPnj.setPosition(mainPlayer.getCharacter().getPosition());
+        }
 
-  // compute entities
-  unsigned long long cptEnt = 0;
-  for(const auto& e : entities){
-    e->computePhysic(&physicalWorld);
-    cptEnt++;
-  }
-  const string log = to_string(cptEnt) + " entitées initialisées dans le monde box2d pas Game";
-  LOGS.push_back(log);
-  //------------------------------------------------------------------------------------
+	// init
+        // physic-------------------------------------------------------------------------
+        // rajoute le boite de collision au monde physique
+        for (CollisionBox &box : map.getCollision()) {
+                addStaticBox(&physicalWorld, &box);
+        }
+
+        entities.push_back(&mainPlayer.getCharacter());
+	entities.push_back(&testPnj);
+
+        // compute entities
+        unsigned long long cptEnt = 0;
+        for (const auto &e : entities) {
+                e->computePhysic(&physicalWorld);
+                cptEnt++;
+        }
+        const string log =
+            to_string(cptEnt) +
+            " entitées initialisées dans le monde box2d pas Game";
+        DEBUG_MESSAGE(log);
+        //------------------------------------------------------------------------------------
 }
 
-void Game::update()
-{
-  //simple gestion de animations
-  map.update();
+void Game::update() {
+	for(const auto &item : items)
+		item->update();
 
+	for(unsigned long i = 0; i < particles.size(); i++){
+ 		if(particles[i]->update()){
+			particlesTempShit.push_back(std::move(particles[i])); // TODO -- patch temp AnimatedSPrite / see addParticle todo 
+			particles.erase(particles.begin()+i);
+		}
+	}
 
-  //déterminer la position du milieu entre le joueur et son crossair
-  Vector2f middlePos;
-  middlePos.x = (mainPlayer.getCharacter().getPosition().x + mainPlayer.getCrossair().getPosition().x)/2.f;
-  middlePos.y = (mainPlayer.getCharacter().getPosition().y + mainPlayer.getCrossair().getPosition().y)/2.f;
+        // update des éléments des la game 
+        map.update();
 
-  float distance = bbopGetDistance(middlePos, mainPlayer.getCharacter().getPosition());
+	// Gestion de la caméra ------------------------------------------------------------
+        // déterminer la position du milieu entre le joueur et son crossair
+        Vector2f middlePos;
+        middlePos.x = (mainPlayer.getCharacter().getPosition().x +
+                       mainPlayer.getCrossair().getPosition().x) /
+                      2.f;
+        middlePos.y = (mainPlayer.getCharacter().getPosition().y +
+                       mainPlayer.getCrossair().getPosition().y) /
+                      2.f;
 
-  // limite la distance à la quelle la caméra peut aller
-  if (distance > 50.f) {
-    const double dx = middlePos.x - mainPlayer.getCharacter().getPosition().x;
-    const double dy = middlePos.y - mainPlayer.getCharacter().getPosition().y;
-    const double scale = 50 / distance;
-    middlePos.x = (mainPlayer.getCharacter().getPosition().x + scale * dx);
-    middlePos.y = (mainPlayer.getCharacter().getPosition().y + scale * dy);
-  }
+        float distance =
+            bbopGetDistance(middlePos, mainPlayer.getCharacter().getPosition());
 
-  mainPlayerCam.setScale(0.8);
-  mainPlayerCam.setPosition(middlePos);
-  mainPlayer.update(&mainPlayerCam, &map);
-  npc->update(&map,&mainPlayer.getCharacter());
+        // limite la distance à la quelle la caméra peut aller
+        if (distance > 150.f) {
+                const double dx =
+                    middlePos.x - mainPlayer.getCharacter().getPosition().x;
+                const double dy =
+                    middlePos.y - mainPlayer.getCharacter().getPosition().y;
+                const double scale = 150 / distance;
+                middlePos.x =
+                    (mainPlayer.getCharacter().getPosition().x + scale * dx);
+                middlePos.y =
+                    (mainPlayer.getCharacter().getPosition().y + scale * dy);
+        }
 
-  const int state = glfwGetKey(gameWindow, GLFW_KEY_G);
-  if (state == GLFW_PRESS) {
-    mainPlayer.getCharacter().toggleRagdollMod(&physicalWorld);
-  }
+	// verifier la vie des bots et du joueur
+	// TODO -- vérifier la vie du bot
+	if(mainPlayer.getCharacter().getHp() <= 0.f && mainPlayer.getCharacter().getHead().getState() != MemberState::ragdoll)
+		mainPlayer.getCharacter().toggleRagdollMod(&physicalWorld);
+	if(testPnj.getHp() <= 0.f && testPnj.getHead().getState() != MemberState::ragdoll)
+		testPnj.toggleRagdollMod(&physicalWorld);
 
+        mainPlayerCam.setScale(0.5f);
+        mainPlayerCam.setPosition(middlePos);
+        mainPlayer.update(&mainPlayerCam, &map);
 
-  //Gestion de la physique-------------------------------------------------------------------------
-  constexpr float timeStep = 1.0f / 60.f;
-  int velocityIterations = 6;
-  int positionIterations = 2;
+	testPnj.update(&map);
 
-  //mis a jour du monde box2d
-  physicalWorld.Step(timeStep, velocityIterations, positionIterations);
+        // Gestion de la
+        // physique-------------------------------------------------------------------------
+        constexpr int velocityIterations = 6;
+        constexpr int positionIterations = 2;
 
-  //mise a jour des entitées après la mise a jour du monde box2d
-  for(auto &ent : entities){
-    ent->updatePhysic();
-  }
-  //-----------------------------------------------------------------------------------------------
- }
+        // mis a jour du monde box2d
+        physicalWorld.Step(DELTA_TIME, velocityIterations, positionIterations);
 
-void Game::Draw()
-{
-  map.Draw(scene, mainPlayerCam);
-  scene.Draw(mainPlayer);
-  scene.Draw(*npc->getCharacthere());
-
-  for(auto& d: dynamics){
-    scene.Draw(*d);
-    bbopDebugCollisionBox(d->getCollisionBox(), scene);
-  }
-
-  bbopDebugCollisionBox(mainPlayer.getCharacter().getHead().getCollisionBox(), scene);
-  bbopDebugCollisionBox(mainPlayer.getCharacter().getLegs().getCollisionBox(), scene);
-  bbopDebugCollisionBox(mainPlayer.getCharacter().getBody().getCollisionBox(), scene);
-  bbopDebugCollisionBox(mainPlayer.getCharacter().getRightArm().getCollisionBox(), scene);
-  bbopDebugCollisionBox(mainPlayer.getCharacter().getLeftArm().getCollisionBox(), scene);
-
-  for (CollisionBox& box : map.getCollision()) {
-    bbopDebugCollisionBox(box, scene);
-  }
-
-  scene.render();
+        // mise a jour des entitées après la mise a jour du monde box2d
+        for (auto &ent : entities) {
+                ent->updatePhysic();
+        }
+        //----------------------------------------------------------------------------------
 }
+
+void Game::Draw() {
+        map.Draw(scene, mainPlayerCam);
+        scene.Draw(mainPlayer);
+	scene.Draw(testPnj);
+
+        for (auto &d : dynamics) {
+                scene.Draw(*d);
+#ifdef DEBUG_COLLISION
+                bbopDebugCollisionBox(d->getCollisionBox(), scene);
+#endif
+        }
+
+        for (auto &i : items) {
+                scene.Draw(*i);
+#ifdef DEBUG_COLLISION
+                bbopDebugCollisionBox(i->getCollisionBox(), scene);
+#endif
+        }
+
+#ifdef DEBUG_COLLISION
+        bbopDebugCollisionBox(
+            mainPlayer.getCharacter().getHead().getCollisionBox(), scene);
+        bbopDebugCollisionBox(
+            mainPlayer.getCharacter().getLegs().getCollisionBox(), scene);
+        bbopDebugCollisionBox(
+            mainPlayer.getCharacter().getBody().getCollisionBox(), scene);
+        bbopDebugCollisionBox(
+            mainPlayer.getCharacter().getRightArm().getCollisionBox(), scene);
+        bbopDebugCollisionBox(
+            mainPlayer.getCharacter().getLeftArm().getCollisionBox(), scene);
+
+        for (CollisionBox &box : map.getCollision()) {
+                bbopDebugCollisionBox(box, scene);
+        }
+#endif
+
+	for(auto &p : particles)
+		scene.Draw(*p);
+
+        scene.render();
+}
+
+void Game::addItem(Item *item) {
+        item->update();
+        items.push_back(std::unique_ptr<Item>(item));
+        entities.push_back(items.back().get());
+}
+
+// TODO -- URGENT gérer de bug lors de la destruction d'un ANimatedSprite qui empêche l'utilisation de textureColorBuffer de scene
+// TODO -- Modifier la class AnimatedSprite pour reset le départ de l'animation sans accéder à ds membres sensé êtres privés
+void Game::addParticle(AnimatedSprite *p) {
+	particles.push_back(std::unique_ptr<AnimatedSprite>(p));
+}
+
+
+b2World *Game::getPhysicalWorld() { return &physicalWorld; }

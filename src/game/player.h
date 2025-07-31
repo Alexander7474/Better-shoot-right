@@ -2,28 +2,34 @@
 
 #include "../../Bbop-2D/include/BBOP/Graphics/bbopGlobal.h"
 #include "../../Bbop-2D/include/BBOP/Graphics/cameraClass.h"
-#include "../engine/gameCharacter.h"
 #include "../engine/crossair.h"
+#include "../engine/gameCharacter.h"
 
-class Player : public BbopDrawable
-{
-private:
-  GameCharacter character;
+class Game;
 
-  Crossair crossair;
+class Player final : public BbopDrawable {
+      private:
+        GameCharacter character;
 
-public:
-  Player();
+        Crossair crossair;
 
-  /**
-  * @brief Met a jour le player 
-  */
-  void update(Camera *playerCam, Map* map);
+        Game *game = nullptr; //<! Le player garde un pointer vers sa game
 
-  virtual void Draw(GLint *renderUniforms) const override;
+	bool mouseHold{};
+      public:
+        Player() = default;
 
-  //GETTER 
-  
-  GameCharacter& getCharacter();
-  Crossair& getCrossair();
+        explicit Player(Game *game);
+
+        /**
+         * @brief Met a jour le player
+         */
+        void update(Camera *playerCam, Map *map);
+
+        virtual void Draw(GLint *renderUniforms) const override;
+
+        // GETTER
+
+        GameCharacter &getCharacter();
+        Crossair &getCrossair();
 };

@@ -1,0 +1,10 @@
+{
+  "name" : "ak47",
+  "bullet_type" : "5-56x45mm",
+  "magazine_size" : 25,
+  "ream_time" : 0.08,
+  "bullet_speed" : 200.0,
+  "mouth_x" : 30.0,
+  "mouth_y" : -2
+}
+

@@ -10,31 +10,71 @@
 
 #include "../../Bbop-2D/include/BBOP/Graphics.h"
 
+// TODO-- Faire une class commune pour AudioComponent et AnimationComponent
+
 // structure de stockage d'un animation, respecte la structure des fichier json
 struct Animation {
         std::vector<Texture>
-            textures;      //<! ensemble de texture qui form l'animation
-        double duration;   // temps de l'animation
-        int nFrame;        // nombre de frame
-        double startTime;  // depart de l'anim
-        double lastFrameStartTime;  // depart de la dernière frame
+            textures;              //<! ensemble de texture qui form l'animation
+        double duration;           // temps de l'animation
+        int nFrame;                // nombre de frame
+        double startTime;          // depart de l'anim
+        double lastFrameStartTime; // depart de la dernière frame
         double frameTime;
 };
 
+/**
+ * @brief Class mère de AnimationComponent
+ * @details permet de prévoir l'implémentation du composant animations
+ * sans connaitre l'enumération qui sera utilisé comme template
+ */
 class IAnimationComponent {
-public:
+      protected:
+        Sprite *owner = nullptr; //<! class fille
+        bool reverse{};          //<! joue l'animation à l'envers
+        int animCnt{};           //<! compteur de frame de l'animation
+      public:
+        IAnimationComponent() = default;
         virtual ~IAnimationComponent() = default;
+
+        [[nodiscard]] bool isReverse() const;
+
+        void setReverse(bool reverse);
+
+        /**
+         * @brief Renvoi un pointeur vers owner
+         * @return
+         */
+        [[nodiscard]] Sprite *getOwner() const;
+
+        /**
+         * @brief Changer le possèsseur du composant
+         * @param owner
+         * @details Utile dans les constructeur par copie pour transférer le
+         * composant
+         */
+        void setOwner(Sprite *owner);
+
+        IAnimationComponent(const IAnimationComponent &other) = default;
+
+        IAnimationComponent(IAnimationComponent &&other) = default;
+
+        IAnimationComponent &
+        operator=(const IAnimationComponent &other) = default;
+
+        IAnimationComponent &operator=(IAnimationComponent &&other) = default;
 };
 
+/**
+ * @brief Gère les animations qu'un sprite peut jouer
+ * @tparam AnimationEnum
+ */
 template <typename AnimationEnum>
-class AnimationComponent : public IAnimationComponent {
-       private:
-        Sprite *owner;  //<! class fille
+class AnimationComponent final : public IAnimationComponent {
+      private:
         std::unordered_map<AnimationEnum, Animation>
-            animations;  //<! map de toute les animations possible
-        bool reverse{};  //<! joue l'animation à l'envers
-        int animCnt{};   //<! compteur de frame de l'animation
-       public:
+            animations; //<! map de toute les animations possible
+      public:
         /**
          * @brief
          * @param owner pointeur vers la class fille héritante du composant
@@ -48,7 +88,7 @@ class AnimationComponent : public IAnimationComponent {
          * @param path chamin d'accès vers les anims et le fichier
          * animations.json
          */
-        void loadTextureCache(AnimationEnum state, std::string path);
+        void loadTexture(AnimationEnum state, std::string path);
 
         /**
          * @brief joue l'animation
@@ -57,9 +97,15 @@ class AnimationComponent : public IAnimationComponent {
          */
         bool play(AnimationEnum state);
 
-        [[nodiscard]] bool isReverse() const;
+        AnimationComponent(const AnimationComponent &other);
 
-        void setReverse(bool reverse);
+        AnimationComponent(AnimationComponent &&other) noexcept;
+
+        AnimationComponent<AnimationEnum> &
+        operator=(const AnimationComponent &other);
+
+        AnimationComponent<AnimationEnum> &
+        operator=(AnimationComponent &&other) noexcept;
 };
 
-#endif  // ANIMATIONCOMPONENT_H
+#endif // ANIMATIONCOMPONENT_H

@@ -30,7 +30,7 @@ void Member::update() {
         }
 }
 
-void Member::setAttachPoint(const Vector2f& _attachPoint) {
+void Member::setAttachPoint(const Vector2f &_attachPoint) {
         attachPoint = _attachPoint;
         setPosition(attachPoint);
 }
@@ -41,11 +41,11 @@ void Member::setAttachPoint(float x, float y) {
 
 Vector2f Member::getAttachPoint() const { return attachPoint; }
 
-void Member::createTextureCache(const std::string& path) {
+void Member::createTextureCache(const std::string &path) {
         if (animation) {
                 for (int i = 0; i < static_cast<int>(MemberState::dead); ++i) {
                         const auto state = static_cast<MemberState>(i);
-                        animation->loadTextureCache(state, path);
+                        animation->loadTexture(state, path);
                 }
         }
 }
@@ -61,5 +61,7 @@ void Member::setetat(int k) {
                 cerr << "state do not exist" << endl;
         }
 }
+
+MemberState Member::getState() { return state; };
 
 int Member::getetat() { return static_cast<int>(state); }
