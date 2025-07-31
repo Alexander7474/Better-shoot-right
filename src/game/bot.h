@@ -21,7 +21,7 @@ using namespace std;
 // Fait une doxygen pour tes fonctions et renome les au format camelCase
 // IL FAUT QUE TOUS LES BOT PUISSE ÊTRE UTILISÉ À PARTIR DE LA CLASS BOT ET DES MÉTHODES UPDATE() ET DRAW()
 
-class Bot
+class Bot : public BbopDrawable
 {
 public:
     Bot();
@@ -79,7 +79,7 @@ public:
     void update(Map *map,GameCharacter *perso1);//mise a jour du bot//
     void PatrolMod();//patrouille//
     void DetectPlayer(GameCharacter *user);//look bot// 
-    void Draw(Scene* scene);//dessine la bar de vie et le dialogue//
+    void Draw(GLint* renderUniforms) const override;//dessine la bar de vie et le dialogue//
     GameCharacter * getCharacthere();
     State getState();
 protected:

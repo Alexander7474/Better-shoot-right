@@ -153,6 +153,8 @@ void Bot::update(Map* map, GameCharacter* user) {
         hpbar->setPosition(Vector2f(pnj->getPosition().x + 290, pnj->getPosition().y - 20));
         dialoque->setPosition(Vector2f(pnj->getPosition().x, pnj->getPosition().y - 50));
     }
+    float hp = (35.f / 500.f) * pnj->getHp();
+    hpbar->setSize(Vector2f(hp, hpbar->getSize().y));
     pnj->update(map);
 }
 
@@ -192,13 +194,11 @@ void Bot::DetectPlayer(GameCharacter* user) {
     }
 }
 
-void Bot::Draw(Scene* scene) {
+void Bot::Draw(GLint *renderUniforms) const {
     if (glfwGetTime() - timer < 3) {
-        scene->Draw(*dialoque);
+        dialoque->Draw(renderUniforms);
     }
-    float hp = (35.f / 500.f) * pnj->getHp();
-    hpbar->setSize(Vector2f(hp, hpbar->getSize().y));
-    scene->Draw(*hpbar);
+    hpbar->Draw(renderUniforms);
 }
 
 GameCharacter* Bot::getCharacthere() {
