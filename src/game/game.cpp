@@ -16,7 +16,7 @@ double FPS = 0;
 double FPS_COUNTER = 0;
 double LAST_FPS_UPDATE = glfwGetTime();
 float GRAVITY = 9.8f;
-default_random_engine RANDOM_ENGINE;
+std::default_random_engine RANDOM_ENGINE;
 
 Game::Game()
     : mainPlayer(this),
@@ -50,8 +50,8 @@ Game::Game()
                 e->computePhysic(&physicalWorld);
                 cptEnt++;
         }
-        const string log =
-            to_string(cptEnt) +
+        const std::string log =
+            std::to_string(cptEnt) +
             " entitées initialisées dans le monde box2d pas Game";
         DEBUG_MESSAGE(log);
         //------------------------------------------------------------------------------------

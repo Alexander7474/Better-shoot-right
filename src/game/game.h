@@ -4,7 +4,6 @@
 #include "../engine/dynamicSprite.h"
 #include "entity.h"
 #include "player.h"
-#include "trooper.h"
 
 #include <GLFW/glfw3.h>
 #include <box2d/box2d.h>
@@ -30,7 +29,6 @@ class Game {
         Camera mainPlayerCam;
         Player mainPlayer;
         Map map;
-        std::vector<Trooper *> npc;
         std::vector<std::unique_ptr<DynamicSprite>>
             dynamics; // liste des sprites dynamics
         std::vector<std::unique_ptr<Item>> items;

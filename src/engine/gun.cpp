@@ -33,7 +33,7 @@ Gun::Gun(const std::string &path) : Gun() {
         loadJsonFile(path);
 }
 
-void Gun::loadJsonFile(const string &path) {
+void Gun::loadJsonFile(const std::string &path) {
         // Chargement des sons dans AudioComponent
         if (auto specificPtr =
                 dynamic_cast<AudioComponent<GunState> *>(audio.get())) {
@@ -54,7 +54,7 @@ void Gun::loadJsonFile(const string &path) {
 
         // Après avoir chargé audio et animation,
         // on charge les caractèristique de l'arme.
-        string jsonPath = path + "gun.json";
+        std::string jsonPath = path + "gun.json";
         std::ifstream jsonFile(jsonPath);
         if (!jsonFile.is_open()) {
                 ERROR_MESSAGE("Chargement fichier json " + path);
@@ -131,7 +131,7 @@ void Gun::shoot(Game *game, bool mouseHolded) {
 			   gunMouth.y); // position bouche du canon
 
 	// ajout d'un peu d'aléatoire dans la direction
-	uniform_real_distribution<float> distribution(-0.1f, 0.1f);
+	std::uniform_real_distribution<float> distribution(-0.1f, 0.1f);
 	const float r = distribution(RANDOM_ENGINE);
 	const float rotation = getRotation() + r; // rotation de l'arme
 
