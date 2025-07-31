@@ -34,7 +34,7 @@ void Neutre::Bupdate(Map *map, GameCharacter *perso1,GLFWwindow *gameWindow)
     }
     if (etat == allie && distance>50)
     {
-      bc_patrol(perso1->getPosition());
+      MoveToPoint(perso1->getPosition());
     }
     if (etat== fight)
     {
@@ -57,7 +57,7 @@ void Neutre::riposte(GameCharacter *perso){
   lookAt(perso->getPosition());
   if (distance>70)
   {
-    bc_patrol(perso->getPosition());
+    MoveToPoint(perso->getPosition());
   }
   getGun().shoot();
 }

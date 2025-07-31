@@ -23,9 +23,11 @@ Game::Game()
 {
   auto* listener = new CustomContactListener();
   physicalWorld.SetContactListener(listener);
-
+  npc=new Bot();
+  
   if(map.getSpawnPoints().size() > 1){
     mainPlayer.getCharacter().setPosition(map.getSpawnPoints()[0]);
+    npc->getCharacthere()->setPosition(Vector2f(500.f, 1281.f));
   }
   //init physic-------------------------------------------------------------------------
   //rajoute le boite de collision au monde physique
@@ -34,6 +36,7 @@ Game::Game()
   }
 
   entities.push_back(&mainPlayer.getCharacter());
+  entities.push_back(npc->getCharacthere());
 
   // compute entities
   unsigned long long cptEnt = 0;
@@ -71,6 +74,7 @@ void Game::update()
   mainPlayerCam.setScale(0.8);
   mainPlayerCam.setPosition(middlePos);
   mainPlayer.update(&mainPlayerCam, &map);
+  npc->update(&map,&mainPlayer.getCharacter());
 
   const int state = glfwGetKey(gameWindow, GLFW_KEY_G);
   if (state == GLFW_PRESS) {
@@ -97,6 +101,7 @@ void Game::Draw()
 {
   map.Draw(scene, mainPlayerCam);
   scene.Draw(mainPlayer);
+  scene.Draw(*npc->getCharacthere());
 
   for(auto& d: dynamics){
     scene.Draw(*d);

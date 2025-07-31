@@ -36,7 +36,7 @@ public:
   ~Neutre();
 
   void Bupdate(Map *map,GameCharacter *perso1 ,GLFWwindow *gameWindow);
-  void detect_player(GameCharacter *perso1);
+  void DetectPlayer(GameCharacter *perso1);
   void riposte(GameCharacter *perso);
   void engage_mod(GameCharacter *user);
   void getshot(std::vector<Bullet> balls , float dmg);

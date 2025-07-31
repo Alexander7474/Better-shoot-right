@@ -2,8 +2,6 @@
 
 #include "../../Bbop-2D/include/BBOP/Graphics.h"
 #include "player.h"
-#include"trooper.h"
-#include"neutre.h"
 #include "bot.h"
 #include "../engine/dynamicSprite.h"
 #include "entity.h"
@@ -31,7 +29,7 @@ private:
   Camera mainPlayerCam;
   Player mainPlayer;
   Map map;
-  std::vector<Trooper*> npc;
+  Bot* npc;
   std::vector<DynamicSprite*> dynamics; // liste des enititées
 
   //gestion physique
