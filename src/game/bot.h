@@ -30,15 +30,15 @@ public:
      *
      * @param user Pointeur vers le joueur
      * 
-     * @return true si le jouer est dans le champvisuel
+     * @return true si le jouer est dans le champVisuel
      */
-    bool ChampVisuel(GameCharacter *user);
+    bool champVisuel(GameCharacter *user);
     /**
      * @brief verifie si le bot est proche d un des point de patrouille
      *
      * @return true si le bot est a une certaine distance de la zone de patrouille 
      */
-    bool PatrolZone();
+    bool patrolZone();
     /**
      * @brief retourne a un point donne
      *
@@ -46,7 +46,7 @@ public:
      * 
      * @return true si le bot est arrive au point donne
      */
-    bool MoveToPoint(Vector2f point);
+    bool moveToPoint(Vector2f point);
     /**
      * @brief verifie si un des menbres du joueur est detecte 
      *
@@ -55,7 +55,7 @@ public:
      * 
      * @return true si le point est dans la collisonbox du joueur
      */
-    bool DetectPoint(CollisionBox* menber,Vector2f point);
+    bool detectPoint(CollisionBox* menber,Vector2f point);
     /**
      * @brief permet de donner une liste de point de patrouille
      *
@@ -77,17 +77,17 @@ public:
     };
     Vector2f getSeekPosition();
     void update(Map *map,GameCharacter *perso1);//mise a jour du bot//
-    void PatrolMod();//patrouille//
-    void DetectPlayer(GameCharacter *user);//look bot// 
+    void patrolMod();//patrouille//
+    void detectPlayer(GameCharacter *user);//look bot// 
     void Draw(GLint* renderUniforms) const override;//dessine la bar de vie et le dialogue//
-    GameCharacter * getCharacthere();
+    GameCharacter * getCharacter();
     State getState();
 protected:
     unique_ptr<GameCharacter> pnj;
     Vector2f *Chokpoint; //liste des point de passage en mode patrouille//
     Vector2f PreviousPosition; //ancienne position pour le deplacement//
     float fov ;//fov/
-    Vector2f SeekPosition;//dernier point du joueur avant de sortir du champvisuel//
+    Vector2f SeekPosition;//dernier point du joueur avant de sortir du champVisuel//
     float Detect,Diviseur;//temp de detection//
     bool ftd;//first time detect//
     Font *font;

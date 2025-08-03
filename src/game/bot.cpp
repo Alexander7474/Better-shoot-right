@@ -1,5 +1,17 @@
 #include "bot.h"
 #include "agressivite.h" 
+#include <ostream>
+
+std::ostream& operator<<(std::ostream& os, Bot::State state) {
+    switch (state) {
+        case Bot::State::patrol: os << "patrol"; break;
+        case Bot::State::seek: os << "seek"; break;
+        case Bot::State::engage: os << "engage"; break;
+        default: os << "unknown"; break;
+    }
+    return os;
+}
+
 
 Bot::Bot()
     : pnj(std::make_unique<GameCharacter>()) {
@@ -22,18 +34,32 @@ Bot::Bot()
 
     Chokpoint= new Vector2f[3]{
         Vector2f(500.f, 1281.f),
-        Vector2f(550.f, 1281.f),
-        Vector2f(600.f, 1281.f)
+        Vector2f(600.f, 1281.f),
+        Vector2f(700.f, 1281.f)
     };
 
     hpbar->setOrigin(pnj->getPosition());
 
-    cpt = 0;
+    cpt = 1;
     iterateur = 1;
     menace = new Agressivite(1, 50, this);
 }
 
-bool Bot::ChampVisuel(GameCharacter* user) {
+void Bot::update(Map* map, GameCharacter* user) {
+    if (pnj->getHead().getetat() != 3) {
+        std::cerr<<getState()<<endl;
+        detectPlayer(user);
+        patrolMod();
+        menace->update(user);
+        hpbar->setPosition(Vector2f(pnj->getPosition().x + 290, pnj->getPosition().y - 20));
+        dialoque->setPosition(Vector2f(pnj->getPosition().x, pnj->getPosition().y - 50));
+    }
+    float hp = (35.f / 500.f) * pnj->getHp();
+    hpbar->setSize(Vector2f(hp, hpbar->getSize().y));
+    pnj->update(map);
+}
+
+bool Bot::champVisuel(GameCharacter* user) {
     float range = 200.0f;
 
     Vector2f toUser = {
@@ -76,7 +102,7 @@ bool Bot::ChampVisuel(GameCharacter* user) {
             };
 
             for (int j = 0; j < 5; j++) {
-                if (DetectPoint(partie, start_p)) {
+                if (detectPoint(partie, start_p)) {
                     if (!ftd) {
                         ftd = true;
                         Detect = glfwGetTime();
@@ -93,7 +119,7 @@ bool Bot::ChampVisuel(GameCharacter* user) {
     return false;
 }
 
-bool Bot::DetectPoint(CollisionBox* menber, Vector2f point) {
+bool Bot::detectPoint(CollisionBox* menber, Vector2f point) {
     for (int i = 0; i < 5; i++) {
         if (point.x >= menber[i].getLeft() && point.x <= menber[i].getRight() &&
             point.y >= menber[i].getTop() && point.y <= menber[i].getBottom()) {
@@ -103,29 +129,29 @@ bool Bot::DetectPoint(CollisionBox* menber, Vector2f point) {
     return false;
 }
 
-bool Bot::PatrolZone() {
+bool Bot::patrolZone() {
     for (int i = 0; i < 3; i++) {
-        if (bbopGetDistance(pnj->getPosition(), Chokpoint[cpt]) < 500) {
+        if (bbopGetDistance(pnj->getPosition(), Chokpoint[cpt]) < 500.f) {
             return true;
         }
     }
     return false;
 }
 
-bool Bot::MoveToPoint(Vector2f point) {
-    if (bbopGetDistance(point, pnj->getPosition()) > 15) {
-        if (PreviousPosition.x == pnj->getPosition().x) {
-            pnj->jump();
-        }
-
-        if (point.x - pnj->getPosition().x > 0) {
+bool Bot::moveToPoint(Vector2f point) {
+    if (bbopGetDistance(point, pnj->getPosition()) > 10.f) {
+        if (point.x - pnj->getPosition().x > 0.f) {
+            std::cerr<<"error1"<<endl;
             pnj->goRight();
             pnj->lookAt(Vector2f(pnj->getPosition().x + 5, pnj->getPosition().y));
         } else {
+            std::cerr<<"error1"<<endl;
             pnj->goLeft();
             pnj->lookAt(Vector2f(pnj->getPosition().x - 5, pnj->getPosition().y));
         }
-
+        if (PreviousPosition.x == pnj->getPosition().x) {
+            pnj->jump();
+        }
         PreviousPosition = pnj->getPosition();
         return false;
     } else {
@@ -145,38 +171,30 @@ Vector2f Bot::getSeekPosition() {
     return SeekPosition;
 }
 
-void Bot::update(Map* map, GameCharacter* user) {
-    if (pnj->getHead().getetat() != 3) {
-        DetectPlayer(user);
-        PatrolMod();
-        menace->update(user);
-        hpbar->setPosition(Vector2f(pnj->getPosition().x + 290, pnj->getPosition().y - 20));
-        dialoque->setPosition(Vector2f(pnj->getPosition().x, pnj->getPosition().y - 50));
-    }
-    float hp = (35.f / 500.f) * pnj->getHp();
-    hpbar->setSize(Vector2f(hp, hpbar->getSize().y));
-    pnj->update(map);
-}
 
-void Bot::PatrolMod() {
-    if (PatrolZone() && getState()==Bot::State::patrol) {
-        if (bbopGetDistance(pnj->getPosition(), Chokpoint[cpt]) < 40.0f) {
+
+void Bot::patrolMod() {
+    if (patrolZone() && getState()==Bot::State::patrol) {
+        std::cerr<<pnj->getPosition().x-Chokpoint[cpt].x<<endl;
+        if (bbopGetDistance(pnj->getPosition(), Chokpoint[cpt]) < 10.0f) {
             if (cpt == 2) {
                 iterateur = -1;
             }
             if (cpt == 0) {
+                
                 iterateur = 1;
             }
             cpt += iterateur;
         }
-        MoveToPoint(Chokpoint[cpt]);
+        moveToPoint(Chokpoint[cpt]);
     } else {
-        MoveToPoint(Chokpoint[0]);
+        moveToPoint(Chokpoint[0]);
+        std::cerr<<"error3"<<endl;
     }
 }
 
-void Bot::DetectPlayer(GameCharacter* user) {
-    if (ChampVisuel(user)) {
+void Bot::detectPlayer(GameCharacter* user) {
+    if (champVisuel(user)) {
         unlock = glfwGetTime();
         if (glfwGetTime() - Diviseur > Detect) {
             etat = Bot::State::engage;   // ✅ corrected
@@ -195,13 +213,10 @@ void Bot::DetectPlayer(GameCharacter* user) {
 }
 
 void Bot::Draw(GLint *renderUniforms) const {
-    if (glfwGetTime() - timer < 3) {
-        dialoque->Draw(renderUniforms);
-    }
-    hpbar->Draw(renderUniforms);
+    pnj->Draw(renderUniforms);
 }
 
-GameCharacter* Bot::getCharacthere() {
+GameCharacter* Bot::getCharacter() {
     return pnj.get();
 }
 
