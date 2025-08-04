@@ -76,7 +76,7 @@ public:
         interaction =4
     };
     Vector2f getSeekPosition();
-    void update(Map *map,GameCharacter *perso1);//mise a jour du bot//
+    void update(Map *map,GameCharacter *perso1,Game * game);//mise a jour du bot//
     void patrolMod();//patrouille//
     void detectPlayer(GameCharacter *user);//look bot// 
     void Draw(GLint* renderUniforms) const override;//dessine la bar de vie et le dialogue//

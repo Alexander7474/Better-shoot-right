@@ -7,48 +7,41 @@ Agressivite::Agressivite(int level, float range, Bot *pnj){
     this->pnj=pnj;
 }
 
-void Agressivite::update(GameCharacter *joueur){
-    float espace = pnj->getCharacthere()->getPosition().x-joueur->getPosition().x;
+void Agressivite::update(GameCharacter *joueur , Game * game){
+    float espace = bbopGetDistance(pnj->getCharacter()->getPosition(),joueur->getPosition());
     switch (level)
     {
         case 0:
             
             if (pnj->getState() == Bot::State::seek)
             {
-                pnj->getCharacthere()->lookAt(pnj->getSeekPosition());
-                if (espace>0)
-                {
-                    pnj->getCharacthere()->goLeft();
-                }else{
-                    pnj->getCharacthere()->goRight();
-                }
+                pnj->getCharacter()->lookAt(pnj->getSeekPosition());
+                pnj->moveToPoint(pnj->getSeekPosition());
             }
             if (pnj->getState()== Bot::State::engage)
             {
-                pnj->getCharacthere()->lookAt(joueur->getPosition());
-                if (espace>50.0f)
+                pnj->getCharacter()->lookAt(joueur->getPosition());
+                if (espace>range)
                 {
-                    pnj->getCharacthere()->goLeft();
+                    pnj->moveToPoint(joueur->getPosition());
                 }
-                if (espace<-50.0f)
+                if (espace<range)
                 {
-                    pnj->getCharacthere()->goRight();
+                    pnj->getCharacter()->lookAt(joueur->getPosition());
+                    pnj->getCharacter()->getGun().shoot(game,true);
                 }
-                if (espace<range && espace>-range)
-                {
-                    pnj->getCharacthere()->getGun().shoot();
-                    pnj->getCharacthere()->getGun().reload();
-                }
+                std::cerr<<"error1"<<endl;
             }
             break;
         
             
         case 1:
+        cerr<<"error2"<<endl;
             if (espace>0)
             {
-                pnj->getCharacthere()->goLeft();
+                pnj->getCharacter()->goLeft();
             }else{
-                pnj->getCharacthere()->goRight();
+                pnj->getCharacter()->goRight();
             }
             break;
     }

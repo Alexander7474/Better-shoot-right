@@ -13,5 +13,5 @@ class Agressivite
         Bot* pnj;//Bot //
     public:
         Agressivite(int level,float range,Bot* pnj);
-        void update(GameCharacter *joueur);
+        void update(GameCharacter *joueur,Game * game);
 };

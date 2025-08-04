@@ -1,5 +1,6 @@
 #include "bot.h"
 #include "agressivite.h" 
+#include "game.h"
 #include <ostream>
 
 std::ostream& operator<<(std::ostream& os, Bot::State state) {
@@ -42,15 +43,15 @@ Bot::Bot()
 
     cpt = 1;
     iterateur = 1;
-    menace = new Agressivite(1, 50, this);
+    menace = new Agressivite(0, 50, this);
 }
 
-void Bot::update(Map* map, GameCharacter* user) {
+void Bot::update(Map* map, GameCharacter* user,Game * game) {
     if (pnj->getHead().getetat() != 3) {
         std::cerr<<getState()<<endl;
         detectPlayer(user);
         patrolMod();
-        menace->update(user);
+        menace->update(user,game);
         hpbar->setPosition(Vector2f(pnj->getPosition().x + 290, pnj->getPosition().y - 20));
         dialoque->setPosition(Vector2f(pnj->getPosition().x, pnj->getPosition().y - 50));
     }
@@ -141,17 +142,13 @@ bool Bot::patrolZone() {
 bool Bot::moveToPoint(Vector2f point) {
     if (bbopGetDistance(point, pnj->getPosition()) > 10.f) {
         if (point.x - pnj->getPosition().x > 0.f) {
-            std::cerr<<"error1"<<endl;
             pnj->goRight();
             pnj->lookAt(Vector2f(pnj->getPosition().x + 5, pnj->getPosition().y));
         } else {
-            std::cerr<<"error1"<<endl;
             pnj->goLeft();
             pnj->lookAt(Vector2f(pnj->getPosition().x - 5, pnj->getPosition().y));
         }
-        if (PreviousPosition.x == pnj->getPosition().x) {
-            pnj->jump();
-        }
+
         PreviousPosition = pnj->getPosition();
         return false;
     } else {
