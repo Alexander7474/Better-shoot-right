@@ -48,20 +48,20 @@ GameCharacter::GameCharacter()
         createTextureCache("assets/personnages/soldier/");
 }
 
-void GameCharacter::createTextureCache(const string &path) {
-        const string armLeftPath = path + "arm_left/";
+void GameCharacter::createTextureCache(const std::string &path) {
+        const std::string armLeftPath = path + "arm_left/";
         leftArm.createTextureCache(armLeftPath);
 
-        const string armRightPath = path + "arm_right/";
+        const std::string armRightPath = path + "arm_right/";
         rightArm.createTextureCache(armRightPath);
 
-        const string bodyPath = path + "body/";
+        const std::string bodyPath = path + "body/";
         body.createTextureCache(bodyPath);
 
-        const string headPath = path + "head/";
+        const std::string headPath = path + "head/";
         head.createTextureCache(headPath);
 
-        const string legsPath = path + "legs/";
+        const std::string legsPath = path + "legs/";
         legs.createTextureCache(legsPath);
 }
 

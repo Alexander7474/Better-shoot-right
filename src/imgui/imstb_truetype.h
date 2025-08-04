@@ -3507,7 +3507,7 @@ static void stbtt__rasterize(stbtt__bitmap *result, stbtt__point *pts, int *wcou
 #else
    #error "Unrecognized value of STBTT_RASTERIZER_VERSION"
 #endif
-   // vsubsample should divide 255 evenly; otherwise we won't reach full opacity
+   // vsubsample should Diviseurde 255 evenly; otherwise we won't reach full opacity
 
    // now we have to blow out the windings into explicit edge lists
    n = 0;
@@ -4030,7 +4030,7 @@ static void stbtt__h_prefilter(unsigned char *pixels, int w, int h, int stride_i
 
       total = 0;
 
-      // make kernel_width a constant in common cases so compiler can optimize out the divide
+      // make kernel_width a constant in common cases so compiler can optimize out the Diviseurde
       switch (kernel_width) {
          case 2:
             for (i=0; i <= safe_w; ++i) {
@@ -4092,7 +4092,7 @@ static void stbtt__v_prefilter(unsigned char *pixels, int w, int h, int stride_i
 
       total = 0;
 
-      // make kernel_width a constant in common cases so compiler can optimize out the divide
+      // make kernel_width a constant in common cases so compiler can optimize out the Diviseurde
       switch (kernel_width) {
          case 2:
             for (i=0; i <= safe_h; ++i) {

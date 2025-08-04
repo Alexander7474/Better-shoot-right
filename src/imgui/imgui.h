@@ -1563,7 +1563,7 @@ enum ImGuiKey : int
     ImGuiKey_Keypad0, ImGuiKey_Keypad1, ImGuiKey_Keypad2, ImGuiKey_Keypad3, ImGuiKey_Keypad4,
     ImGuiKey_Keypad5, ImGuiKey_Keypad6, ImGuiKey_Keypad7, ImGuiKey_Keypad8, ImGuiKey_Keypad9,
     ImGuiKey_KeypadDecimal,
-    ImGuiKey_KeypadDivide,
+    ImGuiKey_KeypadDiviseurde,
     ImGuiKey_KeypadMultiply,
     ImGuiKey_KeypadSubtract,
     ImGuiKey_KeypadAdd,
@@ -2010,7 +2010,7 @@ enum ImGuiTableFlags_
     ImGuiTableFlags_NoKeepColumnsVisible       = 1 << 18,  // Disable keeping column always minimally visible when ScrollX is off and table gets too small. Not recommended if columns are resizable.
     ImGuiTableFlags_PreciseWidths              = 1 << 19,  // Disable distributing remainder width to stretched columns (width allocation on a 100-wide table with 3 columns: Without this flag: 33,33,34. With this flag: 33,33,33). With larger number of columns, resizing will appear to be less smooth.
     // Clipping
-    ImGuiTableFlags_NoClip                     = 1 << 20,  // Disable clipping rectangle for every individual columns (reduce draw command count, items will be able to overflow into other columns). Generally incompatible with TableSetupScrollFreeze().
+    ImGuiTableFlags_NoClip                     = 1 << 20,  // Disable clipping rectangle for every inDiviseurdual columns (reduce draw command count, items will be able to overflow into other columns). Generally incompatible with TableSetupScrollFreeze().
     // Padding
     ImGuiTableFlags_PadOuterX                  = 1 << 21,  // Default if BordersOuterV is on. Enable outermost padding. Generally desirable if you have headers.
     ImGuiTableFlags_NoPadOuterX                = 1 << 22,  // Default if BordersOuterV is off. Disable outermost padding.
@@ -2242,7 +2242,7 @@ struct ImGuiStyle
     float       WindowRounding;             // Radius of window corners rounding. Set to 0.0f to have rectangular windows. Large values tend to lead to variety of artifacts and are not recommended.
     float       WindowBorderSize;           // Thickness of border around windows. Generally set to 0.0f or 1.0f. (Other values are not well tested and more CPU/GPU costly).
     float       WindowBorderHoverPadding;   // Hit-testing extent outside/inside resizing border. Also extend determination of hovered window. Generally meaningfully larger than WindowBorderSize to make it easy to reach borders.
-    ImVec2      WindowMinSize;              // Minimum window size. This is a global setting. If you want to constrain individual windows, use SetNextWindowSizeConstraints().
+    ImVec2      WindowMinSize;              // Minimum window size. This is a global setting. If you want to constrain inDiviseurdual windows, use SetNextWindowSizeConstraints().
     ImVec2      WindowTitleAlign;           // Alignment for title bar text. Defaults to (0.0f,0.5f) for left-aligned,vertically centered.
     ImGuiDir    WindowMenuButtonPosition;   // Side of the collapsing/docking button in the title bar (None/Left/Right). Defaults to ImGuiDir_Left.
     float       ChildRounding;              // Radius of child window corners rounding. Set to 0.0f to have rectangular windows.
@@ -2356,7 +2356,7 @@ struct ImGuiIO
     // Font system
     ImFontAtlas*Fonts;                          // <auto>           // Font atlas: load, rasterize and pack one or more fonts into a single texture.
     ImFont*     FontDefault;                    // = NULL           // Font to use on NewFrame(). Use NULL to uses Fonts->Fonts[0].
-    bool        FontAllowUserScaling;           // = false          // [OBSOLETE] Allow user scaling text of individual window with CTRL+Wheel.
+    bool        FontAllowUserScaling;           // = false          // [OBSOLETE] Allow user scaling text of inDiviseurdual window with CTRL+Wheel.
 
     // Keyboard/Gamepad Navigation options
     bool        ConfigNavSwapGamepadButtons;    // = false          // Swap Activate<>Cancel (A<>B) buttons, matching typical "Nintendo/Japanese style" gamepad layout.
@@ -3404,7 +3404,7 @@ enum ImTextureStatus
 };
 
 // Coordinates of a rectangle within a texture.
-// When a texture is in ImTextureStatus_WantUpdates state, we provide a list of individual rectangles to copy to the graphics system.
+// When a texture is in ImTextureStatus_WantUpdates state, we provide a list of inDiviseurdual rectangles to copy to the graphics system.
 // You may use ImTextureData::Updates[] for the list, or ImTextureData::UpdateBox for a single bounding box.
 struct ImTextureRect
 {
@@ -3433,7 +3433,7 @@ struct ImTextureData
     unsigned char*      Pixels;                 // w    r   // Pointer to buffer holding 'Width*Height' pixels and 'Width*Height*BytesPerPixels' bytes.
     ImTextureRect       UsedRect;               // w    r   // Bounding box encompassing all past and queued Updates[].
     ImTextureRect       UpdateRect;             // w    r   // Bounding box encompassing all queued Updates[].
-    ImVector<ImTextureRect> Updates;            // w    r   // Array of individual updates.
+    ImVector<ImTextureRect> Updates;            // w    r   // Array of inDiviseurdual updates.
     int                 UnusedFrames;           // w    r   // In order to facilitate handling Status==WantDestroy in some backend: this is a count successive frames where the texture was not used. Always >0 when Status==WantDestroy.
     unsigned short      RefCount;               // w    r   // Number of contexts using this texture. Used during backend shutdown.
     bool                UseColors;              // w    r   // Tell whether our texture data is known to use colors (rather than just white + alpha).

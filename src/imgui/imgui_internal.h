@@ -1779,8 +1779,8 @@ struct IMGUI_API ImGuiTypingSelectState
 enum ImGuiOldColumnFlags_
 {
     ImGuiOldColumnFlags_None                    = 0,
-    ImGuiOldColumnFlags_NoBorder                = 1 << 0,   // Disable column dividers
-    ImGuiOldColumnFlags_NoResize                = 1 << 1,   // Disable resizing columns when clicking on the dividers
+    ImGuiOldColumnFlags_NoBorder                = 1 << 0,   // Disable column Diviseurders
+    ImGuiOldColumnFlags_NoResize                = 1 << 1,   // Disable resizing columns when clicking on the Diviseurders
     ImGuiOldColumnFlags_NoPreserveWidths        = 1 << 2,   // Disable column width preservation when adjusting columns
     ImGuiOldColumnFlags_NoForceWithinWindow     = 1 << 3,   // Disable forcing columns to fit within window
     ImGuiOldColumnFlags_GrowParentContentsSize  = 1 << 4,   // Restore pre-1.51 behavior of extending the parent window contents size but _without affecting the columns width at all_. Will eventually remove.
@@ -2101,7 +2101,7 @@ struct ImGuiStackLevelInfo
 struct ImGuiIDStackTool
 {
     int                     LastActiveFrame;
-    int                     StackLevel;                 // -1: query stack and resize Results, >= 0: individual stack level
+    int                     StackLevel;                 // -1: query stack and resize Results, >= 0: inDiviseurdual stack level
     ImGuiID                 QueryId;                    // ID to query details for
     ImVector<ImGuiStackLevelInfo> Results;
     bool                    CopyToClipboardOnCtrlC;

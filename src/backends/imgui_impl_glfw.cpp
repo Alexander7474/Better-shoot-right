@@ -267,7 +267,7 @@ ImGuiKey ImGui_ImplGlfw_KeyToImGuiKey(int keycode, int scancode)
         case GLFW_KEY_KP_8: return ImGuiKey_Keypad8;
         case GLFW_KEY_KP_9: return ImGuiKey_Keypad9;
         case GLFW_KEY_KP_DECIMAL: return ImGuiKey_KeypadDecimal;
-        case GLFW_KEY_KP_DIVIDE: return ImGuiKey_KeypadDivide;
+        case GLFW_KEY_KP_DIVIDE: return ImGuiKey_KeypadDiviseurde;
         case GLFW_KEY_KP_MULTIPLY: return ImGuiKey_KeypadMultiply;
         case GLFW_KEY_KP_SUBTRACT: return ImGuiKey_KeypadSubtract;
         case GLFW_KEY_KP_ADD: return ImGuiKey_KeypadAdd;
