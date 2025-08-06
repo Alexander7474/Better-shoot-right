@@ -20,7 +20,7 @@ Bot::Bot()
     
     pnj->lookAt(Vector2f(pnj->getPosition().x + 5, pnj->getPosition().y));
     
-    etat = Bot::State::patrol; // ✅ Proper initialization
+    etat = Bot::State::patrol; 
 
     fov = M_PI / 4;
     font = new Font(16, "toto.ttf");
@@ -43,7 +43,7 @@ Bot::Bot()
 
     cpt = 1;
     iterateur = 1;
-    menace = new Agressivite(0, 50, this);
+    menace = new Agressivite(0, 200.f, this);
 }
 
 void Bot::update(Map* map, GameCharacter* user,Game * game) {
@@ -148,6 +148,11 @@ bool Bot::moveToPoint(Vector2f point) {
             pnj->goLeft();
             pnj->lookAt(Vector2f(pnj->getPosition().x - 5, pnj->getPosition().y));
         }
+        if (PreviousPosition.x==pnj->getPosition().x)
+        {
+            pnj->jump();
+        }
+        
 
         PreviousPosition = pnj->getPosition();
         return false;
@@ -172,7 +177,7 @@ Vector2f Bot::getSeekPosition() {
 
 void Bot::patrolMod() {
     if (patrolZone() && getState()==Bot::State::patrol) {
-        std::cerr<<pnj->getPosition().x-Chokpoint[cpt].x<<endl;
+
         if (bbopGetDistance(pnj->getPosition(), Chokpoint[cpt]) < 10.0f) {
             if (cpt == 2) {
                 iterateur = -1;
@@ -186,7 +191,6 @@ void Bot::patrolMod() {
         moveToPoint(Chokpoint[cpt]);
     } else {
         moveToPoint(Chokpoint[0]);
-        std::cerr<<"error3"<<endl;
     }
 }
 
