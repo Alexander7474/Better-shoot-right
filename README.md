@@ -23,9 +23,10 @@ cmake --build . --parallel
 
 ##### Yassine
 
--> 
+-> Régler les TODO 
 
 ##### Alexandre
 
--> Régler les TODO
+-> Créé un une boucle de jeu
+-> Impléménter un inventaire pour gameCharacter
 
