@@ -12,7 +12,7 @@
 using namespace std;
 
 Bullet::Bullet() : Item(Texture("assets/default.png")) {
-        setSize(2,1);
+        setSize(2, 1);
         state = BulletState::idle;
 }
 
@@ -22,46 +22,47 @@ Bullet::Bullet(const std::string &path) : Bullet() {
         loadJsonFile(path);
 }
 
-
 void Bullet::update() {
         // Play animation
         // Cast std::unique_ptr<IAnimationComponent> de Item
         // vers AnimationComponent<BulletState>* pour jouer les
         // anims
-        if (const auto specificPtr = dynamic_cast<AnimationComponent<BulletState> *>(animation.get())) {
+        if (const auto specificPtr =
+                dynamic_cast<AnimationComponent<BulletState> *>(
+                    animation.get())) {
                 specificPtr->play(state);
         }
 }
 
-void Bullet::fire() {
-	state = BulletState::fired;
-}
+void Bullet::fire() { state = BulletState::fired; }
 
-void Bullet::broke() {
-	state = BulletState::broken;
-
-}
+void Bullet::broke() { state = BulletState::broken; }
 
 void Bullet::loadJsonFile(const std::string &path) {
         // Chargement des sons dans AudioComponent
-        if (const auto specificPtr = dynamic_cast<AudioComponent<BulletState> *>(audio.get())) {
-                for (int i = 0; i <= static_cast<int>(BulletState::broken); ++i) {
+        if (const auto specificPtr =
+                dynamic_cast<AudioComponent<BulletState> *>(audio.get())) {
+                for (int i = 0; i <= static_cast<int>(BulletState::broken);
+                     ++i) {
                         const auto state = static_cast<BulletState>(i);
                         specificPtr->loadSound(state, path);
                 }
         }
 
         // Chargement des textures dans AnimationComponent
-        if (const auto specificPtr = dynamic_cast<AnimationComponent<BulletState> *>(animation.get())) {
-                for (int i = 0; i <= static_cast<int>(BulletState::broken); ++i) {
+        if (const auto specificPtr =
+                dynamic_cast<AnimationComponent<BulletState> *>(
+                    animation.get())) {
+                for (int i = 0; i <= static_cast<int>(BulletState::broken);
+                     ++i) {
                         const auto state = static_cast<BulletState>(i);
                         specificPtr->loadTexture(state, path);
                 }
         }
 
-	// Après avoir chargé audio et animation,
+        // Après avoir chargé audio et animation,
         // on charge les caractèristique de la balle.
-	std::string jsonPath = path + "bullet.json";
+        std::string jsonPath = path + "bullet.json";
         std::ifstream jsonFile(jsonPath);
         if (!jsonFile.is_open()) {
                 ERROR_MESSAGE("Chargement fichier json " + path);
@@ -80,7 +81,7 @@ void Bullet::loadJsonFile(const std::string &path) {
         try {
                 // chargement des infos de l'arme
                 setName(jsonData.at("name"));
-		damage = jsonData.at("damage");
+                damage = jsonData.at("damage");
         } catch (const nlohmann::json::exception &e) {
                 ERROR_MESSAGE("Recupération caractéristique " + jsonPath);
                 return;
@@ -88,8 +89,7 @@ void Bullet::loadJsonFile(const std::string &path) {
 }
 
 Bullet::Bullet(const Bullet &other)
-           : Item(other),
-             state(other.state), damage(other.damage){
+    : Item(other), state(other.state), damage(other.damage) {
 
         // Changement de possèsseur du composant copier.
         // On cast en premier l'autre composant pour voir
@@ -102,32 +102,34 @@ Bullet::Bullet(const Bullet &other)
                     *specificPtr); // copie
                 dynamic_cast<AnimationComponent<BulletState> *>(animation.get())
                     ->setOwner(this);
-                    }
+        }
 
         if (const auto specificPtr =
-                dynamic_cast<AudioComponent<BulletState> *>(other.audio.get())) {
+                dynamic_cast<AudioComponent<BulletState> *>(
+                    other.audio.get())) {
                 audio = std::make_unique<AudioComponent<BulletState>>(
                     *specificPtr); // copie
                 dynamic_cast<AudioComponent<BulletState> *>(audio.get())
                     ->setOwner(this);
-                }
+        }
 }
 
 Bullet::Bullet(Bullet &&other) noexcept
-        : Item(std::move(other)),
-          state(other.state), damage(other.damage) {
+    : Item(std::move(other)), state(other.state), damage(other.damage) {
 
         // Changement de possèsseur du composant déplacer.
         // On cast en premier l'autre composant pour voir
         // si le type correspond bien.
         // Puis on le déplace et change l'ownership.
-        if (dynamic_cast<AnimationComponent<BulletState> *>(other.animation.get())) {
+        if (dynamic_cast<AnimationComponent<BulletState> *>(
+                other.animation.get())) {
                 // on déplace le pointeur unique
                 animation = std::move(other.animation);
 
                 // le composant pointe maintenant vers this comme owner
                 if (animation) {
-                        dynamic_cast<AnimationComponent<BulletState> *>(animation.get())
+                        dynamic_cast<AnimationComponent<BulletState> *>(
+                            animation.get())
                             ->setOwner(this);
                 }
         }
@@ -144,12 +146,12 @@ Bullet::Bullet(Bullet &&other) noexcept
         }
 }
 
-Bullet & Bullet::operator=(const Bullet &other) {
+Bullet &Bullet::operator=(const Bullet &other) {
         if (this == &other)
                 return *this;
-        Item::operator =(other);
+        Item::operator=(other);
         state = other.state;
-	damage = other.damage;
+        damage = other.damage;
 
         // Changement de possèsseur du composant copier.
         // On cast en premier l'autre composant pour voir
@@ -162,37 +164,40 @@ Bullet & Bullet::operator=(const Bullet &other) {
                     *specificPtr); // copie
                 dynamic_cast<AnimationComponent<BulletState> *>(animation.get())
                     ->setOwner(this);
-                    }
+        }
 
         if (const auto specificPtr =
-                dynamic_cast<AudioComponent<BulletState> *>(other.audio.get())) {
+                dynamic_cast<AudioComponent<BulletState> *>(
+                    other.audio.get())) {
                 audio = std::make_unique<AudioComponent<BulletState>>(
                     *specificPtr); // copie
                 dynamic_cast<AudioComponent<BulletState> *>(audio.get())
                     ->setOwner(this);
-                }
-        
+        }
+
         return *this;
 }
 
-Bullet & Bullet::operator=(Bullet &&other) noexcept {
+Bullet &Bullet::operator=(Bullet &&other) noexcept {
         if (this == &other)
                 return *this;
-        Item::operator =(std::move(other));
+        Item::operator=(std::move(other));
         state = other.state;
-	damage = other.damage;
+        damage = other.damage;
 
         // Changement de possèsseur du composant déplacer.
         // On cast en premier l'autre composant pour voir
         // si le type correspond bien.
         // Puis on le déplace et change l'ownership.
-        if (dynamic_cast<AnimationComponent<BulletState> *>(other.animation.get())) {
+        if (dynamic_cast<AnimationComponent<BulletState> *>(
+                other.animation.get())) {
                 // on déplace le pointeur unique
                 animation = std::move(other.animation);
 
                 // le composant pointe maintenant vers this comme owner
                 if (animation) {
-                        dynamic_cast<AnimationComponent<BulletState> *>(animation.get())
+                        dynamic_cast<AnimationComponent<BulletState> *>(
+                            animation.get())
                             ->setOwner(this);
                 }
         }
@@ -216,9 +221,9 @@ b2Body *Bullet::getBody() const { return entityBody; }
 const BulletState &Bullet::getState() const { return state; }
 
 void Bullet::computePhysic(b2World *world) {
-	setOrigin(getSize().x / 2, getSize().y / 2);
-        entityBody =
-            addDynamicBox(world, &getCollisionBox(), 0.f, 1.f, 1.f, 1.f, false, true);
+        setOrigin(getSize().x / 2, getSize().y / 2);
+        entityBody = addDynamicBox(world, &getCollisionBox(), 0.f, 1.f, 1.f,
+                                   1.f, false, true);
 
         // Ajout du pointeur userData
         auto *data = new BodyData;
@@ -227,10 +232,6 @@ void Bullet::computePhysic(b2World *world) {
         entityBody->GetUserData().pointer = reinterpret_cast<uintptr_t>(data);
 }
 
-float Bullet::getDamage() {
-	return damage;
-}
+float Bullet::getDamage() { return damage; }
 
-void Bullet::setDamage(float damage) {
-	this->damage = damage;
-}
+void Bullet::setDamage(float damage) { this->damage = damage; }

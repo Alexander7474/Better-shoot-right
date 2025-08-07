@@ -47,15 +47,9 @@ class GameCharacter : public BbopDrawable, public Geometric, public Entity {
         float scale;
 
         // attributs de la physique
-        float maxVelocityX, 
-	      maxVelocityY,
-              newtonX,
-	      newtonY,
-              restitution,
-	      friction,
-	      density,
-	      linearDamping;
-        bool onRagdoll,touchingDown = false;
+        float maxVelocityX, maxVelocityY, newtonX, newtonY, restitution,
+            friction, density, linearDamping;
+        bool onRagdoll, touchingDown = false;
 
         // attributs du jeu
         float hp;
@@ -124,7 +118,6 @@ class GameCharacter : public BbopDrawable, public Geometric, public Entity {
          * @brief retourne le character sur l'axe y
          */
         void flipY();
-
 
         Member &getLeftArm();
         Member &getRightArm();

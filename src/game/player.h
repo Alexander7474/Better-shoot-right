@@ -15,7 +15,8 @@ class Player final : public BbopDrawable {
 
         Game *game = nullptr; //<! Le player garde un pointer vers sa game
 
-	bool mouseHold{};
+        bool mouseHold{};
+
       public:
         Player() = default;
 

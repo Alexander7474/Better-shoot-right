@@ -44,9 +44,9 @@ class Member : public Sprite {
          */
         void createTextureCache(const std::string &path);
 
-	// TODO -- remove this shit
+        // TODO -- remove this shit
         void setetat(int k);
         int getetat();
 
-	MemberState getState();
+        MemberState getState();
 };

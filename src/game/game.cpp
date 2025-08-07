@@ -1,9 +1,9 @@
 #include "game.h"
 #include "../engine/dynamicSprite.h"
 #include "../engine/macro.h"
-#include "../engine/physic.h"
-#include "../engine/particle.h"
 #include "../engine/member.h"
+#include "../engine/particle.h"
+#include "../engine/physic.h"
 
 #include <box2d/box2d.h>
 #include <memory>
@@ -19,22 +19,21 @@ float GRAVITY = 9.8f;
 std::default_random_engine RANDOM_ENGINE;
 
 Game::Game()
-    : mainPlayer(this),
-      map("assets/map/default/"),
+    : mainPlayer(this), map("assets/map/default/"),
       physicalWorld(b2Vec2(
           0.0f,
           GRAVITY)) // création du monde physique avec un vecteur de gravité
 {
         auto listener = new CustomContactListener();
-	listener->setGameOwner(this);
+        listener->setGameOwner(this);
         physicalWorld.SetContactListener(listener);
 
         if (map.getSpawnPoints().size() > 1) {
                 mainPlayer.getCharacter().setPosition(map.getSpawnPoints()[0]);
-		testPnj.setPosition(mainPlayer.getCharacter().getPosition());
+                testPnj.setPosition(mainPlayer.getCharacter().getPosition());
         }
 
-	// init
+        // init
         // physic-------------------------------------------------------------------------
         // rajoute le boite de collision au monde physique
         for (CollisionBox &box : map.getCollision()) {
@@ -42,7 +41,7 @@ Game::Game()
         }
 
         entities.push_back(&mainPlayer.getCharacter());
-	entities.push_back(&testPnj);
+        entities.push_back(&testPnj);
 
         // compute entities
         unsigned long long cptEnt = 0;
@@ -58,20 +57,23 @@ Game::Game()
 }
 
 void Game::update() {
-	for(const auto &item : items)
-		item->update();
-	
-	for(unsigned long i = 0; i < particles.size(); i++){
- 		if(particles[i]->update()){
-			particlesTempShit.push_back(std::move(particles[i])); // TODO -- patch temp AnimatedSPrite / see addParticle todo 
-			particles.erase(particles.begin()+i);
-		}
-	}
+        for (const auto &item : items)
+                item->update();
 
-        // update des éléments des la game 
+        for (unsigned long i = 0; i < particles.size(); i++) {
+                if (particles[i]->update()) {
+                        particlesTempShit.push_back(std::move(
+                            particles[i])); // TODO -- patch temp AnimatedSPrite
+                                            // / see addParticle todo
+                        particles.erase(particles.begin() + i);
+                }
+        }
+
+        // update des éléments des la game
         map.update();
 
-	// Gestion de la caméra ------------------------------------------------------------
+        // Gestion de la caméra
+        // ------------------------------------------------------------
         // déterminer la position du milieu entre le joueur et son crossair
         Vector2f middlePos;
         middlePos.x = (mainPlayer.getCharacter().getPosition().x +
@@ -97,18 +99,21 @@ void Game::update() {
                     (mainPlayer.getCharacter().getPosition().y + scale * dy);
         }
 
-	// verifier la vie des bots et du joueur
-	// TODO -- vérifier la vie du bot
-	if(mainPlayer.getCharacter().getHp() <= 0.f && mainPlayer.getCharacter().getHead().getState() != MemberState::ragdoll)
-		mainPlayer.getCharacter().toggleRagdollMod(&physicalWorld);
-	if(testPnj.getHp() <= 0.f && testPnj.getHead().getState() != MemberState::ragdoll)
-		testPnj.toggleRagdollMod(&physicalWorld);
+        // verifier la vie des bots et du joueur
+        // TODO -- vérifier la vie du bot
+        if (mainPlayer.getCharacter().getHp() <= 0.f &&
+            mainPlayer.getCharacter().getHead().getState() !=
+                MemberState::ragdoll)
+                mainPlayer.getCharacter().toggleRagdollMod(&physicalWorld);
+        if (testPnj.getHp() <= 0.f &&
+            testPnj.getHead().getState() != MemberState::ragdoll)
+                testPnj.toggleRagdollMod(&physicalWorld);
 
         mainPlayerCam.setScale(0.5f);
         mainPlayerCam.setPosition(middlePos);
         mainPlayer.update(&mainPlayerCam, &map);
 
-	testPnj.update(&map);
+        testPnj.update(&map);
 
         // Gestion de la
         // physique-------------------------------------------------------------------------
@@ -128,7 +133,7 @@ void Game::update() {
 void Game::Draw() {
         map.Draw(scene, mainPlayerCam);
         scene.Draw(mainPlayer);
-	scene.Draw(testPnj);
+        scene.Draw(testPnj);
 
         for (auto &d : dynamics) {
                 scene.Draw(*d);
@@ -161,8 +166,8 @@ void Game::Draw() {
         }
 #endif
 
-	for(auto &p : particles)
-		scene.Draw(*p);
+        for (auto &p : particles)
+                scene.Draw(*p);
 
         scene.render();
 }
@@ -173,11 +178,12 @@ void Game::addItem(Item *item) {
         entities.push_back(items.back().get());
 }
 
-// TODO -- URGENT gérer de bug lors de la destruction d'un ANimatedSprite qui empêche l'utilisation de textureColorBuffer de scene
-// TODO -- Modifier la class AnimatedSprite pour reset le départ de l'animation sans accéder à ds membres sensé êtres privés
+// TODO -- URGENT gérer de bug lors de la destruction d'un ANimatedSprite qui
+// empêche l'utilisation de textureColorBuffer de scene
+// TODO -- Modifier la class AnimatedSprite pour reset le départ de l'animation
+// sans accéder à ds membres sensé êtres privés
 void Game::addParticle(AnimatedSprite *p) {
-	particles.push_back(std::unique_ptr<AnimatedSprite>(p));
+        particles.push_back(std::unique_ptr<AnimatedSprite>(p));
 }
-
 
 b2World *Game::getPhysicalWorld() { return &physicalWorld; }

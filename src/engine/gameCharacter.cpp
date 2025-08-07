@@ -18,10 +18,11 @@
 
 const char *gameCharacterStateString[4] = {"idle", "run", "ragdoll", "dead"};
 
-//TODO -- Gérer l'inventaire et les items du personnages
+// TODO -- Gérer l'inventaire et les items du personnages
 GameCharacter::GameCharacter()
-    : maxVelocityX(3.f), maxVelocityY(10.f), newtonX(8.f), newtonY(9.f), restitution(0.f), friction(1.f), density(1.5f),
-      linearDamping(2.f), hp(100.f) {
+    : maxVelocityX(3.f), maxVelocityY(10.f), newtonX(8.f), newtonY(9.f),
+      restitution(0.f), friction(1.f), density(1.5f), linearDamping(2.f),
+      hp(100.f) {
         characterDirection = rightDir;
         scale = 0.65f;
 
@@ -42,7 +43,8 @@ GameCharacter::GameCharacter()
         legs.setOrigin(32 * scale, 0 * scale); // origine sur les hanche
         legs.name = "legs";
 
-        const auto gunPtr = dynamic_cast<Gun *>(ItemFactory::getItem("machine_gun"));
+        const auto gunPtr =
+            dynamic_cast<Gun *>(ItemFactory::getItem("machine_gun"));
         gun = std::make_unique<Gun>(*gunPtr);
         gun->setSize(64 * scale, 32 * scale);
 
@@ -75,8 +77,7 @@ void GameCharacter::update(Map *map) {
                         legs.state = MemberState::idle;
                 }
 
-                if (!touchingDown &&
-                    legs.state == MemberState::run) {
+                if (!touchingDown && legs.state == MemberState::run) {
                         legs.state = MemberState::idle;
                 }
 
@@ -106,7 +107,7 @@ void GameCharacter::update(Map *map) {
 #ifdef IMGUI_DEBUG
         // Interface character info
         ImGui::Begin("GameCharacter Info");
-	ImGui::Text("Health Point: %f", hp); 
+        ImGui::Text("Health Point: %f", hp);
         ImGui::Text("Position: (%f, %f)", getPosition().x, getPosition().y);
         ImGui::Text("Looking point: (%f, %f)", lookingPoint.x, lookingPoint.y);
         ImGui::Text("Member angle: (head: %f, right arm: %f, left arm: %f)",
@@ -355,7 +356,9 @@ bool GameCharacter::isTouchingDown() const { return touchingDown; }
 
 // SETTER
 void GameCharacter::setHp(const float _hp) { this->hp = _hp; }
-void GameCharacter::setTouchingDown(const bool touchingDown) { this->touchingDown = touchingDown; };
+void GameCharacter::setTouchingDown(const bool touchingDown) {
+        this->touchingDown = touchingDown;
+};
 
 // ENTITY
 void GameCharacter::computePhysic(b2World *world) {
@@ -401,8 +404,8 @@ void GameCharacter::updatePhysic() {
 
 void GameCharacter::toggleRagdollMod(b2World *world) {
 
-	//TODO -- optimiser la mise en place des membres pour les ragdolls
-        // Destruction de l'ancion corps
+        // TODO -- optimiser la mise en place des membres pour les ragdolls
+        //  Destruction de l'ancion corps
         world->DestroyBody(entityBody);
 
         onRagdoll = true;
@@ -419,58 +422,59 @@ void GameCharacter::toggleRagdollMod(b2World *world) {
         leftArm.setSize(23 * scale, 11 * scale);
 
         // mise en place des ragdolls pour chaque membres (TEMPORAIRE)
-        bodyR = addDynamicBox(world, &body.getCollisionBox(), 0.f, 1.f, 1.f,
-                              1.f, false, false, body.getCollisionBox().getOffsetX(),
-                              body.getCollisionBox().getOffsetY());
+        bodyR =
+            addDynamicBox(world, &body.getCollisionBox(), 0.f, 1.f, 1.f, 1.f,
+                          false, false, body.getCollisionBox().getOffsetX(),
+                          body.getCollisionBox().getOffsetY());
         auto *data = new BodyData;
         data->type = BodyType::Member;
         data->ptr = reinterpret_cast<uintptr_t>(&body);
         bodyR->GetUserData().pointer = reinterpret_cast<uintptr_t>(data);
-	
-	headR = addDynamicBox(world, &head.getCollisionBox(), 0.f, 1.f, 1.f,
-                              1.f, false, false, head.getCollisionBox().getOffsetX(),
-                              head.getCollisionBox().getOffsetY());
+
+        headR =
+            addDynamicBox(world, &head.getCollisionBox(), 0.f, 1.f, 1.f, 1.f,
+                          false, false, head.getCollisionBox().getOffsetX(),
+                          head.getCollisionBox().getOffsetY());
         data = new BodyData;
         data->type = BodyType::Member;
         data->ptr = reinterpret_cast<uintptr_t>(&head);
         headR->GetUserData().pointer = reinterpret_cast<uintptr_t>(data);
-	
-	
-	legsR = addDynamicBox(world, &legs.getCollisionBox(), 0.f, 1.f, 1.f,
-                              1.f, false, false, legs.getCollisionBox().getOffsetX(),
-                              legs.getCollisionBox().getOffsetY());
+
+        legsR =
+            addDynamicBox(world, &legs.getCollisionBox(), 0.f, 1.f, 1.f, 1.f,
+                          false, false, legs.getCollisionBox().getOffsetX(),
+                          legs.getCollisionBox().getOffsetY());
         data = new BodyData;
         data->type = BodyType::Member;
         data->ptr = reinterpret_cast<uintptr_t>(&legs);
         legsR->GetUserData().pointer = reinterpret_cast<uintptr_t>(data);
-	
-	
-	rightArmR =
-            addDynamicBox(world, &rightArm.getCollisionBox(), 0.f, 1.f, 1.f,
-                          1.f, false, false, rightArm.getCollisionBox().getOffsetX(),
-                          rightArm.getCollisionBox().getOffsetY());
+
+        rightArmR = addDynamicBox(world, &rightArm.getCollisionBox(), 0.f, 1.f,
+                                  1.f, 1.f, false, false,
+                                  rightArm.getCollisionBox().getOffsetX(),
+                                  rightArm.getCollisionBox().getOffsetY());
         data = new BodyData;
         data->type = BodyType::Member;
         data->ptr = reinterpret_cast<uintptr_t>(&rightArmR);
         rightArmR->GetUserData().pointer = reinterpret_cast<uintptr_t>(data);
-	
-	
-	leftArmR =
+
+        leftArmR =
             addDynamicBox(world, &leftArm.getCollisionBox(), 0.f, 1.f, 1.f, 1.f,
                           false, false, leftArm.getCollisionBox().getOffsetX(),
                           leftArm.getCollisionBox().getOffsetY());
-	data = new BodyData;
+        data = new BodyData;
         data->type = BodyType::Member;
         data->ptr = reinterpret_cast<uintptr_t>(&leftArmR);
         leftArmR->GetUserData().pointer = reinterpret_cast<uintptr_t>(data);
-	
-	//TODO -- Gérer l'origine d'une shape après la creation de son entité box2D pour ne pas avoir a importer l'origine de la collisionBox
+
+        // TODO -- Gérer l'origine d'une shape après la creation de son entité
+        // box2D pour ne pas avoir a importer l'origine de la collisionBox
         head.setOrigin(head.getCollisionBox().getOrigin());
         legs.setOrigin(legs.getCollisionBox().getOrigin());
         body.setOrigin(body.getCollisionBox().getOrigin());
         rightArm.setOrigin(rightArm.getCollisionBox().getOrigin());
-	rightArm.flipVertically();
-	rightArm.flipHorizontally();
+        rightArm.flipVertically();
+        rightArm.flipHorizontally();
         leftArm.setOrigin(leftArm.getCollisionBox().getOrigin());
 
         // creation des joints

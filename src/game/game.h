@@ -8,8 +8,8 @@
 #include <GLFW/glfw3.h>
 #include <box2d/box2d.h>
 #include <random>
-#include <vector>
 #include <string>
+#include <vector>
 
 // pointeur vers la fentre de jeu utilisable de partout
 extern GLFWwindow *gameWindow;
@@ -32,14 +32,15 @@ class Game {
         std::vector<std::unique_ptr<DynamicSprite>>
             dynamics; // liste des sprites dynamics
         std::vector<std::unique_ptr<Item>> items;
-	std::vector<std::unique_ptr<AnimatedSprite>> particles;
-	std::vector<std::unique_ptr<AnimatedSprite>> particlesTempShit;
+        std::vector<std::unique_ptr<AnimatedSprite>> particles;
+        std::vector<std::unique_ptr<AnimatedSprite>> particlesTempShit;
 
         // gestion physique
         b2World physicalWorld;
         std::vector<Entity *> entities; // liste des enititées
-      
-      	GameCharacter testPnj;
+
+        GameCharacter testPnj;
+
       public:
         Game();
 
@@ -65,15 +66,16 @@ class Game {
          * @warning L'item dois être parfaitement construit et près à être
          * utilisé en tant que telle, C'EST A DIRE UN ITEMS (pas un gun, pas
          * un bullets, UN ITEM).
-         * @warning Ne pas donner une entité déjà initialisé avec computePhysic()
+         * @warning Ne pas donner une entité déjà initialisé avec
+         * computePhysic()
          */
         void addItem(Item *item);
 
-	/**
-	 * @brief rajoute une particule dans le vector de particule 
-	 * @param p Pointeur vers la particule	 
-	 */
-	void addParticle(AnimatedSprite *p);
+        /**
+         * @brief rajoute une particule dans le vector de particule
+         * @param p Pointeur vers la particule
+         */
+        void addParticle(AnimatedSprite *p);
 
         b2World *getPhysicalWorld();
 };

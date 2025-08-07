@@ -78,7 +78,7 @@ void Gun::loadJsonFile(const std::string &path) {
                 rearmTime = jsonData.at("ream_time");
                 bulletSpeed = jsonData.at("bullet_speed");
                 bulletType = jsonData.at("bullet_type");
-		semiAuto = jsonData.at("is_semi_automatic");
+                semiAuto = jsonData.at("is_semi_automatic");
 
                 float x = jsonData.at("mouth_x");
                 float y = jsonData.at("mouth_y");
@@ -97,13 +97,15 @@ void Gun::update() {
         // anims
         if (const auto specificPtr =
                 dynamic_cast<AnimationComponent<GunState> *>(animation.get())) {
-                if (specificPtr->play(state)) { // dès qu'une anim est fini on retourne sur idle
+                if (specificPtr->play(state)) { // dès qu'une anim est fini on
+                                                // retourne sur idle
                         state = GunState::idle;
                 }
         }
 
         if (!armed) {
-                if (glfwGetTime() - lastShotTime >= rearmTime && ammo > 0 && state == GunState::idle) {
+                if (glfwGetTime() - lastShotTime >= rearmTime && ammo > 0 &&
+                    state == GunState::idle) {
                         armed = true;
                 }
         }
@@ -117,66 +119,65 @@ void Gun::setAttachPoint(const Vector2f &ap) {
 void Gun::setAttachPoint(float x, float y) { setAttachPoint(Vector2f(x, y)); }
 
 void Gun::shoot(Game *game, bool mouseHolded) {
-        if (!armed || (semiAuto && mouseHolded)) 
-		return;
+        if (!armed || (semiAuto && mouseHolded))
+                return;
 
-	lastShotTime = glfwGetTime();
-	ammo--;
-	armed = false;
-	state = GunState::shoot;
+        lastShotTime = glfwGetTime();
+        ammo--;
+        armed = false;
+        state = GunState::shoot;
 
-	// creation de la balle
-	Vector2f mouth(getPosition().x + gunMouth.x,
-		       getPosition().y +
-			   gunMouth.y); // position bouche du canon
+        // creation de la balle
+        Vector2f mouth(getPosition().x + gunMouth.x,
+                       getPosition().y +
+                           gunMouth.y); // position bouche du canon
 
-	// ajout d'un peu d'aléatoire dans la direction
-	std::uniform_real_distribution<float> distribution(-0.1f, 0.1f);
-	const float r = distribution(RANDOM_ENGINE);
-	const float rotation = getRotation() + r; // rotation de l'arme
+        // ajout d'un peu d'aléatoire dans la direction
+        std::uniform_real_distribution<float> distribution(-0.1f, 0.1f);
+        const float r = distribution(RANDOM_ENGINE);
+        const float rotation = getRotation() + r; // rotation de l'arme
 
-	Vector2f inertie(
-	    cos(rotation) * bulletSpeed,
-	    sin(rotation) *
-		bulletSpeed); // vecteur d'inertie en fonction de la
-			      // rotaion du canon
+        Vector2f inertie(cos(rotation) * bulletSpeed,
+                         sin(rotation) *
+                             bulletSpeed); // vecteur d'inertie en fonction de
+                                           // la rotaion du canon
 
-	if (gunDirection == leftDir) {
-		inertie = Vector2f(cos(rotation) * -bulletSpeed,
-				   sin(rotation) * -bulletSpeed);
-		mouth = Vector2f(getPosition().x - gunMouth.x, mouth.y);
-	}
+        if (gunDirection == leftDir) {
+                inertie = Vector2f(cos(rotation) * -bulletSpeed,
+                                   sin(rotation) * -bulletSpeed);
+                mouth = Vector2f(getPosition().x - gunMouth.x, mouth.y);
+        }
 
-	// calcule position de sortie de la balle
-	const float outX =
-	    getPosition().x +
-	    (mouth.x - getPosition().x) * cos(getRotation()) -
-	    (mouth.y - getPosition().y) * sin(getRotation());
-	const float outY =
-	    getPosition().y +
-	    (mouth.x - getPosition().x) * sin(getRotation()) +
-	    (mouth.y - getPosition().y) * cos(getRotation());
+        // calcule position de sortie de la balle
+        const float outX = getPosition().x +
+                           (mouth.x - getPosition().x) * cos(getRotation()) -
+                           (mouth.y - getPosition().y) * sin(getRotation());
+        const float outY = getPosition().y +
+                           (mouth.x - getPosition().x) * sin(getRotation()) +
+                           (mouth.y - getPosition().y) * cos(getRotation());
 
-	const auto specPtr = dynamic_cast<Bullet*>(ItemFactory::getItem(bulletType));
-	const auto b = new Bullet(*specPtr);
+        const auto specPtr =
+            dynamic_cast<Bullet *>(ItemFactory::getItem(bulletType));
+        const auto b = new Bullet(*specPtr);
 
-	// utilisr la ItemFActory ici avec bullet
-	b->setPosition(outX, outY);
-	b->setRotation(getRotation());
+        // utilisr la ItemFActory ici avec bullet
+        b->setPosition(outX, outY);
+        b->setRotation(getRotation());
 
-	if (gunDirection == leftDir)
-		b->flipVertically();
+        if (gunDirection == leftDir)
+                b->flipVertically();
 
-	b->fire();
-	b->computePhysic(game->getPhysicalWorld());
+        b->fire();
+        b->computePhysic(game->getPhysicalWorld());
 
-	b->getBody()->ApplyForceToCenter(b2Vec2(inertie.x,inertie.y), true);
+        b->getBody()->ApplyForceToCenter(b2Vec2(inertie.x, inertie.y), true);
 
-	game->addItem(b);
+        game->addItem(b);
 
-	// Joue le sound du tir
-	if (const auto specificPtr = dynamic_cast<AudioComponent<GunState> *>(audio.get())) 
-		specificPtr->play(state);
+        // Joue le sound du tir
+        if (const auto specificPtr =
+                dynamic_cast<AudioComponent<GunState> *>(audio.get()))
+                specificPtr->play(state);
 }
 
 void Gun::reload() {
@@ -219,12 +220,11 @@ void Gun::setAmmo(const int ammo) { this->ammo = ammo; }
 
 Gun::Gun(const Gun &other)
     : Item(other), state(other.state), attachPoint(other.attachPoint),
-      gunDirection(other.gunDirection), 
-      armed(other.armed), magazineSize(other.magazineSize), ammo(other.ammo),
+      gunDirection(other.gunDirection), armed(other.armed),
+      magazineSize(other.magazineSize), ammo(other.ammo),
       lastShotTime(other.lastShotTime), rearmTime(other.rearmTime),
-      bulletSpeed(other.bulletSpeed),
-      gunMouth(other.gunMouth), bulletType(other.bulletType),
-      semiAuto(other.semiAuto) {
+      bulletSpeed(other.bulletSpeed), gunMouth(other.gunMouth),
+      bulletType(other.bulletType), semiAuto(other.semiAuto) {
 
         // Changement de possèsseur du composant copier.
         // On cast en premier l'autre composant pour voir
@@ -253,8 +253,8 @@ Gun::Gun(Gun &&other) noexcept
       attachPoint(other.attachPoint), gunDirection(other.gunDirection),
       armed(other.armed), magazineSize(other.magazineSize), ammo(other.ammo),
       lastShotTime(other.lastShotTime), rearmTime(other.rearmTime),
-      bulletSpeed(other.bulletSpeed), gunMouth(other.gunMouth), bulletType(other.bulletType),
-      semiAuto(other.semiAuto) {}
+      bulletSpeed(other.bulletSpeed), gunMouth(other.gunMouth),
+      bulletType(other.bulletType), semiAuto(other.semiAuto) {}
 
 Gun &Gun::operator=(const Gun &other) {
         if (this == &other)
@@ -271,7 +271,7 @@ Gun &Gun::operator=(const Gun &other) {
         bulletSpeed = other.bulletSpeed;
         gunMouth = other.gunMouth;
         bulletType = other.bulletType;
-	semiAuto = other.semiAuto;
+        semiAuto = other.semiAuto;
 
         // Changement de possèsseur du composant copier.
         // On cast en premier l'autre composant pour voir
@@ -311,10 +311,8 @@ Gun &Gun::operator=(Gun &&other) noexcept {
         bulletSpeed = other.bulletSpeed;
         gunMouth = other.gunMouth;
         bulletType = other.bulletType;
-	semiAuto = other.semiAuto;
+        semiAuto = other.semiAuto;
         return *this;
 }
 
-void Gun::shoot() {
-	return;
-}
+void Gun::shoot() { return; }

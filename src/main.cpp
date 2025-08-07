@@ -6,15 +6,15 @@
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include <iostream>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
+#include <iostream>
 
 #include "../Bbop-2D/include/BBOP/Graphics/bbopFunc.h"
-#include "game/game.h"
 #include "engine/item.h"
-#include "engine/particle.h"
 #include "engine/macro.h"
+#include "engine/particle.h"
+#include "game/game.h"
 
 using namespace std;
 
@@ -60,8 +60,8 @@ int main() {
 
         // Initialisation du jeu
         ItemFactory::loadAllItems();
- 	ParticleFactory::loadAllParticles();
- 	Game game;
+        ParticleFactory::loadAllParticles();
+        Game game;
 
         // main while loop
         while (!glfwWindowShouldClose(gameWindow)) {
