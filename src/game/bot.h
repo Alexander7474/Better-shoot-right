@@ -61,31 +61,63 @@ public:
      * @return true si le point est dans la collisonbox du joueur
      */
     void setChockPoint(Vector2f s1,Vector2f s2,Vector2f s3);
-    /**
-     * @return dernier point du jouer etant encore detecte
-     */
+    
     enum class State{
         patrol =1,
         seek =2,
         engage =3,
         interaction =4
     };
+    /**
+     * @return dernier point du jouer etant encore detecte
+     */
     Vector2f getSeekPosition();
-    void update(Map *map,GameCharacter *perso1,Game * game);//mise a jour du bot//
-    void patrolMod();//patrouille//
-    void detectPlayer(GameCharacter *user);//look bot// 
-    void Draw(GLint* renderUniforms) const override;//dessine la bar de vie et le dialogue//
+    /**
+     * @brief mise a jour du bot
+     *
+     * @param map prend la carte en parametre
+     * @param perso1 joueur principale(pourra etre remplacer par liste si plusieur joueur)
+     * @param game la partie sur le quelle le bot est
+     * 
+     */
+    void update(Map *map,GameCharacter *perso1,Game * game);
+    /**
+     * @brief mode patrouille du bot
+     */
+    void patrolMod();
+    /**
+     * @brief Verifie si le joueur ne situe pas la zone de detection du bot
+     *
+     * @param user le joueur
+     */
+    void detectPlayer(GameCharacter *user);
+    /**
+     * @brief dessine le bot et les autres
+     *
+     * @param renderuniform  
+     */
+    void Draw(GLint* renderUniforms) const override;
+    /**
+     * @brief retourne le GameCharacter du bot
+     *
+     * @return GameCharacter
+     */
     GameCharacter * getCharacter();
+    /**
+     * @brief retourne l'etat du bot
+     * 
+     * @return state
+     */
     State getState();
 protected:
-    unique_ptr<GameCharacter> pnj;
+    unique_ptr<GameCharacter> pnj;//GameCharacter//
     Vector2f *Chokpoint; //liste des point de passage en mode patrouille//
     Vector2f PreviousPosition; //ancienne position pour le deplacement//
     float fov ;//fov/
     Vector2f SeekPosition;//dernier point du joueur avant de sortir du champVisuel//
     float Detect,Diviseur;//temp de detection//
     bool ftd;//first time detect//
-    Font *font;
+    Font *font;//police d'ecriture pour les messages//
     float timer;//timer pour la discussion//
     int cpt,iterateur;//sense en mode patrouille//
     float unlock;//temp avant de delock le joueur//
@@ -93,9 +125,6 @@ protected:
     TexteBox *dialoque;//texte de dialogue//
     State etat;//etat du bot//
     bool discussing;//en train de parler//
-    Agressivite *menace;
-    
-
-
+    Agressivite *menace; //composant agressivite du bot//
 };
 
