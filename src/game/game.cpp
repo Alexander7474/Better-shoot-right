@@ -60,7 +60,7 @@ Game::Game()
 void Game::update() {
 	for(const auto &item : items)
 		item->update();
-
+	
 	for(unsigned long i = 0; i < particles.size(); i++){
  		if(particles[i]->update()){
 			particlesTempShit.push_back(std::move(particles[i])); // TODO -- patch temp AnimatedSPrite / see addParticle todo 

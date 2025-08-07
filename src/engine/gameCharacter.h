@@ -20,7 +20,6 @@ enum Direction { rightDir, leftDir };
 
 #endif
 
-// TODO -- Gérer la vie et la collision avec le balle
 // TODO -- Modifier la méthode setPos qui ne sert plus avec box2d
 class GameCharacter : public BbopDrawable, public Geometric, public Entity {
       private:

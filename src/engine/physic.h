@@ -58,7 +58,8 @@ enum class BodyType {
 	Utilitie,
 	Item,
         Bullet,
-        GameCharacter
+        GameCharacter,
+	Member
 };
 
 /**

@@ -158,6 +158,14 @@ void CustomContactListener::handleContact(b2Contact *contact,
 	auto hasTypes = [](BodyData *a, BodyData *b, BodyType tA, BodyType tB){
 		return (a->type == tA && b->type == tB);
 	};
+	auto hasTypesUnordered = [](BodyData *a, BodyData *b, BodyType tA, BodyType tB){
+		return ((a->type == tA && b->type == tB) || (a->type == tB && b->type == tA));
+	};
+
+	if(hasTypesUnordered(dataA, dataB, BodyType::Member, BodyType::Member)){
+		contact->SetEnabled(false);
+		return;
+	}
 
 	// La gestion du contact peut-être fais
 	// avec bodyA = GameCharacter et bodyB
