@@ -1,7 +1,7 @@
 #ifdef IMGUI_DEBUG
-#include "src/backends/imgui_impl_glfw.h"
-#include "src/backends/imgui_impl_opengl3.h"
-#include "src/imgui/imgui.h"
+#include "backends/imgui_impl_glfw.h"
+#include "backends/imgui_impl_opengl3.h"
+#include "imgui/imgui.h"
 #endif
 
 #include <GL/glew.h>
@@ -10,11 +10,11 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
 
-#include "Bbop-2D/include/BBOP/Graphics/bbopFunc.h"
-#include "src/game/game.h"
-#include "src/engine/item.h"
-#include "src/engine/particle.h"
-#include "src/engine/macro.h"
+#include "../Bbop-2D/include/BBOP/Graphics/bbopFunc.h"
+#include "game/game.h"
+#include "engine/item.h"
+#include "engine/particle.h"
+#include "engine/macro.h"
 
 using namespace std;
 

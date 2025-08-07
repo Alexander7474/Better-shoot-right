@@ -1,4 +1,6 @@
 /Bbop-Library/
 /Bbop-2D/
 /*.o
-/final
+/final*
+/imgui.ini
+/build/
