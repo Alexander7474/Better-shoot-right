@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 project(FinalGame LANGUAGES CXX)
 
 # TODO -- Ajouter du debuggage dans imgui pour tous mettre dans un seule mode debug
+# TODO -- Ajouter une compilation pour la livemap.cpp
 
 # =========================
 # Paramètres de compilation
