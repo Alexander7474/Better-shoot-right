@@ -19,7 +19,7 @@ Bot::Bot()
     
     
     pnj->lookAt(Vector2f(pnj->getPosition().x + 5, pnj->getPosition().y));
-    
+
     etat = Bot::State::patrol; 
 
     fov = M_PI / 4;
@@ -177,7 +177,6 @@ Vector2f Bot::getSeekPosition() {
 
 void Bot::patrolMod() {
     if (patrolZone() && getState()==Bot::State::patrol) {
-
         if (bbopGetDistance(pnj->getPosition(), Chokpoint[cpt]) < 10.0f) {
             if (cpt == 2) {
                 iterateur = -1;

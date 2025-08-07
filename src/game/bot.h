@@ -15,7 +15,6 @@ using namespace std;
 //Le bot doit pouvoir mourir
 //Le Bot doit pouvoir recharger
 
-
 class Bot : public BbopDrawable
 {
 public:
@@ -61,7 +60,7 @@ public:
      * @return true si le point est dans la collisonbox du joueur
      */
     void setChockPoint(Vector2f s1,Vector2f s2,Vector2f s3);
-    
+
     enum class State{
         patrol =1,
         seek =2,
