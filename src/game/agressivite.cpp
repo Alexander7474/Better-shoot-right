@@ -1,5 +1,6 @@
 #include"agressivite.h"
 #include "bot.h"
+#include "game.h"
 
 Agressivite::Agressivite(int level, float range, Bot *pnj){
     this->range=range;
@@ -30,13 +31,11 @@ void Agressivite::update(GameCharacter *joueur , Game * game){
                     pnj->getCharacter()->lookAt(joueur->getPosition());
                     pnj->getCharacter()->getGun().shoot(game,true);
                 }
-                std::cerr<<"error1"<<endl;
             }
             break;
         
             
         case 1:
-        cerr<<"error2"<<endl;
             if (espace>0)
             {
                 pnj->getCharacter()->goLeft();
