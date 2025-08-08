@@ -32,11 +32,6 @@ Game::Game()
                 mainPlayer.getCharacter().setPosition(map.getSpawnPoints()[0]);
         }
 
-        bots.push_back(std::make_unique<Bot>());
-        bots[0]->getCharacter()->setPosition(500.f,-100.f);
-        bots.push_back(std::make_unique<Bot>());
-        bots[1]->getCharacter()->setPosition(550.f,-100.f);
-
         // init
         // physic-------------------------------------------------------------------------
         // rajoute le boite de collision au monde physique
