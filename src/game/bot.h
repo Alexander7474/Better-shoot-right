@@ -10,9 +10,15 @@ class Agressivite;
 using namespace std;
 
 // TODO --
-// Arranger les fonctions de déplacement
-// Le bot doit pouvoir mourir
-// Le Bot doit pouvoir recharger
+// TODO -- Arranger les fonctions de déplacement
+// TODO -- Le bot doit pouvoir mourir
+// TODO -- Le Bot doit pouvoir recharger
+// TODO -- Ajouter une BotFActory de la même manière que 
+//         particleFactory pour faire spawn des bots de 
+//         manière personnalisé
+// TODO -- Ajouter de l'aléatoire dans les bots pour éviter
+//         éviter qu'il face tous la même chose
+// TODO -- Patcher le bug ou le bot saute en boucle
 
 class Bot : public BbopDrawable {
       public:

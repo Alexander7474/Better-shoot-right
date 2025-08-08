@@ -52,7 +52,6 @@ Bot::Bot() : pnj(std::make_unique<GameCharacter>()) {
 
 void Bot::update(Map *map, GameCharacter *user, Game *game) {
         if (pnj->getHead().getetat() != 3) {
-                std::cerr << getState() << endl;
                 detectPlayer(user);
                 patrolMod();
                 menace->update(user, game);

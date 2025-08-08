@@ -4,6 +4,7 @@
 #include "../engine/dynamicSprite.h"
 #include "entity.h"
 #include "player.h"
+#include "bot.h"
 
 #include <GLFW/glfw3.h>
 #include <box2d/box2d.h>
@@ -29,18 +30,19 @@ class Game {
         Camera mainPlayerCam;
         Player mainPlayer;
         Map map;
-        std::vector<std::unique_ptr<DynamicSprite>>
-            dynamics; // liste des sprites dynamics
+        std::vector<std::unique_ptr<DynamicSprite>> dynamics; // liste des sprites dynamics
         std::vector<std::unique_ptr<Item>> items;
+        
+        // particles
         std::vector<std::unique_ptr<AnimatedSprite>> particles;
         std::vector<std::unique_ptr<AnimatedSprite>> particlesTempShit;
+
+        // bots
+        std::vector<std::unique_ptr<Bot>> bots;
 
         // gestion physique
         b2World physicalWorld;
         std::vector<Entity *> entities; // liste des enititées
-
-        GameCharacter testPnj;
-
       public:
         Game();
 

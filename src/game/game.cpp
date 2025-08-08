@@ -19,7 +19,7 @@ float GRAVITY = 9.8f;
 std::default_random_engine RANDOM_ENGINE;
 
 Game::Game()
-    : mainPlayer(this), map("assets/map/default/"),
+    : mainPlayer(this), map("assets/map/map1/"),
       physicalWorld(b2Vec2(
           0.0f,
           GRAVITY)) // création du monde physique avec un vecteur de gravité
@@ -30,8 +30,12 @@ Game::Game()
 
         if (map.getSpawnPoints().size() > 1) {
                 mainPlayer.getCharacter().setPosition(map.getSpawnPoints()[0]);
-                testPnj.setPosition(mainPlayer.getCharacter().getPosition());
         }
+
+        bots.push_back(std::make_unique<Bot>());
+        bots[0]->getCharacter()->setPosition(500.f,-100.f);
+        bots.push_back(std::make_unique<Bot>());
+        bots[1]->getCharacter()->setPosition(550.f,-100.f);
 
         // init
         // physic-------------------------------------------------------------------------
@@ -41,7 +45,9 @@ Game::Game()
         }
 
         entities.push_back(&mainPlayer.getCharacter());
-        entities.push_back(&testPnj);
+
+        for(auto &b : bots)
+          entities.push_back(b->getCharacter());
 
         // compute entities
         unsigned long long cptEnt = 0;
@@ -105,15 +111,14 @@ void Game::update() {
             mainPlayer.getCharacter().getHead().getState() !=
                 MemberState::ragdoll)
                 mainPlayer.getCharacter().toggleRagdollMod(&physicalWorld);
-        if (testPnj.getHp() <= 0.f &&
-            testPnj.getHead().getState() != MemberState::ragdoll)
-                testPnj.toggleRagdollMod(&physicalWorld);
 
         mainPlayerCam.setScale(0.5f);
         mainPlayerCam.setPosition(middlePos);
         mainPlayer.update(&mainPlayerCam, &map);
 
-        testPnj.update(&map);
+        for(auto &b : bots){
+          b->update(&map, &mainPlayer.getCharacter(), this);
+        }
 
         // Gestion de la
         // physique-------------------------------------------------------------------------
@@ -133,7 +138,9 @@ void Game::update() {
 void Game::Draw() {
         map.Draw(scene, mainPlayerCam);
         scene.Draw(mainPlayer);
-        scene.Draw(testPnj);
+        
+        for (auto &b : bots)
+                scene.Draw(*b);  
 
         for (auto &d : dynamics) {
                 scene.Draw(*d);
