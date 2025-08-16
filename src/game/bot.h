@@ -109,6 +109,8 @@ public:
      * @return state
      */
     State getState();
+
+    void setBot(int threat,float damage,float healthpoint,float range);
 protected:
     unique_ptr<GameCharacter> pnj;//GameCharacter//
     Vector2f *Chokpoint; //liste des point de passage en mode patrouille//

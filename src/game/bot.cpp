@@ -224,3 +224,9 @@ GameCharacter* Bot::getCharacter() {
 Bot::State Bot::getState() {
     return etat;
 }
+
+void Bot::setBot(int threat,float damage,float healthpoint,float range){
+    delete(menace);
+    menace=new Agressivite(threat,range,this);
+    pnj.get()->setHp(healthpoint);
+}
