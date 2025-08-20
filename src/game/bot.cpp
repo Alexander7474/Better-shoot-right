@@ -230,3 +230,15 @@ void Bot::setBot(int threat,float damage,float healthpoint,float range){
     menace=new Agressivite(threat,range,this);
     pnj.get()->setHp(healthpoint);
 }
+
+float Bot::getDamage(){
+    return 1;
+}
+
+float Bot::getRange(){
+    return 50;
+}
+
+int Bot::getThreat(){
+    return menace->getThreat();
+}

@@ -14,11 +14,13 @@ void BotFactory::LoadBots(){
         float damage=config["damage"];
         int threat=config["threat"];
         float healthpoint=config["healthpoint"];
-        Bots[name]=Bot();
-        Bots[name].setBot(threat,damage,healthpoint,range);
+        Bots[name]=std::make_unique<Bot>();
+        Bots[name].get()->setBot(threat,damage,healthpoint,range);
     }
 }
 
 Bot* BotFactory::getBot(std::string name){
-    return &Bots[name];
+    Bot *bt;
+    bt->setBot(Bots[name].get()->getThreat(),Bots[name].get()->getDamage(),Bots[name].get()->getCharacter()->getHp(),Bots[name].get()->getRange());
+    return bt;
 }

@@ -5,12 +5,12 @@
 #include "bot.h"
 
 
-class BotFactory
-{
+class BotFactory {
 private:
-    std::unordered_map<std::string, Bot> Bots;
+    static std::unordered_map<std::string, std::unique_ptr<Bot>> Bots;
 public:
     void LoadBots();
     Bot* getBot(std::string name);
 };
+
 
