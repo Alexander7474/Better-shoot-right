@@ -28,4 +28,6 @@ class Agressivite
          * 
          */
         void update(GameCharacter *joueur,Game * game);
+
+        int getThreat();
 };

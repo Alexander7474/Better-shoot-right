@@ -7,7 +7,7 @@
 
 class BotFactory {
 private:
-    static std::unordered_map<std::string, std::unique_ptr<Bot>> Bots;
+    std::unordered_map<std::string, std::unique_ptr<Bot>> BotConstructor;
 public:
     void LoadBots();
     Bot* getBot(std::string name);

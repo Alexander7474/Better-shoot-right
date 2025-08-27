@@ -176,7 +176,7 @@ Vector2f Bot::getSeekPosition() {
 
 
 void Bot::patrolMod() {
-    if (patrolZone() && getState()==Bot::State::patrol) {
+    if (patrolZone() && getState()==Bot::State::patrol && getThreat()==0) {
 
         if (bbopGetDistance(pnj->getPosition(), Chokpoint[cpt]) < 10.0f) {
             if (cpt == 2) {
@@ -190,7 +190,7 @@ void Bot::patrolMod() {
         }
         moveToPoint(Chokpoint[cpt]);
     } else {
-        moveToPoint(Chokpoint[0]);
+        //moveToPoint(Chokpoint[0]);
     }
 }
 
@@ -214,6 +214,7 @@ void Bot::detectPlayer(GameCharacter* user) {
 }
 
 void Bot::Draw(GLint *renderUniforms) const {
+    cerr<<pnj->getLookingPoint().x<<endl;
     pnj->Draw(renderUniforms);
 }
 
@@ -241,4 +242,15 @@ float Bot::getRange(){
 
 int Bot::getThreat(){
     return menace->getThreat();
+}
+
+void Bot::MoveAway(Vector2f bastard){
+    if (bastard.x-pnj->getPosition().x<0.f)
+    {
+        pnj->goRight();
+    }else{
+
+        pnj->goLeft();
+    }
+    
 }

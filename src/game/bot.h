@@ -115,6 +115,8 @@ public:
     int getThreat();
     float getDamage();
     float getRange();
+
+    void MoveAway(Vector2f bastard);
 protected:
     unique_ptr<GameCharacter> pnj;//GameCharacter//
     Vector2f *Chokpoint; //liste des point de passage en mode patrouille//

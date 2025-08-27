@@ -8,19 +8,18 @@ void BotFactory::LoadBots(){
     std::ifstream jsonFile(jsonPath);
     nlohmann::json jsonData;
     jsonFile>>jsonData;
-
     for (const auto& [name, config] : jsonData.items()) {
         float range=config["range"];
         float damage=config["damage"];
         int threat=config["threat"];
         float healthpoint=config["healthpoint"];
-        Bots[name]=std::make_unique<Bot>();
-        Bots[name].get()->setBot(threat,damage,healthpoint,range);
+        BotConstructor[name]=std::make_unique<Bot>();
+        BotConstructor[name].get()->setBot(threat,damage,healthpoint,range);
     }
 }
 
 Bot* BotFactory::getBot(std::string name){
-    Bot *bt;
-    bt->setBot(Bots[name].get()->getThreat(),Bots[name].get()->getDamage(),Bots[name].get()->getCharacter()->getHp(),Bots[name].get()->getRange());
+    Bot *bt=new Bot();
+    bt->setBot(BotConstructor[name].get()->getThreat(),BotConstructor[name].get()->getDamage(),BotConstructor[name].get()->getCharacter()->getHp(),BotConstructor[name].get()->getRange());
     return bt;
 }

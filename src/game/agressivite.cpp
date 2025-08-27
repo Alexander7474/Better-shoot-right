@@ -36,12 +36,13 @@ void Agressivite::update(GameCharacter *joueur , Game * game){
         
             
         case 1:
-            if (espace>0)
+            if (espace<100.f)
             {
-                pnj->getCharacter()->goLeft();
-            }else{
-                pnj->getCharacter()->goRight();
+                pnj->MoveAway(joueur->getPosition());
             }
-            break;
     }
+}
+
+int Agressivite::getThreat(){
+    return level;
 }
