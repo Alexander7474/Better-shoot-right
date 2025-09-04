@@ -3,6 +3,8 @@
 
 #include <GLFW/glfw3.h>
 
+std::unordered_map<std::string, std::unique_ptr<Bot>> BotFactory::BotConstructor;
+
 void BotFactory::LoadBots(){
     std::string jsonPath = "assets/personnages/bot/bot.json";
     std::ifstream jsonFile(jsonPath);
