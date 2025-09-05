@@ -20,6 +20,7 @@ void BotFactory::LoadBots(){
     }
 }
 
+// TODO -- Passer par un constructeur par copie dans botFactory pour récupèrer les bots quand gameCharacter aura un constructeur par copie
 Bot* BotFactory::getBot(std::string name){
     Bot *bt=new Bot();
     bt->setBot(BotConstructor[name].get()->getThreat(),BotConstructor[name].get()->getDamage(),BotConstructor[name].get()->getCharacter()->getHp(),BotConstructor[name].get()->getRange());
