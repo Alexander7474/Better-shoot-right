@@ -2,18 +2,14 @@
 
 #include "../../Bbop-2D/include/BBOP/Graphics/bbopGlobal.h"
 #include "../../Bbop-2D/include/BBOP/Graphics/cameraClass.h"
-#include "../engine/gameCharacter.h"
 #include "../engine/crossair.h"
+#include "../engine/gameCharacter.h"
+
+class Agressivite;
 
 class Agressivite;
 
 using namespace std;
-
-
-// TODO -- 
-//Arranger les fonctions de déplacement 
-//Le bot doit pouvoir mourir
-//Le Bot doit pouvoir recharger
 
 
 class Bot : public BbopDrawable
@@ -134,5 +130,4 @@ protected:
     State etat;//etat du bot//
     bool discussing;//en train de parler//
     Agressivite *menace; //composant agressivite du bot//
-};
-
+  }

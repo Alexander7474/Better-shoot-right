@@ -75,17 +75,57 @@ bool Bot::champVisuel(GameCharacter* user) {
     };
     float theta0 = atan2(direction.y, direction.x);
 
-    float halfFov = fov / 2;
-    if (fabs(angleToUser - theta0) > halfFov) {
-        return false;
-    }
+        fov = M_PI / 4;
+        font = new Font(16, "toto.ttf");
 
     if (bbopGetDistance(pnj->getPosition(), user->getPosition()) < range) {
 
-        std::vector<float> theta(21);
-        for (int i = 0; i < 21; i++) {
-            theta[i] = theta0 - halfFov + (i * (fov / 20));
+
+        dialoque = new TexteBox("shut up steve", font);
+        ftd = false;
+
+        Chokpoint =
+            new Vector2f[3]{Vector2f(500.f, 1281.f), Vector2f(600.f, 1281.f),
+                            Vector2f(700.f, 1281.f)};
+
+        hpbar->setOrigin(pnj->getPosition());
+
+        cpt = 1;
+        iterateur = 1;
+        menace = new Agressivite(0, 200.f, this);
+}
+
+void Bot::update(Map *map, GameCharacter *user, Game *game) {
+        if (pnj->getHead().getetat() != 3) {
+                detectPlayer(user);
+                patrolMod();
+                menace->update(user, game);
+                hpbar->setPosition(Vector2f(pnj->getPosition().x + 290,
+                                            pnj->getPosition().y - 20));
+                dialoque->setPosition(
+                    Vector2f(pnj->getPosition().x, pnj->getPosition().y - 50));
         }
+        float hp = (35.f / 500.f) * pnj->getHp();
+        hpbar->setSize(Vector2f(hp, hpbar->getSize().y));
+        pnj->update(map);
+}
+
+bool Bot::champVisuel(GameCharacter *user) {
+        float range = 200.0f;
+
+        Vector2f toUser = {user->getPosition().x - pnj->getPosition().x,
+                           user->getPosition().y - pnj->getPosition().y};
+        float angleToUser = atan2(toUser.y, toUser.x);
+
+        Vector2f direction = {pnj->getLookingPoint().x - pnj->getPosition().x,
+                              pnj->getLookingPoint().y - pnj->getPosition().y};
+        float theta0 = atan2(direction.y, direction.x);
+
+        float halfFov = fov / 2;
+        if (fabs(angleToUser - theta0) > halfFov) {
+                return false;
+        }
+
 
         CollisionBox partie[5] = {
             pnj->getRightArm().getCollisionBox(),
@@ -111,11 +151,10 @@ bool Bot::champVisuel(GameCharacter* user) {
                     }
                     Diviseur = fabs((pnj->getPosition().x - start_p.x) / 5);
                     return true;
+
                 }
-                start_p.x += step.x;
-                start_p.y += step.y;
-            }
         }
+
     }
     return false;
 }
@@ -155,10 +194,8 @@ bool Bot::moveToPoint(Vector2f point) {
         
 
         PreviousPosition = pnj->getPosition();
+
         return false;
-    } else {
-        return true;
-    }
 }
 
 void Bot::setChockPoint(Vector2f s1, Vector2f s2, Vector2f s3) {

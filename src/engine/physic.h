@@ -20,7 +20,8 @@
  */
 b2Body *addStaticBox(b2World *world, const Geometric *box);
 
-// TODO -- optimiser cette fonction qui gère la creation de tous les objet dynamique box2d (peut-être laisser les class se créer elle même dans box2d)
+// TODO -- optimiser cette fonction qui gère la creation de tous les objet
+// dynamique box2d (peut-être laisser les class se créer elle même dans box2d)
 /**
  * @brief Créé une boite de collision Dynamic dans un monde box2d à partir d'une
  * collision box BBOP
@@ -45,7 +46,7 @@ b2Body *addStaticBox(b2World *world, const Geometric *box);
 b2Body *addDynamicBox(b2World *world, Geometric *box, const float restitution,
                       const float density, const float friction,
                       const float linearDamping, const bool rotationLock,
-		      const bool isBullet,
+                      const bool isBullet,
                       const Vector2f &offsetX = Vector2f(0, 0),
                       const Vector2f &offsetY = Vector2f(0, 0));
 
@@ -53,12 +54,13 @@ b2Body *addDynamicBox(b2World *world, Geometric *box, const float restitution,
  * @brief Enumeration des class possible pour le gestionaire de collision
  */
 enum class BodyType {
-	Undefined,
-	Static,
-	Utilitie,
-	Item,
+        Undefined,
+        Static,
+        Utilitie,
+        Item,
         Bullet,
-        GameCharacter
+        GameCharacter,
+        Member
 };
 
 /**
@@ -67,7 +69,7 @@ enum class BodyType {
  */
 struct BodyData {
         BodyType type = BodyType::Undefined; //<! typre de la class
-        uintptr_t ptr = 0; //<! pointeur vers la class
+        uintptr_t ptr = 0;                   //<! pointeur vers la class
 };
 
 class Game;
@@ -76,19 +78,19 @@ class Game;
  */
 class CustomContactListener final : public b2ContactListener {
       public:
-	/**
-	 * @brief Init le pointer game
-	 * @details Obligatiore pour utiliser des méthodes de
-	 * game lors de certain contact
-	 * @param g pointer vers la game
-	 */
-	static void setGameOwner(Game* g);
+        /**
+         * @brief Init le pointer game
+         * @details Obligatiore pour utiliser des méthodes de
+         * game lors de certain contact
+         * @param g pointer vers la game
+         */
+        static void setGameOwner(Game *g);
 
         void BeginContact(b2Contact *contact) override;
         void EndContact(b2Contact *contact) override;
 
       private:
-	static Game* game; //<! Pointe vers la partie qui utilise le listener
+        static Game *game; //<! Pointe vers la partie qui utilise le listener
 
         /**
          * @brief Gère les contacts

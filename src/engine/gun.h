@@ -29,15 +29,15 @@ class Gun final : public Item {
         Direction gunDirection;
 
         // gestion des tirs
-        bool armed{};          // l'arme est armé ?
-        int magazineSize{};    // taille du chargeur
-        int ammo{};            // nombre de mun dans le chargeur
-        double lastShotTime{}; // moment du dernier tire
-        double rearmTime{};    // temps pour réarmer l'arme
-        float bulletSpeed{}; // vitesse des balles
-        Vector2f gunMouth; // sortie des balles
+        bool armed{};           // l'arme est armé ?
+        int magazineSize{};     // taille du chargeur
+        int ammo{};             // nombre de mun dans le chargeur
+        double lastShotTime{};  // moment du dernier tire
+        double rearmTime{};     // temps pour réarmer l'arme
+        float bulletSpeed{};    // vitesse des balles
+        Vector2f gunMouth;      // sortie des balles
         std::string bulletType; // nom du type de balle (Item de ItemFactory)
-	bool semiAuto{};
+        bool semiAuto{};
 
       public:
         Gun();
@@ -50,14 +50,14 @@ class Gun final : public Item {
 
         /**
          * @brief fais tirer l'arme
-	 *
-	 * @param game pointer vers la game 
-	 * @param mouseHold La souris vien d'être clické ?
+         *
+         * @param game pointer vers la game
+         * @param mouseHold La souris vien d'être clické ?
          */
         void shoot(Game *game, bool mouseHolded);
-	
-	// TODO -- enlever cette fonction qui sert uniquement a trooper
-	void shoot();
+
+        // TODO -- enlever cette fonction qui sert uniquement a trooper
+        void shoot();
 
         /**
          * remplie le nombre de munition dans le chargeur

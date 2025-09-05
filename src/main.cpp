@@ -1,20 +1,20 @@
 #ifdef IMGUI_DEBUG
-#include "src/backends/imgui_impl_glfw.h"
-#include "src/backends/imgui_impl_opengl3.h"
-#include "src/imgui/imgui.h"
+#include "backends/imgui_impl_glfw.h"
+#include "backends/imgui_impl_opengl3.h"
+#include "imgui/imgui.h"
 #endif
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include <iostream>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
+#include <iostream>
 
-#include "Bbop-2D/include/BBOP/Graphics/bbopFunc.h"
-#include "src/game/game.h"
-#include "src/engine/item.h"
-#include "src/engine/particle.h"
-#include "src/engine/macro.h"
+#include "../Bbop-2D/include/BBOP/Graphics/bbopFunc.h"
+#include "engine/item.h"
+#include "engine/macro.h"
+#include "engine/particle.h"
+#include "game/game.h"
 
 using namespace std;
 
@@ -60,8 +60,8 @@ int main() {
 
         // Initialisation du jeu
         ItemFactory::loadAllItems();
- 	ParticleFactory::loadAllParticles();
- 	Game game;
+        ParticleFactory::loadAllParticles();
+        Game game;
 
         // main while loop
         while (!glfwWindowShouldClose(gameWindow)) {

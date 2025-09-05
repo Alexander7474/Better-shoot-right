@@ -4,12 +4,16 @@
 #include "../engine/dynamicSprite.h"
 #include "entity.h"
 #include "player.h"
+<<<<<<< HEAD
+=======
+#include "bot.h"
+>>>>>>> 9317585c3da299d149399e889900a6a9e2839913
 
 #include <GLFW/glfw3.h>
 #include <box2d/box2d.h>
 #include <random>
-#include <vector>
 #include <string>
+#include <vector>
 
 // pointeur vers la fentre de jeu utilisable de partout
 extern GLFWwindow *gameWindow;
@@ -29,17 +33,24 @@ class Game {
         Camera mainPlayerCam;
         Player mainPlayer;
         Map map;
+<<<<<<< HEAD
         std::vector<std::unique_ptr<DynamicSprite>>
             dynamics; // liste des sprites dynamics
+=======
+        std::vector<std::unique_ptr<DynamicSprite>> dynamics; // liste des sprites dynamics
+>>>>>>> 9317585c3da299d149399e889900a6a9e2839913
         std::vector<std::unique_ptr<Item>> items;
-	std::vector<std::unique_ptr<AnimatedSprite>> particles;
-	std::vector<std::unique_ptr<AnimatedSprite>> particlesTempShit;
+        
+        // particles
+        std::vector<std::unique_ptr<AnimatedSprite>> particles;
+        std::vector<std::unique_ptr<AnimatedSprite>> particlesTempShit;
+
+        // bots
+        std::vector<std::unique_ptr<Bot>> bots;
 
         // gestion physique
         b2World physicalWorld;
         std::vector<Entity *> entities; // liste des enititées
-      
-      	GameCharacter testPnj;
       public:
         Game();
 
@@ -65,15 +76,16 @@ class Game {
          * @warning L'item dois être parfaitement construit et près à être
          * utilisé en tant que telle, C'EST A DIRE UN ITEMS (pas un gun, pas
          * un bullets, UN ITEM).
-         * @warning Ne pas donner une entité déjà initialisé avec computePhysic()
+         * @warning Ne pas donner une entité déjà initialisé avec
+         * computePhysic()
          */
         void addItem(Item *item);
 
-	/**
-	 * @brief rajoute une particule dans le vector de particule 
-	 * @param p Pointeur vers la particule	 
-	 */
-	void addParticle(AnimatedSprite *p);
+        /**
+         * @brief rajoute une particule dans le vector de particule
+         * @param p Pointeur vers la particule
+         */
+        void addParticle(AnimatedSprite *p);
 
         b2World *getPhysicalWorld();
 };
