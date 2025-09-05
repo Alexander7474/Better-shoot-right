@@ -4,7 +4,10 @@
 #include "../engine/dynamicSprite.h"
 #include "entity.h"
 #include "player.h"
+<<<<<<< HEAD
+=======
 #include "bot.h"
+>>>>>>> 9317585c3da299d149399e889900a6a9e2839913
 
 #include <GLFW/glfw3.h>
 #include <box2d/box2d.h>
@@ -30,7 +33,12 @@ class Game {
         Camera mainPlayerCam;
         Player mainPlayer;
         Map map;
+<<<<<<< HEAD
+        std::vector<std::unique_ptr<DynamicSprite>>
+            dynamics; // liste des sprites dynamics
+=======
         std::vector<std::unique_ptr<DynamicSprite>> dynamics; // liste des sprites dynamics
+>>>>>>> 9317585c3da299d149399e889900a6a9e2839913
         std::vector<std::unique_ptr<Item>> items;
         
         // particles

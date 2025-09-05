@@ -132,10 +132,12 @@ void Gun::shoot(Game *game, bool mouseHolded) {
                        getPosition().y +
                            gunMouth.y); // position bouche du canon
 
+
         // ajout d'un peu d'aléatoire dans la direction
         std::uniform_real_distribution<float> distribution(-0.1f, 0.1f);
         const float r = distribution(RANDOM_ENGINE);
         const float rotation = getRotation() + r; // rotation de l'arme
+
 
         Vector2f inertie(cos(rotation) * bulletSpeed,
                          sin(rotation) *

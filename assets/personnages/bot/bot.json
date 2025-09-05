@@ -1,0 +1,17 @@
+{
+    "trooper":{
+        "range" : 50,
+        "damage" : 1,
+        "threat" : 0,
+        "healthpoint" : 100,
+        "speed" : 1,
+        "height" : 6.5,
+        "armor" : 100
+    },
+    "civilian":{
+        "range" : 0,
+        "damage" : 0,
+        "threat" : 1,
+        "healthpoint" :50
+    }
+}
