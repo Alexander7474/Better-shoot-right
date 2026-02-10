@@ -18,15 +18,3 @@ cmake --build . --parallel
 -DPHYSIC_DEBUG
 -DIMGUI_DEBUG
 ```
-
-### RoadMap
-
-##### Yassine
-
--> Régler les TODO 
-
-##### Alexandre
-
--> Créé un une boucle de jeu
--> Impléménter un inventaire pour gameCharacter
-
